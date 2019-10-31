@@ -1,22 +1,36 @@
 .App {
-  text-align: center;
+    position: relative;
+    display: flex;
+    height: 100%;
+    width: 100vw;
 }
 
-.App-logo {
-  height: 40vmin;
+.App .Wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+    min-width: 960px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.Main {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
-.App-link {
-  color: #09d3ac;
+.Main .Body {
+    height: 100%;
+    width: 100vw;
+    display: flex;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+}
+
+.Player {
+    flex-shrink: 0;
+    min-height: 150px;
+    z-index: 22;
 }
