@@ -142,13 +142,16 @@ class Player extends Component {
     }
 
     formatSeconds = (secs) => {
-        if (secs === '0:00' || Number.isNaN(secs))
-            return '0:0:0';
+        if (Number.isNaN(secs))
+            return '00:00';
 
-        const h = Math.floor(secs / 3600);
-        const m = Math.floor(secs % 3600 / 60);
-        const s = Math.floor(secs % 3600 % 60);
+        const h = String(Math.floor(secs / 3600)).padStart(2, '0');
+        const m = String(Math.floor(secs % 3600 / 60)).padStart(2, '0');
+        const s = String(Math.floor(secs % 3600 % 60)).padStart(2, '0');
     
+        if (h === '00') {
+            return `${m}:${s}`;
+        }
         return `${h}:${m}:${s}`;
     }
 }
