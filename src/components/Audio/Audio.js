@@ -6,9 +6,9 @@ const Audio = (props) => {
             ref={props.element} 
             onTimeUpdate={props.handleTimeUpdate}
             onEnded={props.handlePlaybackEnd}
+            src={props.src}
             //controls
         >
-            <source src={props.src}/>
         </audio>
     );
 }
