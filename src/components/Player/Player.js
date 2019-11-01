@@ -13,8 +13,9 @@ class Player extends Component {
             podTitle: '',
             src: '',
             isPlaying: false,
-            currentTime: '0:00',
-            duration: '0:00'
+            skipTime: 30,
+            currentTime: 0,
+            duration: 0
         };
 
         this.audioElement = new React.createRef();
@@ -81,18 +82,38 @@ class Player extends Component {
     }
 
     handleRewind = () => {
-        this.audioElement.current.currentTime -= 30;
+        if ((this.state.currentTime - this.state.skipTime) <= 0) {
+            this.audioElement.current.currentTime = 0;
+
+            this.setState({
+                currentTime: 0
+            });
+
+            return;
+        }
+
+        this.audioElement.current.currentTime -= this.state.skipTime;
 
         this.setState(state => ({
-            currentTime: state.currentTime - 30
+            currentTime: state.currentTime - this.state.skipTime
         }));
     }
 
-    handleFastForward = (e) => {
-        this.audioElement.current.currentTime += 30;
+    handleFastForward = () => {
+        if ((this.state.currentTime + this.state.skipTime) >= this.state.duration) {
+            this.audioElement.current.currentTime = this.state.duration;
+
+            this.setState(state => ({
+                currentTime: state.duration
+            }));
+
+            return;
+        }
+
+        this.audioElement.current.currentTime += this.state.skipTime;
 
         this.setState(state => ({
-            currentTime: state.currentTime + 30
+            currentTime: state.currentTime + this.state.skipTime
         }));
     }
 
@@ -103,9 +124,6 @@ class Player extends Component {
     }
 
     handleSliderChange = (e, value) => {
-        if (isNaN(this.state.duration)) 
-            return;
-
         this.audioElement.current.currentTime = this.state.duration * value * 0.01;
 
         this.setState(state => ({
