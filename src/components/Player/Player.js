@@ -26,13 +26,13 @@ class Player extends Component {
                 <div className="controls">
                     <div className="controls-left">
                         <ButtonGroup>
-                            <IconButton>
+                            <IconButton onClick={this.handleRewind}>
                                 <FastRewind />
                             </IconButton>
                             <IconButton onClick={this.handlePlayBack}>
                                 {(this.state.isPlaying) ? <PauseCircleFilled /> : <PlayCircleFilled />}
                             </IconButton>
-                            <IconButton>
+                            <IconButton onClick={this.handleFastForward}>
                                 <FastForward />
                             </IconButton>
                         </ButtonGroup>
@@ -77,6 +77,22 @@ class Player extends Component {
         this.setState(state => ({
             isPlaying: !state.isPlaying,
             duration: this.audioElement.current.duration
+        }));
+    }
+
+    handleRewind = () => {
+        this.audioElement.current.currentTime -= 30;
+
+        this.setState(state => ({
+            currentTime: state.currentTime - 30
+        }));
+    }
+
+    handleFastForward = (e) => {
+        this.audioElement.current.currentTime += 30;
+
+        this.setState(state => ({
+            currentTime: state.currentTime + 30
         }));
     }
 
