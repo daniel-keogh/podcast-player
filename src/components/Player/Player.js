@@ -45,19 +45,22 @@ class Player extends Component {
                             <Typography variant="overline">{this.state.podTitle}</Typography>
                         </div>
                         <div className="seek">
-                            <Slider />
-                            <Typography variant="body2" className="current">
-                                {this.formatSeconds(this.state.currentTime)}
-                            </Typography>
-                            <Typography variant="body2" className="remaining">
-                                {this.formatSeconds(this.state.duration)}
-                            </Typography>
+                            <Slider
+                                defaultValue={0} 
+                                value={this.timeAsPercent()}
+                                marks={[
+                                    {value: 0, label: this.formatSeconds(this.state.currentTime)},
+                                    {value: 100, label: this.formatSeconds(this.state.duration)}
+                                ]}
+                                onChange={this.handleSliderChange}
+                            />
                         </div>
                     </div>
                 </div>
                 <Audio
                     element={this.audioElement}
                     handleTimeUpdate={this.handleTimeUpdate}
+                    handlePlaybackEnd={this.handlePlaybackEnd}
                     src={this.state.src}
                 />
             </React.Fragment>
@@ -77,10 +80,31 @@ class Player extends Component {
         }));
     }
 
+    handlePlaybackEnd = () => {
+        this.setState({
+            isPlaying: false
+        });
+    }
+
+    handleSliderChange = (e, value) => {
+        if (isNaN(this.state.duration)) 
+            return;
+
+        this.audioElement.current.currentTime = this.state.duration * value * 0.01;
+
+        this.setState(state => ({
+            currentTime: state.duration * value * 0.01
+        }));
+    }
+
     handleTimeUpdate = (e) => {
         this.setState({
             currentTime: e.target.currentTime
         });
+    }
+
+    timeAsPercent = () => {
+        return ((this.state.currentTime / this.state.duration) * 100);
     }
 
     formatSeconds = (secs) => {

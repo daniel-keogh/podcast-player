@@ -13,7 +13,6 @@
     padding-top: 22px;
     text-align: center;
     margin: 0 25px;
-    position: relative;
 }
 
 .controls-left {
@@ -22,19 +21,6 @@
     padding: 10px;
     justify-content: center;
     align-items: center;
-}
-
-.current, .remaining {
-    position: absolute;
-    bottom: 0;
-}
-
-.current {
-    left: 0;
-}
-
-.remaining {
-    right: 0;
 }
 
 .seek {

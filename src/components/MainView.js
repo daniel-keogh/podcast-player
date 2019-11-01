@@ -14,7 +14,7 @@ class MainView extends Component {
         };
     }
 
-    componentWillMount() {
+    componentDidMount() {
         axios.get(`http://localhost:4000/api/subscriptions`)
         .then(res => {
             if (res.status !== 200 || !res.data) {
