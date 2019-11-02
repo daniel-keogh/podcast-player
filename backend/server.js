@@ -19,7 +19,7 @@ app.get('/api/subscriptions', (req, res) => {
         
     }`);
 
-    res.status(200).json({ subscriptions });
+    res.status(200).json(subscriptions);
 });
 
 app.get('/api/top', (req, res) => {

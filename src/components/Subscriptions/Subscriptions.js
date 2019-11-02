@@ -19,7 +19,7 @@ class Subscriptions extends Component {
     componentDidMount() {
         axios.get(`http://localhost:4000/api/subscriptions`)
             .then(res => {
-                if (res.status !== 200 || !res.data) {
+                if (res.status !== 200 || res.data.length === 0) {
                     throw new Error('HTTP Error');
                 } else {
                     this.setState({
