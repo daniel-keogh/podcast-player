@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import Welcome from '../Welcome';
-import AddNew from '../AddNew';
+import Welcome from './Welcome/Welcome';
+import AddNew from './AddNew/AddNew';
 import { Grid } from '@material-ui/core';
 import SubscriptionCard from './SubscriptionsCard/SubscriptionCard';
-import NavBar from '../NavBar';
+import NavBar from '../NavBar/NavBar';
 
 class Subscriptions extends Component {
     constructor(props) {
