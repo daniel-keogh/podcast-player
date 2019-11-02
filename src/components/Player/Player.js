@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import { Slider, IconButton, ButtonGroup, Typography } from '@material-ui/core';
-import { PlayCircleFilled, FastRewind, FastForward, PauseCircleFilled } from '@material-ui/icons';
 import Audio from '../Audio/Audio';
-import "./Player.css";
+import ControlsCard from '../ControlsCard/ControlsCard';
 
 class Player extends Component {
     constructor(props) {
@@ -24,45 +22,22 @@ class Player extends Component {
     render() {
         return (
             <React.Fragment>
-                <div className="controls">
-                    <div className="controls-left">
-                        <ButtonGroup>
-                            <IconButton onClick={this.handleRewind}>
-                                <FastRewind />
-                            </IconButton>
-                            <IconButton onClick={this.handlePlayBack}>
-                                {(this.state.isPlaying) ? <PauseCircleFilled /> : <PlayCircleFilled />}
-                            </IconButton>
-                            <IconButton onClick={this.handleFastForward}>
-                                <FastForward />
-                            </IconButton>
-                        </ButtonGroup>
-                    </div>
-                    <div className="controls-center">
-                        <div className="episode-title">
-                            <Typography variant="h6">{this.state.epTitle}</Typography>
-                        </div>
-                        <div className="podcast-title">
-                            <Typography variant="overline">{this.state.podTitle}</Typography>
-                        </div>
-                        <div className="seek">
-                            <Slider
-                                defaultValue={0} 
-                                value={this.timeAsPercent()}
-                                marks={[
-                                    {value: 0, label: this.formatSeconds(this.state.currentTime)},
-                                    {value: 100, label: this.formatSeconds(this.state.duration)}
-                                ]}
-                                onChange={this.handleSliderChange}
-                            />
-                        </div>
-                    </div>
-                </div>
+                <ControlsCard
+                    epTitle={this.state.epTitle}
+                    podTitle={this.state.podTitle}
+                    isPlaying={this.state.isPlaying}
+                    currentTime={this.state.currentTime}
+                    duration={this.state.duration}
+                    handleRewind={this.handleRewind}
+                    handleFastForward={this.handleFastForward}
+                    handlePlayBack={this.handlePlayBack}
+                    handleSliderChange={this.handleSliderChange}
+                />
                 <Audio
                     element={this.audioElement}
+                    src={this.state.src}
                     handleTimeUpdate={this.handleTimeUpdate}
                     handlePlaybackEnd={this.handlePlaybackEnd}
-                    src={this.state.src}
                 />
             </React.Fragment>
         );
@@ -79,6 +54,12 @@ class Player extends Component {
             isPlaying: !state.isPlaying,
             duration: this.audioElement.current.duration
         }));
+    }
+
+    handlePlaybackEnd = () => {
+        this.setState({
+            isPlaying: false
+        });
     }
 
     handleRewind = () => {
@@ -117,12 +98,6 @@ class Player extends Component {
         }));
     }
 
-    handlePlaybackEnd = () => {
-        this.setState({
-            isPlaying: false
-        });
-    }
-
     handleSliderChange = (e, value) => {
         this.audioElement.current.currentTime = this.state.duration * value * 0.01;
 
@@ -135,24 +110,6 @@ class Player extends Component {
         this.setState({
             currentTime: e.target.currentTime
         });
-    }
-
-    timeAsPercent = () => {
-        return ((this.state.currentTime / this.state.duration) * 100);
-    }
-
-    formatSeconds = (secs) => {
-        if (Number.isNaN(secs))
-            return '00:00';
-
-        const h = String(Math.floor(secs / 3600)).padStart(2, '0');
-        const m = String(Math.floor(secs % 3600 / 60)).padStart(2, '0');
-        const s = String(Math.floor(secs % 3600 % 60)).padStart(2, '0');
-    
-        if (h === '00') {
-            return `${m}:${s}`;
-        }
-        return `${h}:${m}:${s}`;
     }
 }
  
