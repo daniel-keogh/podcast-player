@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import NavBar from './components/NavBar';
 import MainView from './components/MainView';
-import PlayerWrapper from './components/PlayerWrapper';
+import PlayerWrapper from './components/PlayerWrapper/PlayerWrapper';
 
 function App() {
     return (

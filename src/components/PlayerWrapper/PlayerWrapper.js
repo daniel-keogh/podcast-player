@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Player from './Player/Player';
+import Player from '../Player/Player';
 
 class PlayerWrapper extends Component {
     state = { isQueued: false }

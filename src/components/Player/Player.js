@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import Audio from '../Audio/Audio';
-import ControlsCard from '../ControlsCard/ControlsCard';
+import Audio from './Audio/Audio';
+import ControlsCard from './ControlsCard/ControlsCard';
 
 class Player extends Component {
     constructor(props) {

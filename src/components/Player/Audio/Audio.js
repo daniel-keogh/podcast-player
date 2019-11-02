@@ -7,7 +7,6 @@ const Audio = (props) => {
             onTimeUpdate={props.handleTimeUpdate}
             onEnded={props.handlePlaybackEnd}
             src={props.src}
-            //controls
         >
         </audio>
     );
