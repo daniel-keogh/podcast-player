@@ -1,8 +1,10 @@
 import React from 'react';
 import './App.css';
-import NavBar from './components/NavBar';
-import MainView from './components/MainView';
+import Subscriptions from './components/Subscriptions/Subscriptions';
+import Discover from './components/Discover/Discover';
+import Podcast from './components/Podcast/Podcast';
 import PlayerWrapper from './components/PlayerWrapper/PlayerWrapper';
+import { Route, Switch } from 'react-router-dom';
 
 function App() {
     return (
@@ -10,13 +12,16 @@ function App() {
             <div className="App">
                 <div className="Wrapper">
                     <div className="Main">
-                        <NavBar title="Subscriptions" />
                         <div className="Body">
-                            <MainView className="MainView" />
+                            <Switch>
+                                <Route exact path="/" component={Subscriptions} />
+                                <Route path="/discover" component={Discover} />
+                                <Route path="/podcast" component={Podcast} />
+                            </Switch>
                         </div>
                     </div>
                     <React.Fragment>
-                        <PlayerWrapper clsName="Player"/>
+                        <PlayerWrapper />
                     </React.Fragment>
                 </div>
             </div>

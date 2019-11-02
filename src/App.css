@@ -13,7 +13,7 @@
 }
 
 .Main {
-    flex: 1 1 auto;
+    height: 100%;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -22,10 +22,6 @@
 .Main .Body {
     height: 100%;
     width: 100vw;
-    display: flex;
-    position: relative;
-    align-items: center;
-    justify-content: center;
 }
 
 .Player {

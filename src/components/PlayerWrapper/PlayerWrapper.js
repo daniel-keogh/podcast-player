@@ -6,7 +6,7 @@ class PlayerWrapper extends Component {
 
     render() {
         return (
-            <div className={this.props.clsName} style={ !this.state.isQueued ? { display: 'none' } : null }>
+            <div className="Player" style={ !this.state.isQueued ? { display: 'none' } : null }>
                 <Player />
             </div>
         );
