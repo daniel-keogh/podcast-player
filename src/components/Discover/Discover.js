@@ -34,6 +34,7 @@ class Discover extends Component {
                         artwork={item.artworkUrl100}
                         name={item.name}
                         author={item.artistName}
+                        genres={item.genres.map(g => g.name)}
                     />
                 );
             });

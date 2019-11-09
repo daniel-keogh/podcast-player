@@ -36,14 +36,21 @@ app.get('/api/subscriptions', (req, res) => {
 
 /* Subscribe to a podcast. */
 app.post('/api/subscriptions', (req, res) => {
-    PodcastModel.create({
-        _id: req.body.itunesID,
-        name: req.body.name,
-        artist: req.body.artist,
-        genres: req.body.genres,
-        artwork: req.body.artwork,
-        feedUrl: req.body.feedUrl
-    });
+    // Need to search iTunes to retrieve the RSS feed
+    axios.get(`https://itunes.apple.com/lookup?id=${req.body.id}&entity=podcast`)
+        .then(data => {
+            return data.data.results[0].feedUrl
+        })
+        .then(feedUrl => {
+            PodcastModel.create({
+                _id: req.body.id,
+                name: req.body.name,
+                artist: req.body.artist,
+                genres: req.body.genres,
+                artwork: req.body.artwork,
+                feedUrl
+            });
+        });
 });
 
 /* Retrieve information about a specific subscription. */
@@ -55,7 +62,12 @@ app.get('/api/subscriptions/:id', (req, res) => {
 
 /* Delete a subscription i.e. unsubscribe. */
 app.delete('/api/subscriptions/:id', (req, res) => {
-    PodcastModel.findByIdAndDelete({ _id: req.params.id });
+    PodcastModel.deleteOne({ _id: req.params.id }, (err, data) => {
+        if (err) {
+            res.json(err);
+        }
+        res.json(data);
+    });
 });
 
 app.get('/api/top', (req, res) => {
