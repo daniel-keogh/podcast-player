@@ -15,7 +15,7 @@ const SubscriptionCard = (props) => {
     const classes = useStyles();
 
     return (
-        <Card className={classes.card}>
+        <Card className={classes.card} elevation={3}>
             <CardActionArea onClick={handleViewClicked}>
                 <CardMedia
                     className={classes.media}

@@ -34,7 +34,7 @@ const ControlsCard = (props) => {
     const classes = useStyles();
 
     return (
-        <Card className="ControlsCard" style={{ display: "flex" }}>
+        <Card className="ControlsCard" style={{ display: "flex" }} elevation={3}>
             <div className={classes.details}>
                 <CardContent className={classes.content}>
                     <Typography component="h5" variant="h5">
