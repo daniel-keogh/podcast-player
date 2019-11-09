@@ -59,7 +59,7 @@ app.delete('/api/subscriptions/:id', (req, res) => {
 });
 
 app.get('/api/top', (req, res) => {
-    axios.get(`https://rss.itunes.apple.com/api/v1/us/podcasts/top-podcasts/all/50/explicit.json`)
+    axios.get(`https://rss.itunes.apple.com/api/v1/us/podcasts/top-podcasts/all/100/explicit.json`)
         .then(data => {
             return data.data.feed.results;
         })

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import NavBar from '../NavBar/NavBar';
-import SubscriptionCard from '../Subscriptions/SubscriptionsCard/SubscriptionCard';
+import DiscoverListItem from './DiscoverListItem/DiscoverListItem';
+import { List } from '@material-ui/core';
 
 class Discover extends Component {
     constructor(props) {
@@ -27,13 +28,13 @@ class Discover extends Component {
         if (this.state.top) {
             items = this.state.top.map(item => {
                 return (
-                    <li key={item.id}>
-                        <SubscriptionCard
-                            artwork={item.artworkUrl100}
-                            podName={item.name}
-                            podAuthor={item.artistName}
-                        />
-                    </li>
+                    <DiscoverListItem
+                        key={item.id}
+                        id={item.id}
+                        artwork={item.artworkUrl100}
+                        name={item.name}
+                        author={item.artistName}
+                    />
                 );
             });
         }
@@ -42,9 +43,9 @@ class Discover extends Component {
             <React.Fragment>
                 <NavBar title="Discover" />
                 <div>
-                    <ul>
+                    <List>
                         {items}
-                    </ul>
+                    </List>
                 </div>
             </React.Fragment>
         );
