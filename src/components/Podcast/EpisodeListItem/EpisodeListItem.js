@@ -1,17 +1,13 @@
 import React from 'react';
-import { IconButton, ListItem, ListItemSecondaryAction, ListItemText, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@material-ui/core';
+import { IconButton, ListItem, ListItemSecondaryAction, ListItemText } from '@material-ui/core';
 import { PlayCircleFilled } from '@material-ui/icons';
+import EpisodeDialog from '../EpisodeDialog/EpisodeDialog';
 
 const EpisodeListItem = (props) => {
     const [open, setOpen] = React.useState(false);
 
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
+    const handleClickOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
 
     const handlePlay = () => {
         // TODO play this episode
@@ -35,26 +31,13 @@ const EpisodeListItem = (props) => {
                     </IconButton>
                 </ListItemSecondaryAction>
             </ListItem>
-            <Dialog
+            <EpisodeDialog
                 open={open}
-                keepMounted
-                onClose={handleClose}
-            >
-                <DialogTitle>{props.episode.title}</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        {props.episode.summary}
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClose} color="primary">
-                        Close
-                    </Button>
-                    <Button onClick={handlePlay} color="secondary">
-                        Play
-                    </Button>
-                </DialogActions>
-            </Dialog>
+                handleClose={handleClose}
+                handlePlay={handlePlay}
+                title={props.episode.title}
+                summary={props.episode.summary}
+            />
         </React.Fragment>
     );
 }
