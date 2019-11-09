@@ -23,7 +23,7 @@ class Subscriptions extends Component {
                     throw new Error('HTTP Error');
                 } else {
                     this.setState({
-                        subscriptions: res.data.subscriptions.podcasts,
+                        subscriptions: res.data.subscriptions,
                         noSubscriptions: false
                     });
                 }
@@ -54,9 +54,11 @@ class Subscriptions extends Component {
         const subs = this.state.subscriptions.map(sub => {
             return (
                 <SubscriptionCard
-                    podName={sub.name}
-                    podAuthor={sub.artist}
+                    id={sub._id}
+                    name={sub.name}
+                    author={sub.artist}
                     artwork={sub.artwork}
+                    history={this.props.history}
                 />
             );
         });

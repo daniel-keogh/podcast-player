@@ -20,22 +20,26 @@ const SubscriptionCard = (props) => {
                 <CardMedia
                     className={classes.media}
                     image={props.artwork}
-                    title={props.podName}
+                    title={props.name}
                 />
                 <CardContent>
                     <Typography gutterBottom variant="h5" component="h2">
-                        {props.podName}
+                        {props.name}
                     </Typography>
                     <Typography variant="body2" color="textSecondary" component="p">
-                        {props.podAuthor}
+                        {props.author}
                     </Typography>
                 </CardContent>
             </CardActionArea>
             <CardActions>
-                <Button size="small" color="primary">View</Button>
+                <Button size="small" color="primary" onClick={handleViewClicked}>View</Button>
             </CardActions>
         </Card>
     );
+
+    function handleViewClicked() {
+        props.history.push(`/podcast/${props.id}`);
+    }
 }
 
 export default SubscriptionCard;

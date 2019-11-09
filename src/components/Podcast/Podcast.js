@@ -9,7 +9,10 @@ class Podcast extends Component {
 
     render() {
         return (
-            <NavBar title="Podcast" />
+            <React.Fragment>
+                <NavBar title="Podcast" />
+                <p>This is the podcast Component</p>
+            </React.Fragment>
         );
     }
 }

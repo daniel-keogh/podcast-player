@@ -16,7 +16,7 @@ function App() {
                             <Switch>
                                 <Route exact path="/" component={Subscriptions} />
                                 <Route path="/discover" component={Discover} />
-                                <Route path="/podcast" component={Podcast} />
+                                <Route path="/podcast/:id" component={Podcast} />
                             </Switch>
                         </div>
                     </div>
