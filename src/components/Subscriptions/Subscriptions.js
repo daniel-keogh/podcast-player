@@ -13,7 +13,7 @@ class Subscriptions extends Component {
 
         this.state = {
             subscriptions: [],
-            noSubscriptions: true
+            noSubscriptions: false
         };
     }
 
