@@ -3,7 +3,7 @@ import axios from 'axios';
 import Welcome from './Welcome/Welcome';
 import AddNew from './AddNew/AddNew';
 import { Grid } from '@material-ui/core';
-import SubscriptionCard from './SubscriptionsCard/SubscriptionCard';
+import SubscriptionItem from './SubscriptionItem/SubscriptionItem';
 import NavBar from '../NavBar/NavBar';
 import "./Subscriptions.css";
 
@@ -54,7 +54,8 @@ class Subscriptions extends Component {
 
         const subs = this.state.subscriptions.map(sub => {
             return (
-                <SubscriptionCard
+                <SubscriptionItem
+                    key={sub._id}
                     id={sub._id}
                     name={sub.name}
                     author={sub.artist}

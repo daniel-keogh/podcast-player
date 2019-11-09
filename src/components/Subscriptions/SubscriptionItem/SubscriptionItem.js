@@ -11,7 +11,7 @@ const useStyles = makeStyles({
     },
 });
 
-const SubscriptionCard = (props) => {
+const SubscriptionItem = (props) => {
     const classes = useStyles();
 
     return (
@@ -31,4 +31,4 @@ const SubscriptionCard = (props) => {
     }
 }
 
-export default SubscriptionCard;
+export default SubscriptionItem;
