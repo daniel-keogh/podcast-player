@@ -22,7 +22,7 @@
 .Main .Body {
     height: 100%;
     width: 100vw;
-    overflow: scroll;
+    overflow-y: scroll;
     position: relative;
 }
 

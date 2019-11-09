@@ -1,0 +1,13 @@
+.subs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 150px);
+    gap: 1em;
+    justify-content: center;
+    padding: 25px;
+}
+
+.subs-grid-wrapper {
+    max-width: 1400px;
+    margin: auto;
+}
+

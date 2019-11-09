@@ -1,13 +1,13 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Card, CardActionArea, CardActions, CardContent, CardMedia, Button, Typography } from '@material-ui/core'
+import { Card, CardActionArea, CardMedia } from '@material-ui/core'
 
 const useStyles = makeStyles({
     card: {
-        maxWidth: 345,
+        maxWidth: 150,
     },
     media: {
-        height: 140,
+        height: 150,
     },
 });
 
@@ -16,24 +16,13 @@ const SubscriptionCard = (props) => {
 
     return (
         <Card className={classes.card}>
-            <CardActionArea>
+            <CardActionArea onClick={handleViewClicked}>
                 <CardMedia
                     className={classes.media}
                     image={props.artwork}
                     title={props.name}
                 />
-                <CardContent>
-                    <Typography gutterBottom variant="h5" component="h2">
-                        {props.name}
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary" component="p">
-                        {props.author}
-                    </Typography>
-                </CardContent>
             </CardActionArea>
-            <CardActions>
-                <Button size="small" color="primary" onClick={handleViewClicked}>View</Button>
-            </CardActions>
         </Card>
     );
 

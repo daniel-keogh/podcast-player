@@ -5,6 +5,7 @@ import AddNew from './AddNew/AddNew';
 import { Grid } from '@material-ui/core';
 import SubscriptionCard from './SubscriptionsCard/SubscriptionCard';
 import NavBar from '../NavBar/NavBar';
+import "./Subscriptions.css";
 
 class Subscriptions extends Component {
     constructor(props) {
@@ -66,7 +67,11 @@ class Subscriptions extends Component {
         return (
             <React.Fragment>
                 {header}
-                {subs}
+                <div className="subs-grid-wrapper">
+                    <div className="subs-grid">
+                        {subs}
+                    </div>
+                </div>
                 <AddNew handleAddNewClicked={this.handleAddNewClicked} />
             </React.Fragment>
         );
