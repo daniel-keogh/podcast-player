@@ -29,7 +29,7 @@ app.get('/api/subscriptions', (req, res) => {
         if (subscriptions !== undefined && subscriptions.length !== 0) {
             res.json({ subscriptions })
         } else {
-            res.json('{}');
+            res.json({ subscriptions: [] });
         }
     });
 });
