@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import Welcome from './Welcome/Welcome';
-import AddNew from './AddNew/AddNew';
 import { Grid } from '@material-ui/core';
+import Welcome from '../Welcome/Welcome';
+import AddNew from '../AddNew/AddNew';
 import SubscriptionItem from './SubscriptionItem/SubscriptionItem';
 import NavBar from '../NavBar/NavBar';
 import "./Subscriptions.css";
 
 class Subscriptions extends Component {
+
     constructor(props) {
         super(props);
 
@@ -79,7 +80,11 @@ class Subscriptions extends Component {
     }
 
     handleAddNewClicked = () => {
-        this.props.history.push('/discover');
+        // Pass the ID's of subscribed podcasts as an array in order to tell which ones the user is already subscribed to.
+        this.props.history.push({
+            pathname: '/discover',
+            state: { subscriptions: this.state.subscriptions.map(sub => sub._id) }
+        });
     }
 }
 

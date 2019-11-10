@@ -63,6 +63,7 @@ class Player extends Component {
     }
 
     handleRewind = () => {
+        // If near the start of the file, set the current time to zero
         if ((this.state.currentTime - this.state.skipTime) <= 0) {
             this.audioElement.current.currentTime = 0;
 
@@ -81,6 +82,7 @@ class Player extends Component {
     }
 
     handleFastForward = () => {
+        // If near the end of the file, set the current time to the total duration
         if ((this.state.currentTime + this.state.skipTime) >= this.state.duration) {
             this.audioElement.current.currentTime = this.state.duration;
 
@@ -112,5 +114,5 @@ class Player extends Component {
         });
     }
 }
- 
+
 export default Player;

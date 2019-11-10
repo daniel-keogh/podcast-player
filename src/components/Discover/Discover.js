@@ -5,22 +5,20 @@ import DiscoverListItem from './DiscoverListItem/DiscoverListItem';
 import { List } from '@material-ui/core';
 
 class Discover extends Component {
-    constructor(props) {
-        super(props);
 
-        this.state = {
-            top: ''
-        };
+    state = {
+        top: '',
     }
 
     componentDidMount() {
-        axios.get(`http://localhost:4000/api/top`).then(data => {
-            if (data.status === 200) {
-                this.setState({
-                    top: data.data
-                });
-            }
-        });
+        axios.get(`http://localhost:4000/api/top`)
+            .then(data => {
+                if (data.status === 200) {
+                    this.setState({
+                        top: data.data
+                    });
+                }
+            });
     }
 
     render() {
@@ -35,6 +33,7 @@ class Discover extends Component {
                         name={item.name}
                         author={item.artistName}
                         genres={item.genres.map(g => g.name)}
+                        subscriptions={this.props.location.state.subscriptions}
                     />
                 );
             });

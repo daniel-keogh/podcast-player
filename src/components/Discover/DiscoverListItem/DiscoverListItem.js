@@ -1,16 +1,19 @@
 import React, { Component } from 'react';
 import { IconButton, Avatar, ListItemAvatar, ListItem, ListItemSecondaryAction, ListItemText, Divider } from '@material-ui/core';
-import { AddBox, RemoveCircle } from '@material-ui/icons';
+import { RemoveCircleOutline, AddCircleOutline } from '@material-ui/icons';
 import axios from 'axios';
 
 class DiscoverListItem extends Component {
 
-    state = {
-        isSubscribed: false
-    }
+    constructor(props) {
+        super(props);
 
-    componentDidMount() {
+        // If find() returns true, then the user is already subscribed to this podcast.
+        const idExists = this.props.subscriptions.find(id => +props.id === id);
 
+        this.state = {
+            isSubscribed: idExists ? true : false
+        }
     }
 
     render() {
@@ -28,9 +31,9 @@ class DiscoverListItem extends Component {
                         <IconButton
                             edge="end"
                             color="secondary"
-                            onClick={this.handleSubscribeClicked}
+                            onClick={this.handleSubscribe}
                         >
-                            {this.state.isSubscribed ? <RemoveCircle color="secondary" /> : <AddBox color="secondary" />}
+                            {this.state.isSubscribed ? <RemoveCircleOutline color="secondary" /> : <AddCircleOutline color="primary" />}
                         </IconButton>
                     </ListItemSecondaryAction>
                 </ListItem>
@@ -39,7 +42,7 @@ class DiscoverListItem extends Component {
         );
     }
 
-    handleSubscribeClicked = () => {
+    handleSubscribe = () => {
         if (this.state.isSubscribed) {
             axios.delete(`http://localhost:4000/api/subscriptions/${this.props.id}`)
                 .then(res => {
@@ -59,8 +62,8 @@ class DiscoverListItem extends Component {
         }
 
         this.setState(state => ({
-            isSubscribed: !state.isSubscribed,
-        }));
+            isSubscribed: !state.isSubscribed
+        }))
     }
 }
 

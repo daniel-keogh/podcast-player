@@ -7,7 +7,12 @@ const Welcome = (props) => {
             <Typography variant="h5">
                 There's nothing here...
             </Typography>
-            <Button color="secondary" variant="outlined" style={{ margin: "12px" }} onClick={props.handleAddNewClicked}>
+            <Button
+                color="secondary"
+                variant="outlined"
+                style={{ margin: "12px" }}
+                onClick={props.handleAddNewClicked}
+            >
                 Click to add some podcasts.
             </Button>
         </div>

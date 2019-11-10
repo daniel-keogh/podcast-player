@@ -5,12 +5,9 @@ import EpisodeListItem from './EpisodeListItem/EpisodeListItem';
 import { List } from '@material-ui/core';
 
 class Podcast extends Component {
-    constructor(props) {
-        super(props);
 
-        this.state = {
-            podcast: {}
-        }
+    state = {
+        podcast: {}
     }
 
     componentDidMount() {

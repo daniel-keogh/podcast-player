@@ -17,7 +17,11 @@ const AddNew = (props) => {
 
     return (
         <React.Fragment>
-            <Fab color="secondary" className={classes.fab} onClick={props.handleAddNewClicked}>
+            <Fab
+                color="secondary"
+                className={classes.fab}
+                onClick={props.handleAddNewClicked}
+            >
                 <AddIcon />
             </Fab>
         </React.Fragment>
