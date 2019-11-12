@@ -1,3 +1,3 @@
 module.exports = {
-    mongoURI: ''
+    mongoURI: 'YOUR_MONGO_URI'
 };

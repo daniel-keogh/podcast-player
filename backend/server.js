@@ -4,11 +4,10 @@ const bodyParser = require('body-parser');
 const FeedParser = require('feedparser');
 const mongoose = require('mongoose');
 const request = require('request');
+const axios = require('axios');
 
 const app = express();
 const PORT = 4000;
-
-const axios = require('axios');
 
 const mongodb = require('./config/keys').mongoURI;
 mongoose.connect(mongodb, { useNewUrlParser: true });
