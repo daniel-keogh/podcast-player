@@ -8,7 +8,7 @@ Podcast player application built with the "MERN" stack.
 
 ## Scripts
 
-**_Note_**: Before you can run the app, you'll first need to put your [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) connection string in the [`./backend/config/keys.js`](./backend/config/keys.js) file:
+**_Note_**: Before you can run the app, you'll first need to put your MongoDB connection string in the [`./backend/config/keys.js`](./backend/config/keys.js) file:
 
 ```javascript
 module.exports = {
