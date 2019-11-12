@@ -11,7 +11,7 @@ class Podcast extends Component {
     }
 
     componentDidMount() {
-        axios.get(`http://localhost:4000/api/podcast/${this.props.match.params.id}`)
+        axios.get(`http://localhost:4000/api/subscriptions/${this.props.match.params.id}`)
             .then(data => {
                 this.setState({
                     podcast: data.data
