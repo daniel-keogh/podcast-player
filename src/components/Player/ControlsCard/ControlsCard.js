@@ -48,10 +48,10 @@ const ControlsCard = (props) => {
             </div>
             <div className={classes.controlsCenter}>
                 <CardContent className={classes.nowPlaying}>
-                    <Typography component="h6" variant="h6" noWrap="true">
+                    <Typography component="h6" variant="h6" noWrap={true}>
                         {props.epTitle}
                     </Typography>
-                    <Typography color="textSecondary" variant="subtitle2" noWrap="true">
+                    <Typography color="textSecondary" variant="subtitle2" noWrap={true}>
                         {props.podTitle}
                     </Typography>
                 </CardContent>
