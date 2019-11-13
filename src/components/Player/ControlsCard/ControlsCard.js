@@ -1,32 +1,30 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Card, CardContent, Slider, ButtonGroup, IconButton, Typography } from '@material-ui/core';
-import { PauseCircleFilled, PlayCircleFilled, SkipPrevious, SkipNext } from '@material-ui/icons';
+import { PlayCircleFilled, PauseCircleFilled, Replay30, Forward30 } from '@material-ui/icons';
 
-const useStyles = makeStyles(theme => ({
-    details: {
+const useStyles = makeStyles(() => ({
+    controlsLeft: {
+        padding: '0 8px 0 32px',
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        justifyContent: 'center'
     },
-    content: {
-        flex: '1 0 auto',
+    controlsCenter: {
+        padding: '0 32px 0 8px',
+        textAlign: 'center',
+        width: '100%',
+        minWidth: 0
+    },
+    nowPlaying: {
         whiteSpace: 'nowrap'
     },
-    controls: {
-        display: 'flex',
-        alignItems: 'center',
-        paddingLeft: theme.spacing(1),
-        paddingBottom: theme.spacing(1)
+    seekbar: {
+        width: '90%'
     },
     playIcon: {
-        height: 38,
-        width: 38
-    },
-    seekbar: {
-        display: 'flex',
-        alignItems: 'center',
-        flex: 'auto',
-        margin: '0 36px'
+        height: 52,
+        width: 52
     }
 }));
 
@@ -34,32 +32,31 @@ const ControlsCard = (props) => {
     const classes = useStyles();
 
     return (
-        <Card className="ControlsCard" style={{ display: "flex" }} elevation={3}>
-            <div className={classes.details}>
-                <CardContent className={classes.content}>
-                    <Typography component="h5" variant="h5">
+        <Card className="ControlsCard grad" elevation={3}>
+            <div className={classes.controlsLeft}>
+                <ButtonGroup>
+                    <IconButton onClick={props.handleRewind}>
+                        <Replay30 fontSize="large" />
+                    </IconButton>
+                    <IconButton onClick={props.handlePlayBack}>
+                        {(props.isPlaying) ? <PauseCircleFilled className={classes.playIcon} /> : <PlayCircleFilled className={classes.playIcon} />}
+                    </IconButton>
+                    <IconButton onClick={props.handleFastForward}>
+                        <Forward30 fontSize="large" />
+                    </IconButton>
+                </ButtonGroup>
+            </div>
+            <div className={classes.controlsCenter}>
+                <CardContent className={classes.nowPlaying}>
+                    <Typography component="h6" variant="h6" noWrap="true">
                         {props.epTitle}
                     </Typography>
-                    <Typography variant="subtitle1" color="textSecondary">
+                    <Typography color="textSecondary" variant="subtitle2" noWrap="true">
                         {props.podTitle}
                     </Typography>
                 </CardContent>
-                <div className={classes.controls}>
-                    <ButtonGroup>
-                        <IconButton onClick={props.handleRewind}>
-                            <SkipPrevious />
-                        </IconButton>
-                        <IconButton onClick={props.handlePlayBack}>
-                            {(props.isPlaying) ? <PauseCircleFilled className={classes.playIcon} /> : <PlayCircleFilled className={classes.playIcon} />}
-                        </IconButton>
-                        <IconButton onClick={props.handleFastForward}>
-                            <SkipNext />
-                        </IconButton>
-                    </ButtonGroup>
-                </div>
-            </div>
-            <div className={classes.seekbar}>
                 <Slider
+                    className={classes.seekbar}
                     defaultValue={0}
                     value={((props.currentTime / props.duration) * 100)}
                     marks={[
@@ -69,10 +66,12 @@ const ControlsCard = (props) => {
                     onChange={props.handleSliderChange}
                 />
             </div>
-        </Card>
+        </Card >
     );
 }
 
+// Based on this S.O. answer:
+// https://stackoverflow.com/a/37096512
 const formatSeconds = (secs) => {
     if (Number.isNaN(secs))
         return '00:00';

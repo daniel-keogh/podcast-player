@@ -1,6 +1,6 @@
 import React from 'react';
 import { IconButton, ListItem, ListItemSecondaryAction, ListItemText } from '@material-ui/core';
-import { PlayCircleFilled } from '@material-ui/icons';
+import { PlayCircleOutline } from '@material-ui/icons';
 import EpisodeDialog from '../EpisodeDialog/EpisodeDialog';
 
 const EpisodeListItem = (props) => {
@@ -27,7 +27,7 @@ const EpisodeListItem = (props) => {
                         color="secondary"
                         onClick={handlePlay}
                     >
-                        <PlayCircleFilled />
+                        <PlayCircleOutline />
                     </IconButton>
                 </ListItemSecondaryAction>
             </ListItem>

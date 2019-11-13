@@ -27,8 +27,7 @@
 }
 
 .Player {
-    flex-shrink: 0;
-    min-height: 160px;
+    min-height: 145px;
     z-index: 22;
     position: relative;
 }
@@ -37,6 +36,7 @@
     display: flex;
     position: absolute;
     bottom: 0;
-    width: 100%;
+    left: 0;
+    right: 0;
     height: 100%;
 }
