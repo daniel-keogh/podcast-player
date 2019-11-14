@@ -24,7 +24,7 @@ const EpisodeListItem = (props) => {
             <ListItem button divider onClick={handleClickOpen}>
                 <ListItemText
                     primary={props.episode.title}
-                    secondary={new Date(props.episode.date).toLocaleString('en-IE')}
+                    secondary={new Date(props.episode.date).toDateString()}
                 />
                 <ListItemSecondaryAction>
                     <IconButton
