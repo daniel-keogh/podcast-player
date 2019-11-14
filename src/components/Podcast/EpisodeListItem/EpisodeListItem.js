@@ -10,7 +10,12 @@ const EpisodeListItem = (props) => {
     const handleClose = () => setOpen(false);
 
     const handlePlay = () => {
-        // TODO play this episode
+        props.enqueueEpisode({
+            src: props.episode.audio.url,
+            epTitle: props.episode.title,
+            podTitle: props.episode.author
+        });
+
         setOpen(false);
     };
 
@@ -19,7 +24,7 @@ const EpisodeListItem = (props) => {
             <ListItem button divider onClick={handleClickOpen}>
                 <ListItemText
                     primary={props.episode.title}
-                    secondary={new Date(props.episode.date).toLocaleString()}
+                    secondary={new Date(props.episode.date).toLocaleString('en-IE')}
                 />
                 <ListItemSecondaryAction>
                     <IconButton

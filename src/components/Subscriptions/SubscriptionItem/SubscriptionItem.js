@@ -27,7 +27,10 @@ const SubscriptionItem = (props) => {
     );
 
     function handleViewClicked() {
-        props.history.push(`/podcast/${props.id}`);
+        props.history.push({
+            pathname: `/podcast/${props.id}`,
+            state: { title: props.name }
+        });
     }
 }
 

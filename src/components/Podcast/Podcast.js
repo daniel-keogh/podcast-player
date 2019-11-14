@@ -5,7 +5,6 @@ import EpisodeListItem from './EpisodeListItem/EpisodeListItem';
 import { List } from '@material-ui/core';
 
 class Podcast extends Component {
-
     state = {
         podcast: {}
     }
@@ -21,14 +20,14 @@ class Podcast extends Component {
 
     render() {
         let episodes;
-
         if (this.state.podcast.episodes) {
             episodes = this.state.podcast.episodes.map((episode, index) => {
-                if (index <= 100) {
+                if (index <= 50) { // TODO: Lazy load list items on scroll instead of hard-coding a number...
                     return (
                         <EpisodeListItem
                             key={episode.date}
                             episode={episode}
+                            enqueueEpisode={this.props.enqueueEpisode}
                         />
                     );
                 } else {
@@ -37,9 +36,17 @@ class Podcast extends Component {
             });
         }
 
+        // If the title was passed as a prop use that, else wait until componentDidMount() updates the state.
+        let navBar;
+        if (this.props.location.state && 'title' in this.props.location.state) {
+            navBar = <NavBar title={this.props.location.state.title} />;
+        } else {
+            navBar = <NavBar title={this.state.podcast.title} />;
+        }
+
         return (
             <React.Fragment>
-                <NavBar title={this.state.podcast.title} />
+                {navBar}
                 <List>
                     {episodes}
                 </List>

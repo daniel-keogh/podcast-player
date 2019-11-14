@@ -4,25 +4,17 @@ import { Dialog, DialogContent, DialogContentText, DialogTitle, DialogActions, B
 const EpisodeDialog = (props) => {
     return (
         <Dialog
-            open={props.open}
             keepMounted
+            open={props.open}
             onClose={props.handleClose}
         >
-            <DialogTitle>
-                {props.title}
-            </DialogTitle>
+            <DialogTitle>{props.title}</DialogTitle>
             <DialogContent>
-                <DialogContentText>
-                    {props.summary}
-                </DialogContentText>
+                <DialogContentText dangerouslySetInnerHTML={{ __html: props.summary }} />
             </DialogContent>
             <DialogActions>
-                <Button onClick={props.handleClose} color="primary">
-                    Close
-                </Button>
-                <Button onClick={props.handlePlay} color="secondary">
-                    Play
-                </Button>
+                <Button onClick={props.handleClose} color="primary">Close</Button>
+                <Button onClick={props.handlePlay} color="secondary">Play</Button>
             </DialogActions>
         </Dialog>
     );
