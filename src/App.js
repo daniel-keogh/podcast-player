@@ -18,21 +18,19 @@ class App extends Component {
     render() {
         return (
             <BrowserRouter>
-                <div>
-                    <div className="App">
-                        <div className="Wrapper">
-                            <div className="Main">
-                                <div className="Body">
-                                    <Switch>
-                                        <Route exact path="/" component={Subscriptions} />
-                                        <Route path="/discover" component={Discover} />
-                                        <Route path="/podcast/:id" render={this.PodcastPage} />
-                                    </Switch>
-                                </div>
+                <div className="App">
+                    <div className="Wrapper">
+                        <div className="Main">
+                            <div className="Body">
+                                <Switch>
+                                    <Route exact path="/" component={Subscriptions} />
+                                    <Route path="/discover" component={Discover} />
+                                    <Route path="/podcast/:id" render={this.PodcastPage} />
+                                </Switch>
                             </div>
-                            <div className="Player" style={this.state.nowPlaying.src === '' ? { display: 'none' } : null}>
-                                <Player nowPlaying={this.state.nowPlaying} />
-                            </div>
+                        </div>
+                        <div className="Player" style={this.state.nowPlaying.src === '' ? { display: 'none' } : null}>
+                            <Player nowPlaying={this.state.nowPlaying} />
                         </div>
                     </div>
                 </div>

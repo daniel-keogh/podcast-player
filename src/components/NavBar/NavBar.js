@@ -2,7 +2,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { AppBar, Toolbar, Typography } from '@material-ui/core';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
     root: {
         flexGrow: 1,
     },
@@ -12,7 +12,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const NavBar = (props) => {
+function NavBar(props) {
     const classes = useStyles();
 
     return (

@@ -4,7 +4,6 @@ import { RemoveCircleOutline, AddCircleOutline } from '@material-ui/icons';
 import axios from 'axios';
 
 class DiscoverListItem extends Component {
-
     constructor(props) {
         super(props);
 
@@ -44,13 +43,7 @@ class DiscoverListItem extends Component {
 
     handleSubscribe = () => {
         if (this.state.isSubscribed) {
-            axios.delete(`http://localhost:4000/api/subscriptions/${this.props.id}`)
-                .then(res => {
-                    console.log(res);
-                })
-                .catch(err => {
-                    console.log(err);
-                });
+            axios.delete(`http://localhost:4000/api/subscriptions/${this.props.id}`);
         } else {
             axios.post(`http://localhost:4000/api/subscriptions`, {
                 id: this.props.id,

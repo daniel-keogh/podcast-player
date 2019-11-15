@@ -8,7 +8,6 @@ import NavBar from '../NavBar/NavBar';
 import "./Subscriptions.css";
 
 class Subscriptions extends Component {
-
     constructor(props) {
         super(props);
 
@@ -30,7 +29,7 @@ class Subscriptions extends Component {
                     });
                 }
             })
-            .catch(e => {
+            .catch(() => {
                 this.setState({
                     noSubscriptions: true
                 });
@@ -46,7 +45,7 @@ class Subscriptions extends Component {
                     {header}
                     <Grid container justify="center" style={{ height: "100%", alignItems: "center" }}>
                         <Grid item xs={12} sm={6} md={4} lg={3}>
-                            <Welcome handleAddNewClicked={this.handleAddNewClicked} style={{ height: "100%" }} />
+                            <Welcome onAddNewClicked={this.handleAddNewClicked} style={{ height: "100%" }} />
                         </Grid>
                     </Grid>
                 </React.Fragment>
@@ -74,7 +73,7 @@ class Subscriptions extends Component {
                         {subs}
                     </div>
                 </div>
-                <AddNew handleAddNewClicked={this.handleAddNewClicked} />
+                <AddNew onAddNewClicked={this.handleAddNewClicked} />
             </React.Fragment>
         );
     }

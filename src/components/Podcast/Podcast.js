@@ -22,11 +22,13 @@ class Podcast extends Component {
         let episodes;
         if (this.state.podcast.episodes) {
             episodes = this.state.podcast.episodes.map((episode, index) => {
-                if (index <= 50) { // TODO: Lazy load list items on scroll instead of hard-coding a number...
+                // TODO: Load list items on scroll instead of hard-coding a number...
+                if (index <= 50) {
                     return (
                         <EpisodeListItem
-                            key={episode.date}
+                            key={index}
                             episode={episode}
+                            podcastTitle={this.state.podcast.title}
                             enqueueEpisode={this.props.enqueueEpisode}
                         />
                     );

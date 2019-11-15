@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Audio from './Audio/Audio';
 import ControlsCard from './ControlsCard/ControlsCard';
 
 class Player extends Component {
@@ -10,7 +9,6 @@ class Player extends Component {
             epTitle: '',
             podTitle: '',
             src: '',
-            isPlaying: false,
             skipTime: 30,
             currentTime: 0,
             duration: 0
@@ -23,10 +21,7 @@ class Player extends Component {
     // Updates the state whenever the src prop changes (i.e. Whenever something new is about to be played).
     static getDerivedStateFromProps(props, state) {
         if (props.nowPlaying.src !== state.src) {
-            return {
-                ...props.nowPlaying,
-                isPlaying: false
-            };
+            return { ...props.nowPlaying };
         }
         return null;
     }
@@ -37,96 +32,65 @@ class Player extends Component {
                 <ControlsCard
                     epTitle={this.state.epTitle}
                     podTitle={this.state.podTitle}
-                    isPlaying={this.state.isPlaying}
                     currentTime={this.state.currentTime}
                     duration={this.state.duration}
-                    handleRewind={this.handleRewind}
-                    handleFastForward={this.handleFastForward}
-                    handlePlayBack={this.handlePlayBack}
-                    handleSliderChange={this.handleSliderChange}
+                    isPaused={this.audioElement.current ? this.audioElement.current.paused : true}
+                    onReplay={this.handleReplay}
+                    onForward={this.handleForward}
+                    onPlayPauseClicked={this.handlePlayPauseClicked}
+                    onSliderChange={this.handleSliderChange}
                 />
-                <Audio
-                    element={this.audioElement}
+                <audio
+                    autoPlay
                     src={this.state.src}
-                    handleTimeUpdate={this.handleTimeUpdate}
-                    handlePlaybackEnd={this.handlePlaybackEnd}
-                />
+                    onTimeUpdate={this.handleTimeUpdate}
+                    ref={this.audioElement}
+                >
+                </audio>
             </React.Fragment>
         );
     }
 
-    handlePlayBack = () => {
-        if (this.state.isPlaying) {
-            this.audioElement.current.pause();
-        } else {
+    handlePlayPauseClicked = () => {
+        if (this.audioElement.current.paused) {
             this.audioElement.current.play();
+        } else {
+            this.audioElement.current.pause();
         }
-
-        this.setState(state => ({
-            isPlaying: !state.isPlaying
-        }));
     }
 
-    // Handle's the <audio> element's onEnded event.
-    handlePlaybackEnd = () => {
-        this.setState({
-            isPlaying: false
-        });
-    }
-
-    handleRewind = () => {
+    handleReplay = () => {
         // If near the start of the file, set the current time to zero (prevents currentTime being set to a negative number).
         if ((this.state.currentTime - this.state.skipTime) <= 0) {
             this.audioElement.current.currentTime = 0;
-
-            this.setState({
-                currentTime: 0
-            });
-
-            return;
+        } else {
+            this.audioElement.current.currentTime -= this.state.skipTime;
         }
-
-        this.audioElement.current.currentTime -= this.state.skipTime;
-
-        this.setState({
-            currentTime: this.audioElement.current.currentTime
-        });
     }
 
-    handleFastForward = () => {
+    handleForward = () => {
         // If near the end of the file, set the current time to the total duration (prevents currentTime being set to a number greater than the duration).
         if ((this.state.currentTime + this.state.skipTime) >= this.state.duration) {
             this.audioElement.current.currentTime = this.state.duration;
-
-            this.setState(state => ({
-                currentTime: state.duration
-            }));
-
-            return;
+        } else {
+            this.audioElement.current.currentTime += this.state.skipTime;
         }
+    }
 
-        this.audioElement.current.currentTime += this.state.skipTime;
-
+    handleTimeUpdate = (e) => {
         this.setState({
-            currentTime: this.audioElement.current.currentTime
+            currentTime: e.target.currentTime,
+            duration: this.audioElement.current.duration
         });
     }
 
     // Syncs the slider with the current playback position.
     handleSliderChange = (e, value) => {
-        // Convert the slider's new value property from a % to a time
+        // Convert the slider's new value property from a % to a time.
         this.audioElement.current.currentTime = this.state.duration * value * 0.01;
 
         this.setState({
             currentTime: this.audioElement.current.currentTime
-        });
-    }
-
-    // Handles the HTML <audio> onTimeUpdate event.
-    handleTimeUpdate = (e) => {
-        this.setState({
-            currentTime: e.target.currentTime,
-            duration: this.audioElement.current.duration
         });
     }
 }

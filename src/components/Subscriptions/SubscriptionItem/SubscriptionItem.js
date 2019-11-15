@@ -11,12 +11,19 @@ const useStyles = makeStyles({
     },
 });
 
-const SubscriptionItem = (props) => {
+function SubscriptionItem(props) {
     const classes = useStyles();
+
+    const handleItemClicked = () => {
+        props.history.push({
+            pathname: `/podcast/${props.id}`,
+            state: { title: props.name }
+        });
+    }
 
     return (
         <Card className={classes.card} elevation={3}>
-            <CardActionArea onClick={handleViewClicked}>
+            <CardActionArea onClick={handleItemClicked}>
                 <CardMedia
                     className={classes.media}
                     image={props.artwork}
@@ -25,13 +32,6 @@ const SubscriptionItem = (props) => {
             </CardActionArea>
         </Card>
     );
-
-    function handleViewClicked() {
-        props.history.push({
-            pathname: `/podcast/${props.id}`,
-            state: { title: props.name }
-        });
-    }
 }
 
 export default SubscriptionItem;

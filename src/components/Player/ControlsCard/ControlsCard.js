@@ -28,20 +28,20 @@ const useStyles = makeStyles(() => ({
     }
 }));
 
-const ControlsCard = (props) => {
+function ControlsCard(props) {
     const classes = useStyles();
 
     return (
-        <Card className="ControlsCard grad" elevation={3}>
+        <Card className="ControlsCard" elevation={3}>
             <div className={classes.controlsLeft}>
                 <ButtonGroup>
-                    <IconButton onClick={props.handleRewind}>
+                    <IconButton onClick={props.onReplay}>
                         <Replay30 fontSize="large" />
                     </IconButton>
-                    <IconButton onClick={props.handlePlayBack}>
-                        {(props.isPlaying) ? <PauseCircleFilled className={classes.playIcon} /> : <PlayCircleFilled className={classes.playIcon} />}
+                    <IconButton onClick={props.onPlayPauseClicked}>
+                        {props.isPaused ? <PlayCircleFilled className={classes.playIcon} /> : <PauseCircleFilled className={classes.playIcon} />}
                     </IconButton>
-                    <IconButton onClick={props.handleFastForward}>
+                    <IconButton onClick={props.onForward}>
                         <Forward30 fontSize="large" />
                     </IconButton>
                 </ButtonGroup>
@@ -63,7 +63,7 @@ const ControlsCard = (props) => {
                         { value: 0, label: formatSeconds(props.currentTime) },
                         { value: 100, label: formatSeconds(props.duration) }
                     ]}
-                    onChange={props.handleSliderChange}
+                    onChange={props.onSliderChange}
                 />
             </div>
         </Card >
@@ -72,7 +72,7 @@ const ControlsCard = (props) => {
 
 // Based on this S.O. answer:
 // https://stackoverflow.com/a/37096512
-const formatSeconds = (secs) => {
+function formatSeconds(secs) {
     if (Number.isNaN(secs))
         return '00:00';
 

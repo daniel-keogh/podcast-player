@@ -11,7 +11,7 @@ const Welcome = (props) => {
                 color="secondary"
                 variant="outlined"
                 style={{ margin: "12px" }}
-                onClick={props.handleAddNewClicked}
+                onClick={props.onAddNewClicked}
             >
                 Click to add some podcasts.
             </Button>

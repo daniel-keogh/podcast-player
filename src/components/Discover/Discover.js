@@ -5,7 +5,6 @@ import DiscoverListItem from './DiscoverListItem/DiscoverListItem';
 import { List } from '@material-ui/core';
 
 class Discover extends Component {
-
     state = {
         top: '',
     }

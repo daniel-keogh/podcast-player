@@ -3,7 +3,7 @@ import { IconButton, ListItem, ListItemSecondaryAction, ListItemText } from '@ma
 import { PlayCircleOutline } from '@material-ui/icons';
 import EpisodeDialog from '../EpisodeDialog/EpisodeDialog';
 
-const EpisodeListItem = (props) => {
+function EpisodeListItem(props) {
     const [open, setOpen] = React.useState(false);
 
     const handleClickOpen = () => setOpen(true);
@@ -13,11 +13,11 @@ const EpisodeListItem = (props) => {
         props.enqueueEpisode({
             src: props.episode.audio.url,
             epTitle: props.episode.title,
-            podTitle: props.episode.author
+            podTitle: props.podcastTitle
         });
 
         setOpen(false);
-    };
+    }
 
     return (
         <React.Fragment>
@@ -38,8 +38,8 @@ const EpisodeListItem = (props) => {
             </ListItem>
             <EpisodeDialog
                 open={open}
-                handleClose={handleClose}
-                handlePlay={handlePlay}
+                onClose={handleClose}
+                onPlay={handlePlay}
                 title={props.episode.title}
                 summary={props.episode.summary}
             />

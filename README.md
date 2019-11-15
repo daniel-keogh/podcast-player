@@ -18,7 +18,7 @@ module.exports = {
 
 ---
 
-### `npm run start`
+### `npm start`
 
 Runs the React client in development mode.
 

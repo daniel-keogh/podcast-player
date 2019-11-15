@@ -12,7 +12,7 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-const AddNew = (props) => {
+function AddNew(props) {
     const classes = useStyles();
 
     return (
@@ -20,7 +20,7 @@ const AddNew = (props) => {
             <Fab
                 color="secondary"
                 className={classes.fab}
-                onClick={props.handleAddNewClicked}
+                onClick={props.onAddNewClicked}
             >
                 <AddIcon />
             </Fab>
