@@ -32,7 +32,7 @@ class Discover extends Component {
                         name={item.name}
                         author={item.artistName}
                         genres={item.genres.map(g => g.name)}
-                        subscriptions={this.props.location.state.subscriptions}
+                        subscriptions={this.props.location.state ? this.props.location.state.subscriptions : []}
                     />
                 );
             });

@@ -1,6 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Card, CardActionArea, CardMedia } from '@material-ui/core'
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles({
     card: {
@@ -14,16 +15,12 @@ const useStyles = makeStyles({
 function SubscriptionItem(props) {
     const classes = useStyles();
 
-    const handleItemClicked = () => {
-        props.history.push({
-            pathname: `/podcast/${props.id}`,
-            state: { title: props.name }
-        });
-    }
-
     return (
         <Card className={classes.card} elevation={3}>
-            <CardActionArea onClick={handleItemClicked}>
+            <CardActionArea component={Link} to={{
+                pathname: `/podcast/${props.id}`,
+                state: { title: props.name }
+            }}>
                 <CardMedia
                     className={classes.media}
                     image={props.artwork}

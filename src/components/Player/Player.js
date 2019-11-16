@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ControlsCard from './ControlsCard/ControlsCard';
+import PlayerControls from './PlayerControls/PlayerControls';
 
 class Player extends Component {
     constructor(props) {
@@ -29,7 +29,7 @@ class Player extends Component {
     render() {
         return (
             <React.Fragment>
-                <ControlsCard
+                <PlayerControls
                     epTitle={this.state.epTitle}
                     podTitle={this.state.podTitle}
                     currentTime={this.state.currentTime}

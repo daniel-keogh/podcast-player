@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Card, CardContent, Slider, ButtonGroup, IconButton, Typography } from '@material-ui/core';
+import { Card, CardContent, Slider, ButtonGroup, Typography, Button } from '@material-ui/core';
 import { PlayCircleFilled, PauseCircleFilled, Replay30, Forward30 } from '@material-ui/icons';
 
 const useStyles = makeStyles(() => ({
@@ -28,22 +28,22 @@ const useStyles = makeStyles(() => ({
     }
 }));
 
-function ControlsCard(props) {
+function PlayerControls(props) {
     const classes = useStyles();
 
     return (
         <Card className="ControlsCard" elevation={3}>
             <div className={classes.controlsLeft}>
-                <ButtonGroup>
-                    <IconButton onClick={props.onReplay}>
+                <ButtonGroup variant="text">
+                    <Button onClick={props.onReplay}>
                         <Replay30 fontSize="large" />
-                    </IconButton>
-                    <IconButton onClick={props.onPlayPauseClicked}>
+                    </Button>
+                    <Button onClick={props.onPlayPauseClicked} color="primary">
                         {props.isPaused ? <PlayCircleFilled className={classes.playIcon} /> : <PauseCircleFilled className={classes.playIcon} />}
-                    </IconButton>
-                    <IconButton onClick={props.onForward}>
+                    </Button>
+                    <Button onClick={props.onForward}>
                         <Forward30 fontSize="large" />
-                    </IconButton>
+                    </Button>
                 </ButtonGroup>
             </div>
             <div className={classes.controlsCenter}>
@@ -86,4 +86,4 @@ function formatSeconds(secs) {
     return `${h}:${m}:${s}`;
 }
 
-export default ControlsCard;
+export default PlayerControls;

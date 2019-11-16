@@ -12,19 +12,16 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-function AddNew(props) {
+function AddNew() {
     const classes = useStyles();
 
     return (
-        <React.Fragment>
-            <Fab
-                color="secondary"
-                className={classes.fab}
-                onClick={props.onAddNewClicked}
-            >
-                <AddIcon />
-            </Fab>
-        </React.Fragment>
+        <Fab
+            color="secondary"
+            className={classes.fab}
+        >
+            <AddIcon />
+        </Fab>
     );
 }
 

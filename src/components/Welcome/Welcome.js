@@ -1,7 +1,8 @@
 import React from 'react';
 import { Button, Typography } from '@material-ui/core';
+import { Link } from 'react-router-dom';
 
-const Welcome = (props) => {
+function Welcome() {
     return (
         <div style={{ textAlign: "center" }}>
             <Typography variant="h5">
@@ -11,11 +12,15 @@ const Welcome = (props) => {
                 color="secondary"
                 variant="outlined"
                 style={{ margin: "12px" }}
-                onClick={props.onAddNewClicked}
+                component={Link}
+                to={{
+                    pathname: "/discover",
+                    state: { subscriptions: [] }
+                }}
             >
                 Click to add some podcasts.
             </Button>
-        </div>
+        </div >
     );
 }
 
