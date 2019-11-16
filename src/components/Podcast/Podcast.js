@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
+import { Button, List } from '@material-ui/core';
+import EpisodeListItem from './EpisodeListItem/EpisodeListItem';
 import NavBar from '../NavBar/NavBar';
 import axios from 'axios';
-import EpisodeListItem from './EpisodeListItem/EpisodeListItem';
-import { List } from '@material-ui/core';
 
 class Podcast extends Component {
     state = {
-        podcast: {}
+        podcast: {},
+        numEpisodes: 25
     }
 
     componentDidMount() {
@@ -15,45 +16,68 @@ class Podcast extends Component {
                 this.setState({
                     podcast: data.data
                 });
+            })
+            .catch(e => {
+                console.log(e)
             });
     }
 
     render() {
-        let episodes;
+        const episodes = [];
         if (this.state.podcast.episodes) {
-            episodes = this.state.podcast.episodes.map((episode, index) => {
-                // TODO: Load list items on scroll instead of hard-coding a number...
-                if (index <= 50) {
-                    return (
+            for (let i = 0; i < this.state.podcast.episodes.length; i++) {
+                if (i < this.state.numEpisodes) {
+                    episodes.push(
                         <EpisodeListItem
-                            key={index}
-                            episode={episode}
+                            key={i}
+                            episode={this.state.podcast.episodes[i]}
                             podcastTitle={this.state.podcast.title}
                             enqueueEpisode={this.props.enqueueEpisode}
                         />
                     );
                 } else {
-                    return null;
+                    break;
                 }
-            });
+            }
         }
 
         // If the title was passed as a prop use that, else wait until componentDidMount() updates the state.
-        let navBar;
+        let navTitle;
         if (this.props.location.state && 'title' in this.props.location.state) {
-            navBar = <NavBar title={this.props.location.state.title} />;
+            navTitle = this.props.location.state.title;
         } else {
-            navBar = <NavBar title={this.state.podcast.title} />;
+            navTitle = this.state.podcast.title;
         }
 
         return (
             <React.Fragment>
-                {navBar}
+                <NavBar title={navTitle} />
                 <List>
                     {episodes}
                 </List>
+                {this.state.podcast.episodes && this.state.podcast.episodes.length >= this.state.numEpisodes
+                    ? (
+                        <Button
+                            style={{
+                                display: "block",
+                                margin: "32px auto 32px auto"
+                            }}
+                            variant="outlined"
+                            color="primary"
+                            size="large"
+                            onClick={this.handleLoadMoreClicked}
+                        >Load More</Button>
+                    ) : null
+                }
             </React.Fragment>
         );
+    }
+
+    // Display another another 25 episodes when the button is clicked
+    handleLoadMoreClicked = () => {
+        this.setState(state => ({
+            numEpisodes: state.numEpisodes + 25
+        }));
     }
 }
 

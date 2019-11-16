@@ -20,7 +20,7 @@ function Welcome() {
             >
                 Click to add some podcasts.
             </Button>
-        </div >
+        </div>
     );
 }
 
