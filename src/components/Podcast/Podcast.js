@@ -7,7 +7,7 @@ import axios from 'axios';
 class Podcast extends Component {
     state = {
         podcast: {},
-        numEpisodes: 25
+        numEpisodes: 50
     }
 
     componentDidMount() {
@@ -51,7 +51,7 @@ class Podcast extends Component {
 
         return (
             <React.Fragment>
-                <NavBar title={navTitle} />
+                <NavBar title={navTitle} history={this.props.history} />
                 <List>
                     {episodes}
                 </List>
@@ -73,10 +73,10 @@ class Podcast extends Component {
         );
     }
 
-    // Display another another 25 episodes when the button is clicked
+    // Display another 50 episodes whenever the button is clicked
     handleLoadMoreClicked = () => {
         this.setState(state => ({
-            numEpisodes: state.numEpisodes + 25
+            numEpisodes: state.numEpisodes + 50
         }));
     }
 }

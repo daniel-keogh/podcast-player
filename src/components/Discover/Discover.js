@@ -40,7 +40,7 @@ class Discover extends Component {
 
         return (
             <React.Fragment>
-                <NavBar title="Discover" />
+                <NavBar title="Discover" history={this.props.history} />
                 <div>
                     <List>
                         {items}
