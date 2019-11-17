@@ -1,7 +1,7 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import { Typography, Link, Divider, Chip } from '@material-ui/core';
-import { Star, RemoveOutlined } from '@material-ui/icons';
+import { Star, RemoveOutlined, AddOutlined } from '@material-ui/icons';
 import SubscriptionItem from '../Subscriptions/SubscriptionItem';
 
 const useStyles = makeStyles(() => ({
@@ -22,8 +22,11 @@ const useStyles = makeStyles(() => ({
         display: 'inline-block'
     },
     chips: {
-        margin: "12px 0",
+        margin: "12px 0 18px 0",
         display: 'flex'
+    },
+    chip: {
+        cursor: 'pointer'
     },
     divider: {
         margin: "auto"
@@ -37,30 +40,34 @@ function PodcastInfo(props) {
         <React.Fragment>
             <div className={classes.root}>
                 <div>
-                    <SubscriptionItem artwork={props.image} />
+                    <SubscriptionItem artwork={props.artwork} />
                 </div>
                 <div className={classes.podcastInfo}>
                     <Typography variant="h5" component="h3" className={classes.title} noWrap>
-                        {props.title}
+                        {props.name}
                     </Typography>
                     <Link href={props.link} target="_black" rel="noreferrer" className={classes.author}>
-                        {props.author}
+                        {props.artist}
                     </Link>
                     <div className={classes.chips}>
                         <Chip
-                            label={"Unsubscribe"}
+                            label={props.isSubscribed ? "Unsubscribe" : "Subscribe"}
                             color={"primary"}
-                            icon={<RemoveOutlined />}
-                            style={{ marginRight: "6px" }}
+                            variant={props.isSubscribed ? "default" : "outlined"}
+                            icon={props.isSubscribed ? <RemoveOutlined /> : <AddOutlined />}
                             size="small"
-                            onClick={props.handleSubscribe}
+                            className={classes.chip}
+                            style={{ marginRight: "6px" }}
+                            onClick={props.onSubscribe}
                         />
                         <Chip
                             label={"Favourite"}
-                            icon={<Star />}
                             color={"primary"}
+                            variant={props.isFavourite ? "default" : "outlined"}
+                            icon={<Star />}
                             size="small"
-                            onClick={props.handleFavourite}
+                            className={classes.chip}
+                            onClick={props.onFavourite}
                         />
                     </div>
                     <Typography component="p">

@@ -24,7 +24,7 @@ class DiscoverListItem extends Component {
                     </ListItemAvatar>
                     <ListItemText
                         primary={this.props.name}
-                        secondary={this.props.author}
+                        secondary={this.props.artist}
                     />
                     <ListItemSecondaryAction>
                         <IconButton
@@ -48,7 +48,7 @@ class DiscoverListItem extends Component {
             axios.post(`http://localhost:4000/api/subscriptions`, {
                 id: this.props.id,
                 name: this.props.name,
-                artist: this.props.author,
+                artist: this.props.artist,
                 genres: this.props.genres,
                 artwork: this.props.artwork
             });

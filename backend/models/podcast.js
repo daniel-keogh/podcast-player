@@ -8,7 +8,11 @@ const PodcastSchema = new Schema({
     artist: String,
     genres: [String],
     artwork: String,
-    feedUrl: String
+    feedUrl: String,
+    isFavourite: {
+        type: Boolean,
+        default: false
+    }
 });
 
 module.exports = mongoose.model('podcast', PodcastSchema);

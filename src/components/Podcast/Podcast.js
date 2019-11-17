@@ -8,7 +8,8 @@ import axios from 'axios';
 class Podcast extends Component {
     state = {
         podcast: {},
-        numEpisodes: 50
+        numEpisodes: 50,
+        isSubscribed: true
     }
 
     componentDidMount() {
@@ -54,12 +55,14 @@ class Podcast extends Component {
                 {Object.entries(this.state.podcast).length
                     ? (
                         <PodcastInfo
-                            title={this.state.podcast.title}
-                            author={this.state.podcast.author}
+                            name={this.state.podcast.name}
+                            artist={this.state.podcast.artist}
                             description={this.state.podcast.description}
                             genres={this.state.podcast.genres}
-                            image={this.state.podcast.image.url}
+                            artwork={this.state.podcast.artwork}
                             link={this.state.podcast.link}
+                            isFavourite={this.state.podcast.isFavourite}
+                            isSubscribed={this.state.isSubscribed}
                             onFavourite={this.handleFavourite}
                             onSubscribe={this.handleSubscribe}
                         />
@@ -95,11 +98,42 @@ class Podcast extends Component {
     }
 
     handleSubscribe = () => {
-        // TODO:
+        if (this.state.isSubscribed) {
+            axios.delete(`http://localhost:4000/api/subscriptions/${this.state.podcast.id}`)
+                .then(() => {
+                    // Unfavourite the podcast after unsubscribing
+                    if (this.state.podcast.isFavourite) {
+                        this.setState(state => ({
+                            podcast: {
+                                ...state.podcast,
+                                isFavourite: false
+                            }
+                        }));
+                    }
+                });
+        } else {
+            axios.post(`http://localhost:4000/api/subscriptions`, {
+                ...this.state.podcast
+            });
+        }
+
+        this.setState(state => ({
+            isSubscribed: !state.isSubscribed
+        }))
     }
 
     handleFavourite = () => {
-        // TODO:
+        axios.put(`http://localhost:4000/api/subscriptions/${this.state.podcast.id}`, {
+            ...this.state.podcast,
+            isFavourite: !this.state.podcast.isFavourite
+        }).then(() => {
+            this.setState(state => ({
+                podcast: {
+                    ...state.podcast,
+                    isFavourite: !state.podcast.isFavourite
+                }
+            }));
+        });
     }
 }
 

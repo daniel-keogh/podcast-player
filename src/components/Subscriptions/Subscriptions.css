@@ -2,7 +2,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, 150px);
     gap: 1em;
-    justify-content: center;
+    /* justify-content: center; */
     padding: 25px;
 }
 

@@ -19,8 +19,8 @@ function SubscriptionItem(props) {
     const cardMedia = (
         <CardMedia
             className={classes.media}
-            image={props.artwork}
             title={props.name}
+            image={props.artwork}
         />
     );
 

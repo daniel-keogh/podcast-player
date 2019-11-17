@@ -27,7 +27,7 @@ app.use((req, res, next) => {
 });
 
 app.get('/api/top', (req, res) => {
-    axios.get(`https://rss.itunes.apple.com/api/v1/ie/podcasts/top-podcasts/all/100/explicit.json`)
+    axios.get(`https://rss.itunes.apple.com/api/v1/ie/podcasts/top-podcasts/all/50/explicit.json`)
         .then(data => {
             return data.data.feed.results;
         })
@@ -35,7 +35,7 @@ app.get('/api/top', (req, res) => {
             res.json(top);
         })
         .catch(e => {
-            res.status(404).send(e.message);
+            res.status(500).send(e.message);
         });
 });
 
@@ -94,18 +94,13 @@ app.get('/api/subscriptions/:id', (req, res) => {
         });
 
         feedparser.on('readable', function () {
-            let item;
             try {
-                item = this.read();
+                const item = this.read();
                 if (item !== null) {
-                    const { title, summary, date, author, image, enclosures } = item;
                     feedItems.push({
-                        title,
-                        summary,
-                        date,
-                        author,
-                        image,
-                        audio: enclosures[0]
+                        title: item.title,
+                        date: item.date,
+                        audio: item.enclosures[0]
                     });
                 }
             } catch (err) {
@@ -115,12 +110,14 @@ app.get('/api/subscriptions/:id', (req, res) => {
 
         feedparser.on('end', function () {
             res.json({
-                title: this.meta.title,
+                id: data.id,
+                name: data.name,
+                artist: data.artist,
+                artwork: data.artwork,
+                genres: data.genres,
+                isFavourite: data.isFavourite,
                 description: this.meta.description,
                 link: this.meta.link,
-                author: this.meta.author,
-                image: this.meta.image,
-                genres: this.meta.categories,
                 episodes: feedItems
             });
         });
@@ -131,13 +128,24 @@ app.get('/api/subscriptions/:id', (req, res) => {
     });
 });
 
+app.put('/api/subscriptions/:id', (req, res) => {
+    PodcastModel.findByIdAndUpdate(req.params.id, req.body, { new: true }, (err, data) => {
+        if (err) {
+            res.send(err.message);
+        } else {
+            res.send(data);
+        }
+    });
+});
+
 /* Delete a subscription i.e. unsubscribe. */
 app.delete('/api/subscriptions/:id', (req, res) => {
     PodcastModel.deleteOne({ _id: req.params.id }, (err, data) => {
         if (err) {
             res.json(err);
+        } else {
+            res.json(data);
         }
-        res.json(data);
     });
 });
 
