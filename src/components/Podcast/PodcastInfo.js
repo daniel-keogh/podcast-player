@@ -2,7 +2,7 @@ import React from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import { Typography, Link, Divider, Chip } from '@material-ui/core';
 import { Star, RemoveOutlined } from '@material-ui/icons';
-import SubscriptionItem from '../../Subscriptions/SubscriptionItem/SubscriptionItem';
+import SubscriptionItem from '../Subscriptions/SubscriptionItem';
 
 const useStyles = makeStyles(() => ({
     root: {

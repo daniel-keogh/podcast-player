@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Button, List, Divider } from '@material-ui/core';
-import EpisodeListItem from './EpisodeListItem/EpisodeListItem';
+import { Button, List } from '@material-ui/core';
+import EpisodeListItem from './EpisodeListItem';
 import NavBar from '../NavBar/NavBar';
-import PodcastInfo from './PodcastInfo/PodcastInfo';
+import PodcastInfo from './PodcastInfo';
 import axios from 'axios';
 
 class Podcast extends Component {

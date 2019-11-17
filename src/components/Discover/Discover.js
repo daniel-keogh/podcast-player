@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import NavBar from '../NavBar/NavBar';
-import DiscoverListItem from './DiscoverListItem/DiscoverListItem';
+import DiscoverListItem from './DiscoverListItem';
 import { List } from '@material-ui/core';
 
 class Discover extends Component {
