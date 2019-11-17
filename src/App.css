@@ -26,6 +26,11 @@
     position: relative;
 }
 
+/* Selects all content within Body except for the NavBar */
+.Main .Body > *:not(.NavBar) {
+    max-width: 1400px;
+}
+
 .Player {
     min-height: 145px;
     z-index: 22;

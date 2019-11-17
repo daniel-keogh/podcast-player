@@ -41,11 +41,9 @@ class Discover extends Component {
         return (
             <React.Fragment>
                 <NavBar title="Discover" history={this.props.history} />
-                <div>
-                    <List>
-                        {items}
-                    </List>
-                </div>
+                <List style={{ margin: "auto" }}>
+                    {items}
+                </List>
             </React.Fragment>
         );
     }

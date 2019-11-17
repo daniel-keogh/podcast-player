@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Button, List } from '@material-ui/core';
+import { Button, List, Divider } from '@material-ui/core';
 import EpisodeListItem from './EpisodeListItem/EpisodeListItem';
 import NavBar from '../NavBar/NavBar';
+import PodcastInfo from './PodcastInfo/PodcastInfo';
 import axios from 'axios';
 
 class Podcast extends Component {
@@ -16,9 +17,6 @@ class Podcast extends Component {
                 this.setState({
                     podcast: data.data
                 });
-            })
-            .catch(e => {
-                console.log(e)
             });
     }
 
@@ -41,7 +39,7 @@ class Podcast extends Component {
             }
         }
 
-        // If the title was passed as a prop use that, else wait until componentDidMount() updates the state.
+        // If the title was passed as a prop use that, otherwise wait until componentDidMount() updates the state.
         let navTitle;
         if (this.props.location.state && 'title' in this.props.location.state) {
             navTitle = this.props.location.state.title;
@@ -52,15 +50,31 @@ class Podcast extends Component {
         return (
             <React.Fragment>
                 <NavBar title={navTitle} history={this.props.history} />
-                <List>
+                {/* If `this.state.podcast` is not an empty object, display the PodcastInfo component */}
+                {Object.entries(this.state.podcast).length
+                    ? (
+                        <PodcastInfo
+                            title={this.state.podcast.title}
+                            author={this.state.podcast.author}
+                            description={this.state.podcast.description}
+                            genres={this.state.podcast.genres}
+                            image={this.state.podcast.image.url}
+                            link={this.state.podcast.link}
+                            onFavourite={this.handleFavourite}
+                            onSubscribe={this.handleSubscribe}
+                        />
+                    ) : null
+                }
+                <List style={{ margin: "auto" }}>
                     {episodes}
                 </List>
+                {/* Only display the Load More button if there are episodes that aren't yet visible */}
                 {this.state.podcast.episodes && this.state.podcast.episodes.length >= this.state.numEpisodes
                     ? (
                         <Button
                             style={{
                                 display: "block",
-                                margin: "32px auto 32px auto"
+                                margin: "32px auto"
                             }}
                             variant="outlined"
                             color="primary"
@@ -78,6 +92,14 @@ class Podcast extends Component {
         this.setState(state => ({
             numEpisodes: state.numEpisodes + 50
         }));
+    }
+
+    handleSubscribe = () => {
+        // TODO:
+    }
+
+    handleFavourite = () => {
+        // TODO:
     }
 }
 

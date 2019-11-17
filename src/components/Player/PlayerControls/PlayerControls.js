@@ -48,10 +48,10 @@ function PlayerControls(props) {
             </div>
             <div className={classes.controlsCenter}>
                 <CardContent className={classes.nowPlaying}>
-                    <Typography component="h6" variant="h6" noWrap={true}>
+                    <Typography component="h6" variant="h6" noWrap>
                         {props.epTitle}
                     </Typography>
-                    <Typography color="textSecondary" variant="subtitle2" noWrap={true}>
+                    <Typography color="textSecondary" variant="subtitle2" noWrap>
                         {props.podTitle}
                     </Typography>
                 </CardContent>

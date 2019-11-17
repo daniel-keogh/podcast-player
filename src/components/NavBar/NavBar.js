@@ -17,8 +17,9 @@ function NavBar(props) {
     const classes = useStyles();
 
     return (
-        <AppBar position="static">
+        <AppBar position="static" className="NavBar">
             <Toolbar>
+                {/* Only show the back button if the history prop was passed to this component */}
                 {props.history
                     ? (
                         <IconButton
