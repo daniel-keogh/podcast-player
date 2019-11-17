@@ -19,19 +19,17 @@ class App extends Component {
         return (
             <BrowserRouter>
                 <div className="App">
-                    <div className="Wrapper">
-                        <div className="Main">
-                            <div className="Body">
-                                <Switch>
-                                    <Route exact path="/" component={Subscriptions} />
-                                    <Route path="/discover" component={Discover} />
-                                    <Route path="/podcast/:id" render={this.PodcastPage} />
-                                </Switch>
-                            </div>
+                    <div className="Main">
+                        <div className="Body">
+                            <Switch>
+                                <Route exact path="/" component={Subscriptions} />
+                                <Route path="/discover" component={Discover} />
+                                <Route path="/podcast/:id" render={this.PodcastPage} />
+                            </Switch>
                         </div>
-                        <div className="Player" style={this.state.nowPlaying.src === '' ? { display: 'none' } : null}>
-                            <Player nowPlaying={this.state.nowPlaying} />
-                        </div>
+                    </div>
+                    <div className="Player" style={this.state.nowPlaying.src === '' ? { display: 'none' } : null}>
+                        <Player nowPlaying={this.state.nowPlaying} />
                     </div>
                 </div>
             </BrowserRouter>
@@ -44,13 +42,13 @@ class App extends Component {
     PodcastPage = (props) => {
         return (
             <Podcast
-                enqueueEpisode={this.enqueueEpisode}
+                playEpisode={this.playEpisode}
                 {...props}
             />
         );
     }
 
-    enqueueEpisode = (episode) => {
+    playEpisode = (episode) => {
         this.setState({
             nowPlaying: { ...episode }
         });

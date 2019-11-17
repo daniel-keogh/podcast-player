@@ -5,11 +5,11 @@ import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles({
     card: {
-        maxWidth: 150,
+        maxWidth: '150px',
     },
     media: {
-        height: 150,
-        width: 150
+        height: '150px',
+        width: '150px'
     },
 });
 

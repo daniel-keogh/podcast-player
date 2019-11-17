@@ -17,16 +17,11 @@ const useStyles = makeStyles(() => ({
     title: {
         marginBottom: '6px'
     },
-    author: {
-        marginBottom: '6px',
+    artist: {
         display: 'inline-block'
     },
     chips: {
-        margin: "12px 0 18px 0",
-        display: 'flex'
-    },
-    chip: {
-        cursor: 'pointer'
+        margin: "18px 0"
     },
     divider: {
         margin: "auto"
@@ -43,31 +38,29 @@ function PodcastInfo(props) {
                     <SubscriptionItem artwork={props.artwork} />
                 </div>
                 <div className={classes.podcastInfo}>
-                    <Typography variant="h5" component="h3" className={classes.title} noWrap>
+                    <Typography variant="h5" component="h5" className={classes.title} noWrap>
                         {props.name}
                     </Typography>
-                    <Link href={props.link} target="_black" rel="noreferrer" className={classes.author}>
+                    <Link href={props.link} target="_black" rel="noreferrer" className={classes.artist}>
                         {props.artist}
                     </Link>
                     <div className={classes.chips}>
                         <Chip
-                            label={props.isSubscribed ? "Unsubscribe" : "Subscribe"}
-                            color={"primary"}
-                            variant={props.isSubscribed ? "default" : "outlined"}
-                            icon={props.isSubscribed ? <RemoveOutlined /> : <AddOutlined />}
-                            size="small"
-                            className={classes.chip}
-                            style={{ marginRight: "6px" }}
-                            onClick={props.onSubscribe}
-                        />
-                        <Chip
-                            label={"Favourite"}
-                            color={"primary"}
+                            label="Favourite"
+                            color="primary"
                             variant={props.isFavourite ? "default" : "outlined"}
                             icon={<Star />}
                             size="small"
-                            className={classes.chip}
+                            style={{ marginRight: "12px" }}
                             onClick={props.onFavourite}
+                        />
+                        <Chip
+                            label={props.isSubscribed ? "Unsubscribe" : "Subscribe"}
+                            color="primary"
+                            variant={props.isSubscribed ? "default" : "outlined"}
+                            icon={props.isSubscribed ? <RemoveOutlined /> : <AddOutlined />}
+                            size="small"
+                            onClick={props.onSubscribe}
                         />
                     </div>
                     <Typography component="p">

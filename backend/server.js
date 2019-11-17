@@ -32,19 +32,29 @@ app.get('/api/top', (req, res) => {
             return data.data.feed.results;
         })
         .then(top => {
-            res.json(top);
+            res.json({
+                top: top.map(item => {
+                    return {
+                        id: item.id,
+                        name: item.name,
+                        artist: item.artistName,
+                        artwork: item.artworkUrl100,
+                        genres: item.genres.map(g => g.name)
+                    };
+                })
+            });
         })
         .catch(e => {
-            res.status(500).send(e.message);
+            res.status(500).send('Server Error.');
         });
 });
 
 app.get('/api/subscriptions', (req, res) => {
     PodcastModel.find((err, subscriptions) => {
-        if (subscriptions !== undefined && subscriptions.length !== 0) {
-            res.json({ subscriptions })
-        } else {
+        if (err) {
             res.json({ subscriptions: [] });
+        } else {
+            res.json({ subscriptions });
         }
     });
 });
@@ -67,7 +77,7 @@ app.post('/api/subscriptions', (req, res) => {
             });
         })
         .catch(e => {
-            console.log(e);
+            res.send(e.message);
         });
 });
 
@@ -133,7 +143,7 @@ app.put('/api/subscriptions/:id', (req, res) => {
         if (err) {
             res.send(err.message);
         } else {
-            res.send(data);
+            res.json(data);
         }
     });
 });
@@ -142,7 +152,7 @@ app.put('/api/subscriptions/:id', (req, res) => {
 app.delete('/api/subscriptions/:id', (req, res) => {
     PodcastModel.deleteOne({ _id: req.params.id }, (err, data) => {
         if (err) {
-            res.json(err);
+            res.send(err.message);
         } else {
             res.json(data);
         }

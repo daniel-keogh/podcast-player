@@ -14,9 +14,9 @@ class Podcast extends Component {
 
     componentDidMount() {
         axios.get(`http://localhost:4000/api/subscriptions/${this.props.match.params.id}`)
-            .then(data => {
+            .then(res => {
                 this.setState({
-                    podcast: data.data
+                    podcast: res.data
                 });
             });
     }
@@ -30,8 +30,8 @@ class Podcast extends Component {
                         <EpisodeListItem
                             key={i}
                             episode={this.state.podcast.episodes[i]}
-                            podcastTitle={this.state.podcast.title}
-                            enqueueEpisode={this.props.enqueueEpisode}
+                            podcastTitle={this.state.podcast.name}
+                            playEpisode={this.props.playEpisode}
                         />
                     );
                 } else {
@@ -51,7 +51,7 @@ class Podcast extends Component {
         return (
             <React.Fragment>
                 <NavBar title={navTitle} history={this.props.history} />
-                {/* If `this.state.podcast` is not an empty object, display the PodcastInfo component */}
+                {/* Only display the PodcastInfo component if `this.state.podcast` is not an empty object. */}
                 {Object.entries(this.state.podcast).length
                     ? (
                         <PodcastInfo
@@ -71,7 +71,7 @@ class Podcast extends Component {
                 <List style={{ margin: "auto" }}>
                     {episodes}
                 </List>
-                {/* Only display the Load More button if there are episodes that aren't yet visible */}
+                {/* Only display the "Load More" button if there are episodes that aren't yet visible. */}
                 {this.state.podcast.episodes && this.state.podcast.episodes.length >= this.state.numEpisodes
                     ? (
                         <Button
@@ -112,6 +112,7 @@ class Podcast extends Component {
                     }
                 });
         } else {
+            // Re-subscribe
             axios.post(`http://localhost:4000/api/subscriptions`, {
                 ...this.state.podcast
             });

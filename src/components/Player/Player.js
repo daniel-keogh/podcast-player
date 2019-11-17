@@ -18,7 +18,7 @@ class Player extends Component {
         this.audioElement = new React.createRef();
     }
 
-    // Updates the state whenever the src prop changes (i.e. Whenever something new is about to be played).
+    // Updates the state whenever the `src` prop changes (i.e. Whenever the user tries to play something).
     static getDerivedStateFromProps(props, state) {
         if (props.nowPlaying.src !== state.src) {
             return { ...props.nowPlaying };

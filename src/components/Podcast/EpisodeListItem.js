@@ -4,7 +4,7 @@ import { PlayCircleOutline } from '@material-ui/icons';
 
 function EpisodeListItem(props) {
     const handlePlay = () => {
-        props.enqueueEpisode({
+        props.playEpisode({
             src: props.episode.audio.url,
             epTitle: props.episode.title,
             podTitle: props.podcastTitle

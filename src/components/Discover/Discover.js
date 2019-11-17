@@ -6,15 +6,15 @@ import { List } from '@material-ui/core';
 
 class Discover extends Component {
     state = {
-        top: '',
+        top: [],
     }
 
     componentDidMount() {
         axios.get(`http://localhost:4000/api/top`)
-            .then(data => {
-                if (data.status === 200) {
+            .then(res => {
+                if (res.status === 200) {
                     this.setState({
-                        top: data.data
+                        top: res.data.top
                     });
                 }
             });
@@ -22,16 +22,16 @@ class Discover extends Component {
 
     render() {
         let items;
-        if (this.state.top) {
+        if (this.state.top && this.state.top.length > 0) {
             items = this.state.top.map(item => {
                 return (
                     <DiscoverListItem
                         key={item.id}
                         id={item.id}
-                        artwork={item.artworkUrl100}
+                        artwork={item.artwork}
                         name={item.name}
-                        artist={item.artistName}
-                        genres={item.genres.map(g => g.name)}
+                        artist={item.artist}
+                        genres={item.genres}
                         subscriptions={this.props.location.state ? this.props.location.state.subscriptions : []}
                     />
                 );

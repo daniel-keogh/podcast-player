@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Grid, Fab } from '@material-ui/core';
+import { Fab } from '@material-ui/core';
 import { Add } from '@material-ui/icons';
-import Welcome from './Welcome';
-import SubscriptionItem from './SubscriptionItem';
 import NavBar from '../NavBar/NavBar';
+import SubscriptionItem from './SubscriptionItem';
+import Welcome from './Welcome';
 import axios from 'axios';
 import "./Subscriptions.css";
 
@@ -42,11 +42,15 @@ class Subscriptions extends Component {
             return (
                 <React.Fragment>
                     <NavBar title="Subscriptions" />
-                    <Grid container justify="center" style={{ height: "100%", alignItems: "center" }}>
-                        <Grid item xs={12} sm={6} md={4} lg={3}>
-                            <Welcome style={{ height: "100%" }} />
-                        </Grid>
-                    </Grid>
+                    <div style={{
+                        display: "flex",
+                        height: "100%",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        margin: "auto"
+                    }}>
+                        <Welcome style={{ height: "100%" }} />
+                    </div>
                 </React.Fragment>
             );
         }

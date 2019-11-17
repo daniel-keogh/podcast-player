@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { IconButton, Avatar, ListItemAvatar, ListItem, ListItemSecondaryAction, ListItemText, Divider } from '@material-ui/core';
-import { RemoveCircleOutline, AddCircleOutline } from '@material-ui/icons';
+import { Avatar, Divider, IconButton, ListItemAvatar, ListItem, ListItemText, ListItemSecondaryAction } from '@material-ui/core';
+import { AddCircleOutline, RemoveCircleOutline } from '@material-ui/icons';
 import axios from 'axios';
 
 class DiscoverListItem extends Component {

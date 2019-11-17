@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { AppBar, Toolbar, Typography, IconButton } from '@material-ui/core';
+import { AppBar, IconButton, Toolbar, Typography } from '@material-ui/core';
 import { ArrowBack } from '@material-ui/icons';
 
 const useStyles = makeStyles(theme => ({
@@ -17,7 +17,7 @@ function NavBar(props) {
     const classes = useStyles();
 
     return (
-        <AppBar position="static" className="NavBar">
+        <AppBar position="sticky" className="NavBar">
             <Toolbar>
                 {/* Only show the back button if the history prop was passed to this component */}
                 {props.history
@@ -32,7 +32,7 @@ function NavBar(props) {
                         </IconButton>
                     ) : null
                 }
-                <Typography variant="h6" className={classes.title}>
+                <Typography variant="h6" className={classes.title} noWrap>
                     {props.title}
                 </Typography>
             </Toolbar>

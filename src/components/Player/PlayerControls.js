@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Card, CardContent, Slider, ButtonGroup, Typography, Button } from '@material-ui/core';
+import { Button, ButtonGroup, Card, CardContent, Slider, Typography, } from '@material-ui/core';
 import { PlayCircleFilled, PauseCircleFilled, Replay30, Forward30 } from '@material-ui/icons';
 
 const useStyles = makeStyles(() => ({
@@ -23,8 +23,8 @@ const useStyles = makeStyles(() => ({
         width: '90%'
     },
     playIcon: {
-        height: 52,
-        width: 52
+        height: '52px',
+        width: '52px'
     }
 }));
 
@@ -58,10 +58,16 @@ function PlayerControls(props) {
                 <Slider
                     className={classes.seekbar}
                     defaultValue={0}
-                    value={((props.currentTime / props.duration) * 100)}
+                    value={(props.currentTime / props.duration) * 100}
                     marks={[
-                        { value: 0, label: formatSeconds(props.currentTime) },
-                        { value: 100, label: formatSeconds(props.duration) }
+                        {
+                            value: 0,
+                            label: formatSeconds(props.currentTime)
+                        },
+                        {
+                            value: 100,
+                            label: formatSeconds(props.duration)
+                        }
                     ]}
                     onChange={props.onSliderChange}
                 />
