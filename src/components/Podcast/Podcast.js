@@ -59,7 +59,6 @@ class Podcast extends Component {
                             name={this.state.podcast.name}
                             artist={this.state.podcast.artist}
                             description={this.state.podcast.description}
-                            genres={this.state.podcast.genres}
                             artwork={this.state.podcast.artwork}
                             link={this.state.podcast.link}
                             isFavourite={this.state.podcast.isFavourite}

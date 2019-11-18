@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
+import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
+import RssFeedIcon from '@material-ui/icons/RssFeed';
 import NavBar from '../NavBar/NavBar';
+import FeedFormDialog from './FeedFormDialog';
 import DiscoverListItem from './DiscoverListItem';
 import axios from 'axios';
 
@@ -31,7 +34,6 @@ class Discover extends Component {
                         artwork={item.artwork}
                         name={item.name}
                         artist={item.artist}
-                        genres={item.genres}
                         subscriptions={this.props.location.state ? this.props.location.state.subscriptions : []}
                     />
                 );
@@ -40,12 +42,31 @@ class Discover extends Component {
 
         return (
             <React.Fragment>
-                <NavBar title="Discover" history={this.props.history} />
+                <NavBar title="Discover" history={this.props.history}>
+                    <IconButton edge="end" color="inherit">
+                        <RssFeedIcon />
+                    </IconButton>
+                </NavBar>
                 <List style={{ margin: "auto" }}>
                     {items}
                 </List>
+                <FeedFormDialog
+                    onFormChange={this.handleFormChange}
+                    onSubscribe={this.handleSubscribe} />
             </React.Fragment>
         );
+    }
+
+    handleFormChange = (event) => {
+        this.setState({
+            [event.target.id]: event.target.value
+        });
+    }
+
+    handleSubscribe = () => {
+        axios.post(`http://localhost:4000/api/subscriptions`, {
+            feedUrl: this.state.newFeed
+        });
     }
 }
 

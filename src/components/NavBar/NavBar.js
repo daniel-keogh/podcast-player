@@ -38,6 +38,8 @@ function NavBar(props) {
                 <Typography variant="h6" className={classes.title} noWrap>
                     {props.title}
                 </Typography>
+                {/* Any buttons that go at the end of the NavBar should be passed as children to the component. */}
+                {props.children ? props.children : null}
             </Toolbar>
         </AppBar>
     );

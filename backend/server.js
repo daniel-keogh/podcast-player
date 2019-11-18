@@ -39,7 +39,6 @@ app.get('/api/top', (req, res) => {
                         name: item.name,
                         artist: item.artistName,
                         artwork: item.artworkUrl100,
-                        genres: item.genres.map(g => g.name)
                     };
                 })
             });
@@ -61,29 +60,60 @@ app.get('/api/subscriptions', (req, res) => {
 
 /* Subscribe to a podcast. */
 app.post('/api/subscriptions', (req, res) => {
-    // Need to search iTunes to retrieve the RSS feed
-    axios.get(`https://itunes.apple.com/lookup?id=${req.body.id}&entity=podcast`)
-        .then(data => {
-            return data.data.results[0].feedUrl
-        })
-        .then(feedUrl => {
-            PodcastModel.create({
-                _id: req.body.id,
-                name: req.body.name,
-                artist: req.body.artist,
-                genres: req.body.genres,
-                artwork: req.body.artwork,
-                feedUrl
-            });
-        })
-        .catch(e => {
-            res.send(e.message);
+    /* If an RSS feed was passed from the client, extract the info from there.
+     * Based on this demo: https://github.com/scripting/feedParserDemo
+     */
+    if ('feedUrl' in req.body && req.body.feedUrl !== '') {
+        const stream = request(req.body.feedUrl);
+        const feedparser = new FeedParser({ addmeta: false });
+
+        stream.on('response', function (res) {
+            if (res.statusCode !== 200) {
+                this.emit('error', new Error('Bad status code'));
+            } else {
+                stream.pipe(feedparser);
+            }
         });
+
+        stream.on('error', function (err) {
+            console.log(err.message);
+        });
+
+        feedparser.on('readable', function () {
+            PodcastModel.create({
+                name: this.meta.title,
+                artist: this.meta.author,
+                artwork: this.meta.image.url,
+                feedUrl: req.body.feedUrl
+            });
+        });
+
+        feedparser.on('error', function (err) {
+            console.log(err.message);
+        });
+    } else {
+        // Need to search iTunes to retrieve the RSS feed since the client didn't send one.
+        axios.get(`https://itunes.apple.com/lookup?id=${req.body.id}&entity=podcast`)
+            .then(data => {
+                return data.data.results[0].feedUrl
+            })
+            .then(feedUrl => {
+                PodcastModel.create({
+                    // _id: req.body.id,
+                    name: req.body.name,
+                    artist: req.body.artist,
+                    artwork: req.body.artwork,
+                    feedUrl
+                });
+            })
+            .catch(e => {
+                res.send(e.message);
+            });
+    }
 });
 
 /* Get info about a particular subscription by parsing its RSS feed and returning it to the client as a JSON string.
- * The code here is largely based on this demo by Dave Winer:
- * https://github.com/scripting/feedParserDemo 
+ * The code here is largely based on this demo by Dave Winer: https://github.com/scripting/feedParserDemo 
  */
 app.get('/api/subscriptions/:id', (req, res) => {
     PodcastModel.findById({ _id: req.params.id }, (err, data) => {
@@ -124,7 +154,6 @@ app.get('/api/subscriptions/:id', (req, res) => {
                 name: data.name,
                 artist: data.artist,
                 artwork: data.artwork,
-                genres: data.genres,
                 isFavourite: data.isFavourite,
                 description: this.meta.description,
                 link: this.meta.link,

@@ -56,7 +56,6 @@ class DiscoverListItem extends Component {
                 id: this.props.id,
                 name: this.props.name,
                 artist: this.props.artist,
-                genres: this.props.genres,
                 artwork: this.props.artwork
             });
         }
