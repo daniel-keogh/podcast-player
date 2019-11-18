@@ -1,7 +1,15 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Button, ButtonGroup, Card, CardContent, Slider, Typography, } from '@material-ui/core';
-import { PlayCircleFilled, PauseCircleFilled, Replay30, Forward30 } from '@material-ui/icons';
+import Button from '@material-ui/core/Button';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import Slider from '@material-ui/core/Slider';
+import Typography from '@material-ui/core/Typography';
+import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
+import PauseCircleFilledIcon from '@material-ui/icons/PauseCircleFilled';
+import Replay30Icon from '@material-ui/icons/Replay30';
+import Forward30Icon from '@material-ui/icons/Forward30';
 
 const useStyles = makeStyles(() => ({
     controlsLeft: {
@@ -36,13 +44,13 @@ function PlayerControls(props) {
             <div className={classes.controlsLeft}>
                 <ButtonGroup variant="text">
                     <Button onClick={props.onReplay}>
-                        <Replay30 fontSize="large" />
+                        <Replay30Icon fontSize="large" />
                     </Button>
                     <Button onClick={props.onPlayPauseClicked} color="primary">
-                        {props.isPaused ? <PlayCircleFilled className={classes.playIcon} /> : <PauseCircleFilled className={classes.playIcon} />}
+                        {props.isPaused ? <PlayCircleFilledIcon className={classes.playIcon} /> : <PauseCircleFilledIcon className={classes.playIcon} />}
                     </Button>
                     <Button onClick={props.onForward}>
-                        <Forward30 fontSize="large" />
+                        <Forward30Icon fontSize="large" />
                     </Button>
                 </ButtonGroup>
             </div>

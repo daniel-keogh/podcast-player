@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+import List from '@material-ui/core/List';
 import NavBar from '../NavBar/NavBar';
 import DiscoverListItem from './DiscoverListItem';
-import { List } from '@material-ui/core';
+import axios from 'axios';
 
 class Discover extends Component {
     state = {

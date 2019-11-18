@@ -1,7 +1,12 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles';
-import { Typography, Link, Divider, Chip } from '@material-ui/core';
-import { Star, RemoveOutlined, AddOutlined } from '@material-ui/icons';
+import Chip from '@material-ui/core/Chip';
+import Divider from '@material-ui/core/Divider';
+import Link from '@material-ui/core/Link';
+import Star from '@material-ui/icons/Star';
+import Typography from '@material-ui/core/Typography';
+import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
+import RemoveOutlinedIcon from '@material-ui/icons/RemoveOutlined';
 import SubscriptionItem from '../Subscriptions/SubscriptionItem';
 
 const useStyles = makeStyles(() => ({
@@ -58,12 +63,12 @@ function PodcastInfo(props) {
                             label={props.isSubscribed ? "Unsubscribe" : "Subscribe"}
                             color="primary"
                             variant={props.isSubscribed ? "default" : "outlined"}
-                            icon={props.isSubscribed ? <RemoveOutlined /> : <AddOutlined />}
+                            icon={props.isSubscribed ? <RemoveOutlinedIcon /> : <AddOutlinedIcon />}
                             size="small"
                             onClick={props.onSubscribe}
                         />
                     </div>
-                    <Typography component="p">
+                    <Typography variant="body1" color="textPrimary" component="p">
                         {props.description}
                     </Typography>
                 </div>

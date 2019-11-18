@@ -1,6 +1,13 @@
 import React, { Component } from 'react';
-import { Avatar, Divider, IconButton, ListItemAvatar, ListItem, ListItemText, ListItemSecondaryAction } from '@material-ui/core';
-import { AddCircleOutline, RemoveCircleOutline } from '@material-ui/icons';
+import Avatar from '@material-ui/core/Avatar';
+import Divider from '@material-ui/core/Divider';
+import IconButton from '@material-ui/core/IconButton';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
 import axios from 'axios';
 
 class DiscoverListItem extends Component {
@@ -32,7 +39,7 @@ class DiscoverListItem extends Component {
                             color="secondary"
                             onClick={this.handleSubscribe}
                         >
-                            {this.state.isSubscribed ? <RemoveCircleOutline color="secondary" /> : <AddCircleOutline color="primary" />}
+                            {this.state.isSubscribed ? <RemoveCircleOutlineIcon color="secondary" /> : <AddCircleOutlineIcon color="primary" />}
                         </IconButton>
                     </ListItemSecondaryAction>
                 </ListItem>

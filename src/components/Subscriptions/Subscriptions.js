@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Fab } from '@material-ui/core';
-import { Add } from '@material-ui/icons';
+import Fab from '@material-ui/core/Fab';
+import AddIcon from '@material-ui/icons/Add';
 import NavBar from '../NavBar/NavBar';
 import SubscriptionItem from './SubscriptionItem';
 import Welcome from './Welcome';
 import axios from 'axios';
-import "./Subscriptions.css";
+import './Subscriptions.css';
 
 class Subscriptions extends Component {
     constructor(props) {
@@ -87,7 +87,7 @@ class Subscriptions extends Component {
                         right: "32px",
                     }}
                 >
-                    <Add />
+                    <AddIcon />
                 </Fab>
             </React.Fragment>
         );
