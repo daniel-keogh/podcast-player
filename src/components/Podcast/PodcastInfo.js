@@ -53,7 +53,7 @@ function PodcastInfo(props) {
                         <Chip
                             label="Favourite"
                             color="primary"
-                            variant={props.isFavourite ? "default" : "outlined"}
+                            variant={props.favourite ? "default" : "outlined"}
                             icon={<Star />}
                             size="small"
                             style={{ marginRight: "12px" }}

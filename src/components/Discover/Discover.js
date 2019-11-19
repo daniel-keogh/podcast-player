@@ -10,6 +10,11 @@ import axios from 'axios';
 class Discover extends Component {
     state = {
         top: [],
+        dialog: {
+            open: false,
+            error: false
+        },
+        newFeed: ''
     }
 
     componentDidMount() {
@@ -43,7 +48,7 @@ class Discover extends Component {
         return (
             <React.Fragment>
                 <NavBar title="Discover" history={this.props.history}>
-                    <IconButton edge="end" color="inherit">
+                    <IconButton edge="end" color="inherit" onClick={this.handleDialogOpen}>
                         <RssFeedIcon />
                     </IconButton>
                 </NavBar>
@@ -51,10 +56,32 @@ class Discover extends Component {
                     {items}
                 </List>
                 <FeedFormDialog
+                    open={this.state.dialog.open}
+                    error={this.state.dialog.error}
+                    onDialogOpen={this.handleDialogOpen}
+                    onDialogClose={this.handleDialogClose}
                     onFormChange={this.handleFormChange}
                     onSubscribe={this.handleSubscribe} />
             </React.Fragment>
         );
+    }
+
+    handleDialogOpen = () => {
+        this.setState({
+            dialog: {
+                error: false,
+                open: true
+            }
+        });
+    }
+
+    handleDialogClose = () => {
+        this.setState({
+            dialog: {
+                error: false,
+                open: false
+            }
+        });
     }
 
     handleFormChange = (event) => {
@@ -64,9 +91,27 @@ class Discover extends Component {
     }
 
     handleSubscribe = () => {
-        axios.post(`http://localhost:4000/api/subscriptions`, {
-            feedUrl: this.state.newFeed
-        });
+        if (this.state.newFeed === '') {
+            this.setState({
+                dialog: {
+                    open: true,
+                    error: true
+                }
+            });
+        } else {
+            axios.post(`http://localhost:4000/api/subscriptions`, {
+                feedUrl: this.state.newFeed
+            }).then(() => {
+                this.handleDialogClose();
+            }).catch(() => {
+                this.setState({
+                    dialog: {
+                        error: true,
+                        open: true
+                    }
+                });
+            });
+        }
     }
 }
 

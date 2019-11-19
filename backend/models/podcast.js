@@ -7,7 +7,7 @@ const PodcastSchema = new Schema({
     artist: String,
     artwork: String,
     feedUrl: String,
-    isFavourite: {
+    favourite: {
         type: Boolean,
         default: false
     }

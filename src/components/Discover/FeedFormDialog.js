@@ -8,39 +8,28 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 function FeedFormDialog(props) {
-    const [open, setOpen] = React.useState(false);
-
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
     return (
-        <div>
-            <Button color="primary" onClick={handleClickOpen}>Open form dialog</Button>
-            <Dialog open={open} onClose={handleClose} fullWidth>
-                <DialogTitle>Subscribe</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>Enter the link to the RSS feed.</DialogContentText>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="newFeed"
-                        label="Feed"
-                        type="url"
-                        fullWidth
-                        onChange={props.onFormChange}
-                    />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClose} color="primary">Cancel</Button>
-                    <Button onClick={props.onSubscribe} color="primary" type="submit">Subscribe</Button>
-                </DialogActions>
-            </Dialog>
-        </div>
+        <Dialog open={props.open} onClose={props.onDialogClose} fullWidth>
+            <DialogTitle>Subscribe</DialogTitle>
+            <DialogContent>
+                <DialogContentText>Enter the link to the RSS feed.</DialogContentText>
+                <TextField
+                    autoFocus
+                    fullWidth
+                    margin="dense"
+                    id="newFeed"
+                    label="Feed URL"
+                    type="url"
+                    error={props.error}
+                    value={props.newFeed}
+                    onChange={props.onFormChange}
+                />
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={props.onDialogClose} color="primary">Cancel</Button>
+                <Button onClick={props.onSubscribe} color="primary">Subscribe</Button>
+            </DialogActions>
+        </Dialog>
     );
 }
 

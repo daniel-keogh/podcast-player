@@ -61,7 +61,7 @@ class Podcast extends Component {
                             description={this.state.podcast.description}
                             artwork={this.state.podcast.artwork}
                             link={this.state.podcast.link}
-                            isFavourite={this.state.podcast.isFavourite}
+                            favourite={this.state.podcast.favourite}
                             isSubscribed={this.state.isSubscribed}
                             onFavourite={this.handleFavourite}
                             onSubscribe={this.handleSubscribe}
@@ -102,11 +102,11 @@ class Podcast extends Component {
             axios.delete(`http://localhost:4000/api/subscriptions/${this.state.podcast.id}`)
                 .then(() => {
                     // Unfavourite the podcast after unsubscribing
-                    if (this.state.podcast.isFavourite) {
+                    if (this.state.podcast.favourite) {
                         this.setState(state => ({
                             podcast: {
                                 ...state.podcast,
-                                isFavourite: false
+                                favourite: false
                             }
                         }));
                     }
@@ -114,7 +114,7 @@ class Podcast extends Component {
         } else {
             // Re-subscribe
             axios.post(`http://localhost:4000/api/subscriptions`, {
-                ...this.state.podcast
+                feedUrl: this.state.podcast.feedUrl
             });
         }
 
@@ -124,14 +124,25 @@ class Podcast extends Component {
     }
 
     handleFavourite = () => {
+        // Take out everything except the episodes, since they shouldn't be sent in the body.
+        const {
+            name,
+            artist,
+            artwork,
+            feedUrl
+        } = this.state.podcast;
+
         axios.put(`http://localhost:4000/api/subscriptions/${this.state.podcast.id}`, {
-            ...this.state.podcast,
-            isFavourite: !this.state.podcast.isFavourite
+            name,
+            artist,
+            artwork,
+            feedUrl,
+            favourite: !this.state.podcast.favourite
         }).then(() => {
             this.setState(state => ({
                 podcast: {
                     ...state.podcast,
-                    isFavourite: !state.podcast.isFavourite
+                    favourite: !state.podcast.favourite
                 }
             }));
         });

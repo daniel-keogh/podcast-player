@@ -17,7 +17,7 @@ mongoose.connect(mongodb, {
 
 const PodcastModel = require('./models/podcast');
 
-app.use(bodyParser());
+app.use(bodyParser.json());
 app.use(cors());
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
@@ -43,54 +43,59 @@ app.get('/api/top', (req, res) => {
                 })
             });
         })
-        .catch(e => {
-            res.status(500).send('Server Error.');
+        .catch(() => {
+            res.status(500).send({ top: [] });
         });
 });
 
 app.get('/api/subscriptions', (req, res) => {
-    PodcastModel.find((err, subscriptions) => {
-        if (err) {
-            res.json({ subscriptions: [] });
+    PodcastModel.find({}, (err, subscriptions) => {
+        if (!subscriptions) {
+            res.send(500).json({ subscriptions: [] });
         } else {
             res.json({ subscriptions });
         }
     });
 });
 
-/* Subscribe to a podcast. */
 app.post('/api/subscriptions', (req, res) => {
     /* If an RSS feed was passed from the client, extract the info from there.
      * Based on this demo: https://github.com/scripting/feedParserDemo
      */
     if ('feedUrl' in req.body && req.body.feedUrl !== '') {
-        const stream = request(req.body.feedUrl);
-        const feedparser = new FeedParser({ addmeta: false });
+        try {
+            const stream = request(req.body.feedUrl);
+            const feedparser = new FeedParser({ addmeta: false });
 
-        stream.on('response', function (res) {
-            if (res.statusCode !== 200) {
-                this.emit('error', new Error('Bad status code'));
-            } else {
-                stream.pipe(feedparser);
-            }
-        });
-
-        stream.on('error', function (err) {
-            console.log(err.message);
-        });
-
-        feedparser.on('readable', function () {
-            PodcastModel.create({
-                name: this.meta.title,
-                artist: this.meta.author,
-                artwork: this.meta.image.url,
-                feedUrl: req.body.feedUrl
+            stream.on('response', function (res) {
+                if (res.statusCode !== 200) {
+                    this.emit('error', new Error('Bad status code'));
+                } else {
+                    stream.pipe(feedparser);
+                }
             });
-        });
 
-        feedparser.on('error', function (err) {
-            console.log(err.message);
-        });
+            stream.on('error', function (err) {
+                console.log(err.message);
+            });
+
+            feedparser.on('readable', function () {
+                PodcastModel.create({
+                    name: this.meta.title,
+                    artist: this.meta.author,
+                    artwork: this.meta.image.url,
+                    feedUrl: req.body.feedUrl
+                });
+
+                res.status(201).send();
+            });
+
+            feedparser.on('error', function (err) {
+                console.log(err.message);
+            });
+        } catch (e) {
+            res.status(500).send(e.message);
+        }
     } else {
         // Need to search iTunes to retrieve the RSS feed since the client didn't send one.
         axios.get(`https://itunes.apple.com/lookup?id=${req.body.id}&entity=podcast`)
@@ -99,7 +104,6 @@ app.post('/api/subscriptions', (req, res) => {
             })
             .then(feedUrl => {
                 PodcastModel.create({
-                    // _id: req.body.id,
                     name: req.body.name,
                     artist: req.body.artist,
                     artwork: req.body.artwork,
@@ -117,53 +121,57 @@ app.post('/api/subscriptions', (req, res) => {
  */
 app.get('/api/subscriptions/:id', (req, res) => {
     PodcastModel.findById({ _id: req.params.id }, (err, data) => {
-        const stream = request(data.feedUrl);
-        const feedItems = [];
-        const feedparser = new FeedParser({ addmeta: false });
+        if (!data) {
+            res.status(404).send({});
+        } else {
+            const stream = request(data.feedUrl);
+            const feedItems = [];
+            const feedparser = new FeedParser({ addmeta: false });
 
-        stream.on('response', function (res) {
-            if (res.statusCode !== 200) {
-                this.emit('error', new Error('Bad status code'));
-            } else {
-                stream.pipe(feedparser);
-            }
-        });
-
-        stream.on('error', function (err) {
-            console.log(err.message);
-        });
-
-        feedparser.on('readable', function () {
-            try {
-                const item = this.read();
-                if (item !== null) {
-                    feedItems.push({
-                        title: item.title,
-                        date: item.date,
-                        audio: item.enclosures[0]
-                    });
+            stream.on('response', function (res) {
+                if (res.statusCode !== 200) {
+                    res.send({})
+                } else {
+                    stream.pipe(feedparser);
                 }
-            } catch (err) {
-                console.log(err.message);
-            }
-        });
-
-        feedparser.on('end', function () {
-            res.json({
-                id: data.id,
-                name: data.name,
-                artist: data.artist,
-                artwork: data.artwork,
-                isFavourite: data.isFavourite,
-                description: this.meta.description,
-                link: this.meta.link,
-                episodes: feedItems
             });
-        });
 
-        feedparser.on('error', function (err) {
-            console.log(err.message);
-        });
+            stream.on('error', function (err) {
+                console.log(err.message);
+            });
+
+            feedparser.on('readable', function () {
+                try {
+                    const item = this.read();
+                    if (item !== null) {
+                        feedItems.push({
+                            title: item.title,
+                            date: item.date,
+                            audio: item.enclosures[0]
+                        });
+                    }
+                } catch (err) {
+                    console.log(err.message);
+                }
+            });
+
+            feedparser.on('end', function () {
+                res.json({
+                    id: data.id,
+                    name: data.name,
+                    artist: data.artist,
+                    artwork: data.artwork,
+                    favourite: data.favourite,
+                    description: this.meta.description,
+                    link: this.meta.link,
+                    episodes: feedItems
+                });
+            });
+
+            feedparser.on('error', function (err) {
+                console.log(err.message);
+            });
+        }
     });
 });
 
@@ -172,7 +180,7 @@ app.put('/api/subscriptions/:id', (req, res) => {
         if (err) {
             res.send(err.message);
         } else {
-            res.json(data);
+            res.send(data);
         }
     });
 });
@@ -183,7 +191,7 @@ app.delete('/api/subscriptions/:id', (req, res) => {
         if (err) {
             res.send(err.message);
         } else {
-            res.json(data);
+            res.send(data);
         }
     });
 });
