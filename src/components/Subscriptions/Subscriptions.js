@@ -75,10 +75,7 @@ class Subscriptions extends Component {
                 </div>
                 <Fab
                     component={Link}
-                    to={{
-                        pathname: "/discover",
-                        state: { subscriptions: this.state.subscriptions.map(sub => sub._id) }
-                    }}
+                    to="/discover"
                     color="secondary"
                     style={{
                         position: "sticky",

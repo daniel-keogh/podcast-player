@@ -11,15 +11,8 @@ import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
 import axios from 'axios';
 
 class DiscoverListItem extends Component {
-    constructor(props) {
-        super(props);
-
-        // If find() returns true, then the user is already subscribed to this podcast.
-        const idExists = this.props.subscriptions.find(id => +props.id === id);
-
-        this.state = {
-            isSubscribed: idExists ? true : false
-        }
+    state = {
+        isSubscribed: false
     }
 
     render() {
@@ -53,10 +46,7 @@ class DiscoverListItem extends Component {
             axios.delete(`http://localhost:4000/api/subscriptions/${this.props.id}`);
         } else {
             axios.post(`http://localhost:4000/api/subscriptions`, {
-                id: this.props.id,
-                name: this.props.name,
-                artist: this.props.artist,
-                artwork: this.props.artwork
+                feedUrl: this.props.feedUrl
             });
         }
 

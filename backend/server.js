@@ -26,25 +26,24 @@ app.use((req, res, next) => {
     next();
 });
 
-app.get('/api/top', (req, res) => {
-    axios.get(`https://rss.itunes.apple.com/api/v1/ie/podcasts/top-podcasts/all/50/explicit.json`)
+app.get('/api/search', (req, res) => {
+    axios.get(`https://itunes.apple.com/search?term=${req.query.term}&limit=15&entity=podcast`)
         .then(data => {
-            return data.data.feed.results;
+            return data.data;
         })
-        .then(top => {
-            res.json({
-                top: top.map(item => {
-                    return {
-                        id: item.id,
-                        name: item.name,
-                        artist: item.artistName,
-                        artwork: item.artworkUrl100,
-                    };
-                })
+        .then(data => {
+            const results = data.results.map(result => {
+                return {
+                    name: result.collectionName,
+                    artist: result.artistName,
+                    feedUrl: result.feedUrl,
+                    artwork: result.artworkUrl600
+                }
             });
+            res.send({ results });
         })
         .catch(() => {
-            res.status(500).send({ top: [] });
+            res.send({ results: [] })
         });
 });
 
@@ -59,60 +58,41 @@ app.get('/api/subscriptions', (req, res) => {
 });
 
 app.post('/api/subscriptions', (req, res) => {
-    /* If an RSS feed was passed from the client, extract the info from there.
+    /* Extract the info from the RSS feed sent from the client.
      * Based on this demo: https://github.com/scripting/feedParserDemo
      */
-    if ('feedUrl' in req.body && req.body.feedUrl !== '') {
-        try {
-            const stream = request(req.body.feedUrl);
-            const feedparser = new FeedParser({ addmeta: false });
+    try {
+        const stream = request(req.body.feedUrl);
+        const feedparser = new FeedParser({ addmeta: false });
 
-            stream.on('response', function (res) {
-                if (res.statusCode !== 200) {
-                    this.emit('error', new Error('Bad status code'));
-                } else {
-                    stream.pipe(feedparser);
-                }
+        stream.on('response', function (res) {
+            if (res.statusCode !== 200) {
+                this.emit('error', new Error('Bad status code'));
+            } else {
+                stream.pipe(feedparser);
+            }
+        });
+
+        stream.on('error', function (err) {
+            console.log(err.message);
+        });
+
+        feedparser.on('readable', function () {
+            PodcastModel.create({
+                name: this.meta.title,
+                artist: this.meta.author,
+                artwork: this.meta.image.url,
+                feedUrl: req.body.feedUrl
             });
 
-            stream.on('error', function (err) {
-                console.log(err.message);
-            });
+            res.status(201).send();
+        });
 
-            feedparser.on('readable', function () {
-                PodcastModel.create({
-                    name: this.meta.title,
-                    artist: this.meta.author,
-                    artwork: this.meta.image.url,
-                    feedUrl: req.body.feedUrl
-                });
-
-                res.status(201).send();
-            });
-
-            feedparser.on('error', function (err) {
-                console.log(err.message);
-            });
-        } catch (e) {
-            res.status(500).send(e.message);
-        }
-    } else {
-        // Need to search iTunes to retrieve the RSS feed since the client didn't send one.
-        axios.get(`https://itunes.apple.com/lookup?id=${req.body.id}&entity=podcast`)
-            .then(data => {
-                return data.data.results[0].feedUrl
-            })
-            .then(feedUrl => {
-                PodcastModel.create({
-                    name: req.body.name,
-                    artist: req.body.artist,
-                    artwork: req.body.artwork,
-                    feedUrl
-                });
-            })
-            .catch(e => {
-                res.send(e.message);
-            });
+        feedparser.on('error', function (err) {
+            console.log(err.message);
+        });
+    } catch (e) {
+        res.status(500).send(e.message);
     }
 });
 

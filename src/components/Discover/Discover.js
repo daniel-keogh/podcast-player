@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
+import TextField from '@material-ui/core/TextField';
 import RssFeedIcon from '@material-ui/icons/RssFeed';
 import NavBar from '../NavBar/NavBar';
 import FeedFormDialog from './FeedFormDialog';
@@ -9,41 +10,27 @@ import axios from 'axios';
 
 class Discover extends Component {
     state = {
-        top: [],
         dialog: {
             open: false,
             error: false
         },
+        searchTerm: '',
+        searchResults: [],
         newFeed: ''
     }
 
-    componentDidMount() {
-        axios.get(`http://localhost:4000/api/top`)
-            .then(res => {
-                if (res.status === 200) {
-                    this.setState({
-                        top: res.data.top
-                    });
-                }
-            });
-    }
-
     render() {
-        let items;
-        if (this.state.top && this.state.top.length > 0) {
-            items = this.state.top.map(item => {
-                return (
-                    <DiscoverListItem
-                        key={item.id}
-                        id={item.id}
-                        artwork={item.artwork}
-                        name={item.name}
-                        artist={item.artist}
-                        subscriptions={this.props.location.state ? this.props.location.state.subscriptions : []}
-                    />
-                );
-            });
-        }
+        const items = this.state.searchResults.map((item, index) => {
+            return (
+                <DiscoverListItem
+                    key={index}
+                    name={item.name}
+                    artist={item.artist}
+                    artwork={item.artwork}
+                    feedUrl={item.feedUrl}
+                />
+            );
+        });
 
         return (
             <React.Fragment>
@@ -52,18 +39,64 @@ class Discover extends Component {
                         <RssFeedIcon />
                     </IconButton>
                 </NavBar>
+
+                <form
+                    onSubmit={this.handleSearch}
+                    style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        margin: "auto",
+                        width: "100%"
+                    }}
+                >
+                    <div style={{
+                        padding: "20px",
+                        width: "100%"
+                    }}>
+                        <TextField
+                            autoFocus
+                            fullWidth
+                            id="searchTerm"
+                            label="Search..."
+                            margin="normal"
+                            variant="filled"
+                            type="text"
+                            value={this.state.searchTerm}
+                            onChange={this.handleFormChange}
+                        />
+                    </div>
+                </form>
+
                 <List style={{ margin: "auto" }}>
                     {items}
                 </List>
+
                 <FeedFormDialog
                     open={this.state.dialog.open}
                     error={this.state.dialog.error}
                     onDialogOpen={this.handleDialogOpen}
                     onDialogClose={this.handleDialogClose}
                     onFormChange={this.handleFormChange}
-                    onSubscribe={this.handleSubscribe} />
+                    onSubscribe={this.handleSubscribeFromFeed} />
             </React.Fragment>
         );
+    }
+
+    handleFormChange = (event) => {
+        this.setState({
+            [event.target.id]: event.target.value
+        });
+    }
+
+    handleSearch = (e) => {
+        axios.get(`http://localhost:4000/api/search/?term=${encodeURIComponent(this.state.searchTerm)}`)
+            .then(data => {
+                this.setState({
+                    searchResults: data.data.results
+                });
+            });
+
+        e.preventDefault();
     }
 
     handleDialogOpen = () => {
@@ -84,13 +117,7 @@ class Discover extends Component {
         });
     }
 
-    handleFormChange = (event) => {
-        this.setState({
-            [event.target.id]: event.target.value
-        });
-    }
-
-    handleSubscribe = () => {
+    handleSubscribeFromFeed = () => {
         if (this.state.newFeed === '') {
             this.setState({
                 dialog: {
