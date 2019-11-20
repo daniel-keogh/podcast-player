@@ -66,7 +66,7 @@ class Subscriptions extends Component {
                                     clickable
                                     key={sub._id}
                                     id={sub._id}
-                                    name={sub.name}
+                                    title={sub.title}
                                     artwork={sub.artwork}
                                 />
                             );

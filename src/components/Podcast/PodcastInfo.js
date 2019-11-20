@@ -22,14 +22,11 @@ const useStyles = makeStyles(() => ({
     title: {
         marginBottom: '6px'
     },
-    artist: {
+    author: {
         display: 'inline-block'
     },
     chips: {
         margin: "18px 0"
-    },
-    divider: {
-        margin: "auto"
     }
 }));
 
@@ -44,10 +41,10 @@ function PodcastInfo(props) {
                 </div>
                 <div className={classes.podcastInfo}>
                     <Typography variant="h5" component="h5" className={classes.title} noWrap>
-                        {props.name}
+                        {props.title}
                     </Typography>
-                    <Link href={props.link} target="_black" rel="noreferrer" className={classes.artist}>
-                        {props.artist}
+                    <Link href={props.link} target="_black" rel="noreferrer" className={classes.author}>
+                        {props.author}
                     </Link>
                     <div className={classes.chips}>
                         <Chip
@@ -73,7 +70,7 @@ function PodcastInfo(props) {
                     </Typography>
                 </div>
             </div>
-            <Divider className={classes.divider} />
+            <Divider />
         </React.Fragment>
     );
 }

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Discover from './components/Discover/Discover';
-import Podcast from './components/Podcast/Podcast';
 import Player from './components/Player/Player';
+import Podcast from './components/Podcast/Podcast';
 import Subscriptions from './components/Subscriptions/Subscriptions';
 import './App.css';
 
@@ -37,7 +37,7 @@ class App extends Component {
     }
 
     /* Below function necessary in order to pass props to the Podcast component.
-     * Based on this answer: https://github.com/ReactTraining/react-router/issues/4105#issuecomment-287262726
+     * Reference: https://github.com/ReactTraining/react-router/issues/4105#issuecomment-287262726
      */
     PodcastPage = (props) => {
         return (

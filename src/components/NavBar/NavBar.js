@@ -22,7 +22,7 @@ function NavBar(props) {
     return (
         <AppBar position="sticky" className="NavBar">
             <Toolbar>
-                {/* Only show the back button if the history prop was passed to this component */}
+                {/* Only show the back button if the history prop was passed to this component. */}
                 {props.history
                     ? (
                         <IconButton
@@ -38,7 +38,7 @@ function NavBar(props) {
                 <Typography variant="h6" className={classes.title} noWrap>
                     {props.title}
                 </Typography>
-                {/* Any buttons that go at the end of the NavBar should be passed as children to the component. */}
+                {/* Any buttons that go at the end of the NavBar should be passed as children. */}
                 {props.children ? props.children : null}
             </Toolbar>
         </AppBar>

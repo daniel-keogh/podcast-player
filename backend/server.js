@@ -27,77 +27,42 @@ app.use((req, res, next) => {
 });
 
 app.get('/api/search', (req, res) => {
-    axios.get(`https://itunes.apple.com/search?term=${req.query.term}&limit=15&entity=podcast`)
+    const defaultLimit = 15;
+
+    // Search iTunes using the query parameters sent by the client.
+    axios.get(`https://itunes.apple.com/search?term=${req.query.term}&limit=${req.query.limit || defaultLimit}&entity=podcast`)
         .then(data => {
             return data.data;
         })
         .then(data => {
             const results = data.results.map(result => {
                 return {
-                    name: result.collectionName,
-                    artist: result.artistName,
-                    feedUrl: result.feedUrl,
-                    artwork: result.artworkUrl600
+                    title: result.collectionName,
+                    author: result.artistName,
+                    artwork: result.artworkUrl100,
+                    feedUrl: result.feedUrl
                 }
             });
-            res.send({ results });
+            res.status(200).json({ results });
         })
         .catch(() => {
-            res.send({ results: [] })
+            res.status(400).json({ results: [] })
         });
 });
 
 app.get('/api/subscriptions', (req, res) => {
     PodcastModel.find({}, (err, subscriptions) => {
         if (!subscriptions) {
-            res.send(500).json({ subscriptions: [] });
+            res.status(500).json({ subscriptions: [] });
         } else {
-            res.json({ subscriptions });
+            res.status(200).json({ subscriptions });
         }
     });
 });
 
-app.post('/api/subscriptions', (req, res) => {
-    /* Extract the info from the RSS feed sent from the client.
-     * Based on this demo: https://github.com/scripting/feedParserDemo
-     */
-    try {
-        const stream = request(req.body.feedUrl);
-        const feedparser = new FeedParser({ addmeta: false });
-
-        stream.on('response', function (res) {
-            if (res.statusCode !== 200) {
-                this.emit('error', new Error('Bad status code'));
-            } else {
-                stream.pipe(feedparser);
-            }
-        });
-
-        stream.on('error', function (err) {
-            console.log(err.message);
-        });
-
-        feedparser.on('readable', function () {
-            PodcastModel.create({
-                name: this.meta.title,
-                artist: this.meta.author,
-                artwork: this.meta.image.url,
-                feedUrl: req.body.feedUrl
-            });
-
-            res.status(201).send();
-        });
-
-        feedparser.on('error', function (err) {
-            console.log(err.message);
-        });
-    } catch (e) {
-        res.status(500).send(e.message);
-    }
-});
-
-/* Get info about a particular subscription by parsing its RSS feed and returning it to the client as a JSON string.
- * The code here is largely based on this demo by Dave Winer: https://github.com/scripting/feedParserDemo 
+/* Get all the episodes of a particular subscription by parsing its RSS feed.
+ * The code below uses feedparser [https://www.npmjs.com/package/feedparser], 
+ * and is loosely based on this demo: https://github.com/scripting/feedParserDemo
  */
 app.get('/api/subscriptions/:id', (req, res) => {
     PodcastModel.findById({ _id: req.params.id }, (err, data) => {
@@ -105,19 +70,15 @@ app.get('/api/subscriptions/:id', (req, res) => {
             res.status(404).send({});
         } else {
             const stream = request(data.feedUrl);
-            const feedItems = [];
             const feedparser = new FeedParser({ addmeta: false });
+            const feedItems = [];
 
-            stream.on('response', function (res) {
-                if (res.statusCode !== 200) {
-                    res.send({})
+            stream.on('response', function (response) {
+                if (response.statusCode !== 200) {
+                    res.status(response.statusCode).send({})
                 } else {
-                    stream.pipe(feedparser);
+                    this.pipe(feedparser);
                 }
-            });
-
-            stream.on('error', function (err) {
-                console.log(err.message);
             });
 
             feedparser.on('readable', function () {
@@ -130,48 +91,84 @@ app.get('/api/subscriptions/:id', (req, res) => {
                             audio: item.enclosures[0]
                         });
                     }
-                } catch (err) {
-                    console.log(err.message);
+                } catch (e) {
+                    this.emit('error', new Error(e.message));
                 }
             });
 
             feedparser.on('end', function () {
                 res.json({
                     id: data.id,
-                    name: data.name,
-                    artist: data.artist,
+                    title: data.title,
+                    author: data.author,
                     artwork: data.artwork,
                     favourite: data.favourite,
-                    description: this.meta.description,
-                    link: this.meta.link,
+                    description: data.description,
+                    link: data.link,
+                    feedUrl: data.feedUrl,
                     episodes: feedItems
                 });
             });
 
-            feedparser.on('error', function (err) {
-                console.log(err.message);
+            feedparser.on('error', function (e) {
+                res.status(500).send(e.message);
             });
         }
     });
 });
 
+app.post('/api/subscriptions', (req, res) => {
+    //  Using feedparser, extract the info from the RSS feed sent by the client.
+    const feedparser = new FeedParser({ addmeta: false });
+
+    try {
+        const stream = request(req.body.feedUrl);
+
+        stream.on('response', function (response) {
+            if (response.statusCode !== 200) {
+                res.status(response.statusCode).send();
+            } else {
+                this.pipe(feedparser);
+            }
+        });
+    } catch (e) {
+        res.status(400).send(e.message);
+    }
+
+    feedparser.on('readable', function () {
+        PodcastModel.create({
+            title: this.meta.title,
+            author: this.meta.author,
+            artwork: this.meta.image.url,
+            description: this.meta.description,
+            link: this.meta.link,
+            feedUrl: req.body.feedUrl
+        });
+
+        res.status(201).send();
+    });
+
+    feedparser.on('error', function (e) {
+        res.status(500).send(e.message);
+    });
+});
+
 app.put('/api/subscriptions/:id', (req, res) => {
-    PodcastModel.findByIdAndUpdate(req.params.id, req.body, { new: true }, (err, data) => {
+    PodcastModel.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true }, (err, data) => {
         if (err) {
-            res.send(err.message);
+            res.status(404).send(err.message);
         } else {
-            res.send(data);
+            res.status(200).send(data);
         }
     });
 });
 
-/* Delete a subscription i.e. unsubscribe. */
 app.delete('/api/subscriptions/:id', (req, res) => {
     PodcastModel.deleteOne({ _id: req.params.id }, (err, data) => {
         if (err) {
-            res.send(err.message);
+            res.status(400).send(err.message);
         } else {
-            res.send(data);
+            res.status(200).send(data);
         }
     });
 });

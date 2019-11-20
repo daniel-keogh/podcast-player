@@ -3,9 +3,9 @@ import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
 import TextField from '@material-ui/core/TextField';
 import RssFeedIcon from '@material-ui/icons/RssFeed';
-import NavBar from '../NavBar/NavBar';
-import FeedFormDialog from './FeedFormDialog';
 import DiscoverListItem from './DiscoverListItem';
+import FeedFormDialog from './FeedFormDialog';
+import NavBar from '../NavBar/NavBar';
 import axios from 'axios';
 
 class Discover extends Component {
@@ -24,8 +24,8 @@ class Discover extends Component {
             return (
                 <DiscoverListItem
                     key={index}
-                    name={item.name}
-                    artist={item.artist}
+                    title={item.title}
+                    author={item.author}
                     artwork={item.artwork}
                     feedUrl={item.feedUrl}
                 />
@@ -45,7 +45,6 @@ class Discover extends Component {
                     style={{
                         display: "flex",
                         justifyContent: "center",
-                        margin: "auto",
                         width: "100%"
                     }}
                 >
@@ -57,7 +56,7 @@ class Discover extends Component {
                             autoFocus
                             fullWidth
                             id="searchTerm"
-                            label="Search..."
+                            label="Search Podcasts..."
                             margin="normal"
                             variant="filled"
                             type="text"
@@ -67,7 +66,7 @@ class Discover extends Component {
                     </div>
                 </form>
 
-                <List style={{ margin: "auto" }}>
+                <List>
                     {items}
                 </List>
 
@@ -118,25 +117,24 @@ class Discover extends Component {
     }
 
     handleSubscribeFromFeed = () => {
-        if (this.state.newFeed === '') {
+        const showDialogError = () => {
             this.setState({
                 dialog: {
                     open: true,
                     error: true
                 }
             });
+        };
+
+        if (this.state.newFeed === '') {
+            showDialogError();
         } else {
             axios.post(`http://localhost:4000/api/subscriptions`, {
                 feedUrl: this.state.newFeed
             }).then(() => {
                 this.handleDialogClose();
             }).catch(() => {
-                this.setState({
-                    dialog: {
-                        error: true,
-                        open: true
-                    }
-                });
+                showDialogError()
             });
         }
     }

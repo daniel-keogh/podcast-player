@@ -14,10 +14,7 @@ function Welcome() {
                 variant="outlined"
                 style={{ margin: "12px" }}
                 component={Link}
-                to={{
-                    pathname: "/discover",
-                    state: { subscriptions: [] }
-                }}
+                to="/discover"
             >
                 Click to add some podcasts.
             </Button>

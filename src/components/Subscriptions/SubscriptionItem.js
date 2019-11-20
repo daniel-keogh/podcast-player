@@ -21,7 +21,7 @@ function SubscriptionItem(props) {
     const cardMedia = (
         <CardMedia
             className={classes.media}
-            title={props.name}
+            title={props.title}
             image={props.artwork}
         />
     );
@@ -33,7 +33,7 @@ function SubscriptionItem(props) {
                 ? (
                     <CardActionArea component={Link} to={{
                         pathname: `/podcast/${props.id}`,
-                        state: { title: props.name }
+                        state: { title: props.title }
                     }}>
                         {cardMedia}
                     </CardActionArea>

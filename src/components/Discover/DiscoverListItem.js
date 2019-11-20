@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import ListItemText from '@material-ui/core/ListItemText';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
 import axios from 'axios';
@@ -23,8 +23,8 @@ class DiscoverListItem extends Component {
                         <Avatar src={this.props.artwork} />
                     </ListItemAvatar>
                     <ListItemText
-                        primary={this.props.name}
-                        secondary={this.props.artist}
+                        primary={this.props.title}
+                        secondary={this.props.author}
                     />
                     <ListItemSecondaryAction>
                         <IconButton
@@ -42,17 +42,15 @@ class DiscoverListItem extends Component {
     }
 
     handleSubscribe = () => {
-        if (this.state.isSubscribed) {
-            axios.delete(`http://localhost:4000/api/subscriptions/${this.props.id}`);
-        } else {
+        if (!this.state.isSubscribed) {
             axios.post(`http://localhost:4000/api/subscriptions`, {
                 feedUrl: this.props.feedUrl
+            }).then(() => {
+                this.setState({
+                    isSubscribed: true
+                });
             });
         }
-
-        this.setState(state => ({
-            isSubscribed: !state.isSubscribed
-        }))
     }
 }
 

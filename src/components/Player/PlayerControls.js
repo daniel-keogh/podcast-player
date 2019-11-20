@@ -6,10 +6,10 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Slider from '@material-ui/core/Slider';
 import Typography from '@material-ui/core/Typography';
-import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
 import PauseCircleFilledIcon from '@material-ui/icons/PauseCircleFilled';
-import Replay30Icon from '@material-ui/icons/Replay30';
+import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
 import Forward30Icon from '@material-ui/icons/Forward30';
+import Replay30Icon from '@material-ui/icons/Replay30';
 
 const useStyles = makeStyles(() => ({
     controlsLeft: {
@@ -84,8 +84,9 @@ function PlayerControls(props) {
     );
 }
 
-// Based on this S.O. answer:
-// https://stackoverflow.com/a/37096512
+/* Convert from seconds to HH:MM:SS
+ * Based on this S.O. answer: https://stackoverflow.com/a/37096512
+ */
 function formatSeconds(secs) {
     if (Number.isNaN(secs))
         return '00:00';

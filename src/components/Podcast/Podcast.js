@@ -31,7 +31,7 @@ class Podcast extends Component {
                         <EpisodeListItem
                             key={i}
                             episode={this.state.podcast.episodes[i]}
-                            podcastTitle={this.state.podcast.name}
+                            podcastTitle={this.state.podcast.title}
                             playEpisode={this.props.playEpisode}
                         />
                     );
@@ -56,8 +56,8 @@ class Podcast extends Component {
                 {Object.entries(this.state.podcast).length
                     ? (
                         <PodcastInfo
-                            name={this.state.podcast.name}
-                            artist={this.state.podcast.artist}
+                            title={this.state.podcast.title}
+                            author={this.state.podcast.author}
                             description={this.state.podcast.description}
                             artwork={this.state.podcast.artwork}
                             link={this.state.podcast.link}
@@ -68,7 +68,7 @@ class Podcast extends Component {
                         />
                     ) : null
                 }
-                <List style={{ margin: "auto" }}>
+                <List>
                     {episodes}
                 </List>
                 {/* Only display the "Load More" button if there are episodes that aren't yet visible. */}
@@ -83,7 +83,9 @@ class Podcast extends Component {
                             color="primary"
                             size="large"
                             onClick={this.handleLoadMoreClicked}
-                        >Load More</Button>
+                        >
+                            Load More
+                        </Button>
                     ) : null
                 }
             </React.Fragment>
@@ -110,32 +112,33 @@ class Podcast extends Component {
                             }
                         }));
                     }
+
+                    this.setState({
+                        isSubscribed: false
+                    });
                 });
         } else {
             // Re-subscribe
             axios.post(`http://localhost:4000/api/subscriptions`, {
                 feedUrl: this.state.podcast.feedUrl
+            }).then(() => {
+                this.setState(() => ({
+                    isSubscribed: true
+                }))
             });
         }
-
-        this.setState(state => ({
-            isSubscribed: !state.isSubscribed
-        }))
     }
 
     handleFavourite = () => {
         // Take out everything except the episodes, since they shouldn't be sent in the body.
-        const {
-            name,
-            artist,
-            artwork,
-            feedUrl
-        } = this.state.podcast;
+        const { title, author, artwork, description, link, feedUrl } = this.state.podcast;
 
         axios.put(`http://localhost:4000/api/subscriptions/${this.state.podcast.id}`, {
-            name,
-            artist,
+            title,
+            author,
             artwork,
+            description,
+            link,
             feedUrl,
             favourite: !this.state.podcast.favourite
         }).then(() => {

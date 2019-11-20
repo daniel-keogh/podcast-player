@@ -20,6 +20,7 @@
 /* Selects all content within Body except for the NavBar */
 .Main .Body > *:not(.NavBar) {
     max-width: 1400px;
+    margin: auto;
 }
 
 .Player {
