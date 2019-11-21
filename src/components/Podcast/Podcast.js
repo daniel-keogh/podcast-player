@@ -71,7 +71,7 @@ class Podcast extends Component {
                 <List>
                     {episodes}
                 </List>
-                {/* Only display the "Load More" button if there are episodes that aren't yet visible. */}
+                {/* Only display the "Show More" button if there are episodes that aren't yet visible. */}
                 {this.state.podcast.episodes && this.state.podcast.episodes.length >= this.state.numEpisodes
                     ? (
                         <Button
@@ -82,9 +82,9 @@ class Podcast extends Component {
                             variant="outlined"
                             color="primary"
                             size="large"
-                            onClick={this.handleLoadMoreClicked}
+                            onClick={this.handleShowMoreClicked}
                         >
-                            Load More
+                            Show More
                         </Button>
                     ) : null
                 }
@@ -93,7 +93,7 @@ class Podcast extends Component {
     }
 
     // Display another 50 episodes whenever the button is clicked
-    handleLoadMoreClicked = () => {
+    handleShowMoreClicked = () => {
         this.setState(state => ({
             numEpisodes: state.numEpisodes + 50
         }));

@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const path = require('path');
 const FeedParser = require('feedparser');
 const mongoose = require('mongoose');
 const request = require('request');
@@ -17,6 +18,9 @@ mongoose.connect(mongodb, {
 
 const PodcastModel = require('./models/podcast');
 
+app.use(express.static(path.join(__dirname, '../build')));
+app.use('/static', express.static(path.join(__dirname, 'build//static')));
+
 app.use(bodyParser.json());
 app.use(cors());
 app.use((req, res, next) => {
@@ -27,10 +31,10 @@ app.use((req, res, next) => {
 });
 
 app.get('/api/search', (req, res) => {
-    const defaultLimit = 15;
+    const limit = 15;
 
     // Search iTunes using the query parameters sent by the client.
-    axios.get(`https://itunes.apple.com/search?term=${req.query.term}&limit=${req.query.limit || defaultLimit}&entity=podcast`)
+    axios.get(`https://itunes.apple.com/search?term=${req.query.term}&limit=${req.query.limit || limit}&entity=podcast`)
         .then(data => {
             return data.data;
         })
@@ -171,6 +175,10 @@ app.delete('/api/subscriptions/:id', (req, res) => {
             res.status(200).send(data);
         }
     });
+});
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname + '/../build/index.html'));
 });
 
 app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
