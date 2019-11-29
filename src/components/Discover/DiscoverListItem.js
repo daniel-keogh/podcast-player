@@ -6,7 +6,7 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
+import CheckCircleOutline from '@material-ui/icons/CheckCircleOutline';
 import axios from 'axios';
 
 class DiscoverListItem extends Component {
@@ -31,7 +31,7 @@ class DiscoverListItem extends Component {
                             color="secondary"
                             onClick={this.handleSubscribe}
                         >
-                            {this.state.isSubscribed ? <RemoveCircleOutlineIcon color="secondary" /> : <AddCircleOutlineIcon color="primary" />}
+                            {this.state.isSubscribed ? <CheckCircleOutline color="secondary" /> : <AddCircleOutlineIcon color="primary" />}
                         </IconButton>
                     </ListItemSecondaryAction>
                 </ListItem>
