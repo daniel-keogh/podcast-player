@@ -21,7 +21,6 @@ function FeedFormDialog(props) {
                     label="Feed URL"
                     type="url"
                     error={props.error}
-                    value={props.newFeed}
                     onChange={props.onFormChange}
                 />
             </DialogContent>

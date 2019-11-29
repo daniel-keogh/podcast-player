@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
+import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
-import TextField from '@material-ui/core/TextField';
 import RssFeedIcon from '@material-ui/icons/RssFeed';
 import DiscoverListItem from './DiscoverListItem';
 import FeedFormDialog from './FeedFormDialog';
 import NavBar from '../NavBar/NavBar';
+import NoResultsFound from './NoResultsFound';
+import SearchForm from './SearchForm';
 import axios from 'axios';
 
 class Discover extends Component {
@@ -14,9 +16,10 @@ class Discover extends Component {
             open: false,
             error: false
         },
+        newFeed: '',
+        noResultsFound: false,
         searchTerm: '',
-        searchResults: [],
-        newFeed: ''
+        searchResults: []
     }
 
     render() {
@@ -40,35 +43,24 @@ class Discover extends Component {
                     </IconButton>
                 </NavBar>
 
-                <form
-                    onSubmit={this.handleSearch}
-                    style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        width: "100%"
-                    }}
-                >
-                    <div style={{
-                        padding: "20px",
-                        width: "100%"
-                    }}>
-                        <TextField
-                            autoFocus
-                            fullWidth
-                            id="searchTerm"
-                            label="Search Podcasts..."
-                            margin="normal"
-                            variant="filled"
-                            type="text"
-                            value={this.state.searchTerm}
-                            onChange={this.handleFormChange}
-                        />
-                    </div>
-                </form>
+                <div>
+                    <SearchForm
+                        searchLabel="Search Podcasts..."
+                        searchTerm={this.state.searchTerm}
+                        onFormChange={this.handleFormChange}
+                        onSubmit={this.handleSearch}
+                    />
+                    <Divider />
+                </div>
 
-                <List>
-                    {items}
-                </List>
+                {/* Show the search results list, or the <NoResultsFound/> component if there were none. */}
+                {!this.state.noResultsFound ? (
+                    <div>
+                        <List>
+                            {items}
+                        </List>
+                    </div>
+                ) : <NoResultsFound />}
 
                 <FeedFormDialog
                     open={this.state.dialog.open}
@@ -81,21 +73,63 @@ class Discover extends Component {
         );
     }
 
-    handleFormChange = (event) => {
-        this.setState({
-            [event.target.id]: event.target.value
-        });
-    }
-
     handleSearch = (e) => {
+        // Don't search for anything if the searchbox is empty.
+        if (!this.state.searchTerm) {
+            e.preventDefault();
+            return;
+        }
+
+        // Search for the query entered into the search box.
         axios.get(`http://localhost:4000/api/search/?term=${encodeURIComponent(this.state.searchTerm)}`)
             .then(data => {
+                if (!data.data.results.length) {
+                    throw new Error("No search results found.");
+                } else {
+                    this.setState({
+                        searchResults: data.data.results,
+                        noResultsFound: false
+                    });
+                }
+            })
+            .catch(() => {
                 this.setState({
-                    searchResults: data.data.results
+                    noResultsFound: true
                 });
             });
 
         e.preventDefault();
+    }
+
+    // Post the RSS feed entered in the dialog box to the server.
+    handleSubscribeFromFeed = () => {
+        const showDialogError = () => {
+            this.setState({
+                dialog: {
+                    open: true,
+                    error: true
+                }
+            });
+        };
+
+        // Show an error if the form is blank.
+        if (this.state.newFeed === '') {
+            showDialogError();
+        } else {
+            axios.post(`http://localhost:4000/api/subscriptions`, {
+                feedUrl: this.state.newFeed
+            }).then(() => {
+                this.handleDialogClose();
+            }).catch(() => {
+                showDialogError();
+            });
+        }
+    }
+
+    handleFormChange = (event) => {
+        this.setState({
+            [event.target.id]: event.target.value
+        });
     }
 
     handleDialogOpen = () => {
@@ -114,29 +148,6 @@ class Discover extends Component {
                 open: false
             }
         });
-    }
-
-    handleSubscribeFromFeed = () => {
-        const showDialogError = () => {
-            this.setState({
-                dialog: {
-                    open: true,
-                    error: true
-                }
-            });
-        };
-
-        if (this.state.newFeed === '') {
-            showDialogError();
-        } else {
-            axios.post(`http://localhost:4000/api/subscriptions`, {
-                feedUrl: this.state.newFeed
-            }).then(() => {
-                this.handleDialogClose();
-            }).catch(() => {
-                showDialogError()
-            });
-        }
     }
 }
 
