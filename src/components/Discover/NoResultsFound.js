@@ -1,19 +1,12 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
-const useStyles = makeStyles(() => ({
-    noResultsFound: {
-        textAlign: "center",
-        padding: "50px"
-    }
-}));
-
 function NoResultsFound() {
-    const classes = useStyles();
-
     return (
-        <div className={classes.noResultsFound}>
+        <div style={{
+            textAlign: "center",
+            padding: "50px"
+        }}>
             <Typography variant="h6">
                 No Results Found...
             </Typography>

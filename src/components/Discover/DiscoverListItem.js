@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Avatar from '@material-ui/core/Avatar';
-import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
@@ -18,7 +17,7 @@ class DiscoverListItem extends Component {
     render() {
         return (
             <React.Fragment>
-                <ListItem>
+                <ListItem divider>
                     <ListItemAvatar>
                         <Avatar src={this.props.artwork} />
                     </ListItemAvatar>
@@ -36,7 +35,6 @@ class DiscoverListItem extends Component {
                         </IconButton>
                     </ListItemSecondaryAction>
                 </ListItem>
-                <Divider variant="inset" component="li" />
             </React.Fragment>
         );
     }

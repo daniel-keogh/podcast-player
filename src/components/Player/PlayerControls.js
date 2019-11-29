@@ -84,7 +84,7 @@ function PlayerControls(props) {
     );
 }
 
-/* Convert from seconds to HH:MM:SS
+/* The HTML <audio> element times are in seconds, so need to convert from seconds to HH:MM:SS
  * Based on this S.O. answer: https://stackoverflow.com/a/37096512
  */
 function formatSeconds(secs) {

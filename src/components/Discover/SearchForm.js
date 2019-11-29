@@ -10,14 +10,14 @@ function SearchForm(props) {
             <TextField
                 autoFocus
                 fullWidth
-                id="searchTerm"
+                name="searchTerm"
                 margin="normal"
-                variant="filled"
                 type="text"
+                variant="filled"
                 label={props.searchLabel}
                 value={props.searchTerm}
                 onChange={props.onFormChange}
-                // Put a search button at end of TextField
+                // Put a search button at end of the TextField.
                 InputProps={{
                     endAdornment: (
                         <InputAdornment>

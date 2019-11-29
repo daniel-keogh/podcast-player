@@ -68,10 +68,12 @@ class Podcast extends Component {
                         />
                     ) : null
                 }
+
                 <List>
                     {episodes}
                 </List>
-                {/* Only display the "Show More" button if there are episodes that aren't yet visible. */}
+
+                {/* Only display the "Show More" button if there are episodes that aren't yet visible in the List. */}
                 {this.state.podcast.episodes && this.state.podcast.episodes.length >= this.state.numEpisodes
                     ? (
                         <Button

@@ -6,13 +6,14 @@ import ListItemText from '@material-ui/core/ListItemText';
 import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
 
 function EpisodeListItem(props) {
+    // Play the episode when the play IconButton is clicked.
     const handlePlay = () => {
         props.playEpisode({
             src: props.episode.audio.url,
             epTitle: props.episode.title,
             podTitle: props.podcastTitle
         });
-    }
+    };
 
     return (
         <React.Fragment>

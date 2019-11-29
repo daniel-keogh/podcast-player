@@ -9,20 +9,16 @@ import axios from 'axios';
 import './Subscriptions.css';
 
 class Subscriptions extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            subscriptions: [],
-            noSubscriptions: false
-        };
+    state = {
+        subscriptions: [],
+        noSubscriptions: false
     }
 
     componentDidMount() {
         axios.get(`http://localhost:4000/api/subscriptions`)
             .then(res => {
                 if (res.status !== 200 || res.data.subscriptions.length === 0) {
-                    throw new Error();
+                    throw new Error("No subscriptions");
                 } else {
                     this.setState({
                         subscriptions: res.data.subscriptions,

@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 function Welcome() {
     return (
         <div style={{ textAlign: "center" }}>
-            <Typography variant="h5" component="h5">
+            <Typography variant="h5">
                 There's nothing here...
             </Typography>
             <Button

@@ -16,9 +16,9 @@ function FeedFormDialog(props) {
                 <TextField
                     autoFocus
                     fullWidth
-                    margin="dense"
-                    id="newFeed"
                     label="Feed URL"
+                    margin="dense"
+                    name="newFeed"
                     type="url"
                     error={props.error}
                     onChange={props.onFormChange}

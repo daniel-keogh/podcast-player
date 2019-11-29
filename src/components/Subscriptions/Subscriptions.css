@@ -12,11 +12,11 @@
 }
 
 @media(max-width: 1400px) {
-    .subs-grid {
-        padding: 25px 0;
-    }
-
     .subs-grid-wrapper {
         margin: 0;
+    }
+    
+    .subs-grid {
+        padding: 25px 0;
     }
 }

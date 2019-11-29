@@ -1,21 +1,23 @@
+const axios = require('axios');
 const express = require('express');
-const cors = require('cors');
 const bodyParser = require('body-parser');
-const path = require('path');
+const cors = require('cors');
 const FeedParser = require('feedparser');
 const mongoose = require('mongoose');
+const path = require('path');
 const request = require('request');
-const axios = require('axios');
 
 const app = express();
 const PORT = 4000;
 
+// Import connection string and connect to MongoDB.
 const mongodb = require('./config/keys').mongoURI;
 mongoose.connect(mongodb, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
 
+// Import data model.
 const PodcastModel = require('./models/podcast');
 
 app.use(express.static(path.join(__dirname, '../build')));
@@ -30,30 +32,6 @@ app.use((req, res, next) => {
     next();
 });
 
-app.get('/api/search', (req, res) => {
-    const limit = 15;
-
-    // Search iTunes using the query parameters sent by the client.
-    axios.get(`https://itunes.apple.com/search?term=${req.query.term}&limit=${req.query.limit || limit}&entity=podcast`)
-        .then(data => {
-            return data.data;
-        })
-        .then(data => {
-            const results = data.results.map(result => {
-                return {
-                    title: result.collectionName,
-                    author: result.artistName,
-                    artwork: result.artworkUrl100,
-                    feedUrl: result.feedUrl
-                }
-            });
-            res.status(200).json({ results });
-        })
-        .catch(() => {
-            res.status(400).json({ results: [] })
-        });
-});
-
 app.get('/api/subscriptions', (req, res) => {
     PodcastModel.find({}, (err, subscriptions) => {
         if (!subscriptions) {
@@ -65,8 +43,8 @@ app.get('/api/subscriptions', (req, res) => {
 });
 
 /* Get all the episodes of a particular subscription by parsing its RSS feed.
- * The code below uses feedparser [https://www.npmjs.com/package/feedparser], 
- * and is loosely based on this demo: https://github.com/scripting/feedParserDemo
+ * The code below uses feedparser, and is loosely based on both this demo: [https://github.com/scripting/feedParserDemo]
+ * and the example included in the docs: [https://www.npmjs.com/package/feedparser#usage].
  */
 app.get('/api/subscriptions/:id', (req, res) => {
     PodcastModel.findById({ _id: req.params.id }, (err, data) => {
@@ -122,7 +100,7 @@ app.get('/api/subscriptions/:id', (req, res) => {
 });
 
 app.post('/api/subscriptions', (req, res) => {
-    //  Using feedparser, extract the info from the RSS feed sent by the client.
+    // Use feedparser again, this time to extract the podcast's information from the RSS feed sent by the client.
     const feedparser = new FeedParser({ addmeta: false });
 
     try {
@@ -140,6 +118,7 @@ app.post('/api/subscriptions', (req, res) => {
     }
 
     feedparser.on('readable', function () {
+        // All of the properties needed are in the `meta` section of the feed.
         PodcastModel.create({
             title: this.meta.title,
             author: this.meta.author,
@@ -175,6 +154,30 @@ app.delete('/api/subscriptions/:id', (req, res) => {
             res.status(200).send(data);
         }
     });
+});
+
+app.get('/api/search', (req, res) => {
+    const limit = 15;
+
+    // Search iTunes for podcasts related to the `term` query parameter sent by the client.
+    axios.get(`https://itunes.apple.com/search?term=${req.query.term}&limit=${req.query.limit || limit}&entity=podcast`)
+        .then(data => {
+            return data.data;
+        })
+        .then(data => {
+            const results = data.results.map(result => {
+                return {
+                    title: result.collectionName,
+                    author: result.artistName,
+                    artwork: result.artworkUrl100,
+                    feedUrl: result.feedUrl
+                };
+            });
+            res.status(200).json({ results });
+        })
+        .catch(() => {
+            res.status(400).json({ results: [] })
+        });
 });
 
 app.get('*', (req, res) => {

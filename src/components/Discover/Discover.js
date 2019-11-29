@@ -53,7 +53,7 @@ class Discover extends Component {
                     <Divider />
                 </div>
 
-                {/* Show the search results list, or the <NoResultsFound/> component if there were none. */}
+                {/* Show the search results list, or the <NoResultsFound/> component if there were no results. */}
                 {!this.state.noResultsFound ? (
                     <div>
                         <List>
@@ -71,6 +71,12 @@ class Discover extends Component {
                     onSubscribe={this.handleSubscribeFromFeed} />
             </React.Fragment>
         );
+    }
+
+    handleFormChange = (event) => {
+        this.setState({
+            [event.target.name]: event.target.value
+        });
     }
 
     handleSearch = (e) => {
@@ -124,12 +130,6 @@ class Discover extends Component {
                 showDialogError();
             });
         }
-    }
-
-    handleFormChange = (event) => {
-        this.setState({
-            [event.target.id]: event.target.value
-        });
     }
 
     handleDialogOpen = () => {
