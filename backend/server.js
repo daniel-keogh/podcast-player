@@ -7,9 +7,6 @@ const mongoose = require('mongoose');
 const path = require('path');
 const request = require('request');
 
-const app = express();
-const PORT = 4000;
-
 // Import connection string and connect to MongoDB.
 const mongodb = require('./config/keys').mongoURI;
 mongoose.connect(mongodb, {
@@ -19,6 +16,9 @@ mongoose.connect(mongodb, {
 
 // Import data model.
 const PodcastModel = require('./models/podcast');
+
+const app = express();
+const PORT = 4000;
 
 app.use(express.static(path.join(__dirname, '../build')));
 app.use('/static', express.static(path.join(__dirname, 'build//static')));
@@ -42,18 +42,19 @@ app.get('/api/subscriptions', (req, res) => {
     });
 });
 
-/* Get all the episodes of a particular subscription by parsing its RSS feed.
- * The code below uses feedparser, and is loosely based on both this demo: [https://github.com/scripting/feedParserDemo]
- * and the example included in the docs: [https://www.npmjs.com/package/feedparser#usage].
- */
 app.get('/api/subscriptions/:id', (req, res) => {
     PodcastModel.findById({ _id: req.params.id }, (err, data) => {
         if (!data) {
             res.status(404).send({});
         } else {
-            const stream = request(data.feedUrl);
+            /* Get all the episodes of this podcast by parsing its RSS feed.
+             * The code below uses feedparser, and is loosely based on both this demo: [https://github.com/scripting/feedParserDemo]
+             * and the example included in the docs here: [https://www.npmjs.com/package/feedparser#usage].
+             */
             const feedparser = new FeedParser({ addmeta: false });
             const feedItems = [];
+
+            const stream = request(data.feedUrl);
 
             stream.on('response', function (response) {
                 if (response.statusCode !== 200) {
@@ -63,6 +64,9 @@ app.get('/api/subscriptions/:id', (req, res) => {
                 }
             });
 
+            /* Read through each item in the feed and add it to the `feedItems` array.
+             * Each feedItem contains a title, date, and an audio file.
+             */
             feedparser.on('readable', function () {
                 try {
                     const item = this.read();
@@ -79,6 +83,7 @@ app.get('/api/subscriptions/:id', (req, res) => {
             });
 
             feedparser.on('end', function () {
+                // Send everything in the DB, as well as the `feedItems` array.
                 res.json({
                     id: data.id,
                     title: data.title,
@@ -100,10 +105,10 @@ app.get('/api/subscriptions/:id', (req, res) => {
 });
 
 app.post('/api/subscriptions', (req, res) => {
-    // Use feedparser again, this time to extract the podcast's information from the RSS feed sent by the client.
     const feedparser = new FeedParser({ addmeta: false });
 
     try {
+        // Extract the podcast's information from the RSS feed sent by the client.
         const stream = request(req.body.feedUrl);
 
         stream.on('response', function (response) {

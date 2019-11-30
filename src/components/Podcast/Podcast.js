@@ -41,7 +41,7 @@ class Podcast extends Component {
             }
         }
 
-        // If the title was passed as a prop use that, otherwise wait until componentDidMount() updates the state.
+        // If the title was passed as a prop use that, otherwise wait until `componentDidMount()` updates the state.
         let navTitle;
         if (this.props.location.state && 'title' in this.props.location.state) {
             navTitle = this.props.location.state.title;
@@ -94,7 +94,7 @@ class Podcast extends Component {
         );
     }
 
-    // Display another 50 episodes whenever the button is clicked
+    // Display another 50 episodes whenever the "Show More" button is clicked
     handleShowMoreClicked = () => {
         this.setState(state => ({
             numEpisodes: state.numEpisodes + 50
