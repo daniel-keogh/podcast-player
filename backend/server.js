@@ -11,13 +11,12 @@ const errorHandler = require('./middleware/errorHandler');
 const searchRoutes = require('./routes/search');
 const subscriptionRoutes = require('./routes/subscriptions');
 
-dotenv.config({ path: './backend/.env' });
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 4000;
 
 app.use(express.static(path.join(__dirname, '../build')));
-app.use('/static', express.static(path.join(__dirname, 'build//static')));
 
 app.use(express.json());
 app.use(cors({
