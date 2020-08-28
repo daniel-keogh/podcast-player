@@ -41,12 +41,21 @@ class DiscoverListItem extends Component {
 
     handleSubscribe = () => {
         if (!this.state.isSubscribed) {
-            axios.post(`http://localhost:4000/api/subscriptions`, {
+            axios.post(`/api/subscriptions`, {
                 feedUrl: this.props.feedUrl
             }).then(() => {
                 this.setState({
                     isSubscribed: true
                 });
+            }).catch(err => {
+                if (err.response) {
+                    // Already subscribed
+                    if (err.response.status === 422) {
+                        this.setState({
+                            isSubscribed: true
+                        });
+                    }
+                }
             });
         }
     }

@@ -42,7 +42,7 @@ class Player extends Component {
                 />
                 <audio
                     autoPlay
-                    src={this.state.src}
+                    src={this.state.src || null}
                     onTimeUpdate={this.handleTimeUpdate}
                     ref={this.audioElement}
                 >
@@ -53,14 +53,19 @@ class Player extends Component {
 
     handlePlayPauseClicked = () => {
         if (this.audioElement.current.paused) {
-            this.audioElement.current.play();
+            this.audioElement.current.play().catch(e => {
+                console.error(e.message)
+            });
         } else {
-            this.audioElement.current.pause();
+            if (!Number.isNaN(this.state.duration)) {
+                this.audioElement.current.pause();
+            }
         }
     }
 
     handleReplay = () => {
-        // If near the start of the file, set the current time to zero (prevents currentTime being set to a negative number).
+        // If near the start of the file, set the current time to zero 
+        // (prevents currentTime being set to a negative number).
         if ((this.state.currentTime - this.state.skipTime) <= 0) {
             this.audioElement.current.currentTime = 0;
         } else {
@@ -69,7 +74,8 @@ class Player extends Component {
     }
 
     handleForward = () => {
-        // If near the end of the file, set the current time to the total duration (prevents currentTime being set to a number greater than the duration).
+        // If near the end of the file, set the current time to the total duration
+        // (prevents currentTime being set to a number greater than the duration).
         if ((this.state.currentTime + this.state.skipTime) >= this.state.duration) {
             this.audioElement.current.currentTime = this.state.duration;
         } else {

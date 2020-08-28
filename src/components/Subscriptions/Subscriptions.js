@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
+import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
+import AddIcon from '@material-ui/icons/AddBox';
 import NavBar from '../NavBar/NavBar';
 import SubscriptionItem from './SubscriptionItem';
 import Welcome from './Welcome';
@@ -15,13 +16,13 @@ class Subscriptions extends Component {
     }
 
     componentDidMount() {
-        axios.get(`http://localhost:4000/api/subscriptions`)
+        axios.get(`/api/subscriptions`)
             .then(res => {
                 if (res.status !== 200 || res.data.subscriptions.length === 0) {
                     throw new Error("No subscriptions");
                 } else {
                     this.setState({
-                        subscriptions: res.data.subscriptions,
+                        subscriptions: res.data.subscriptions.sort(this.compare),
                         noSubscriptions: false
                     });
                 }
@@ -34,56 +35,52 @@ class Subscriptions extends Component {
     }
 
     render() {
-        if (this.state.noSubscriptions) {
-            return (
-                <React.Fragment>
-                    <NavBar title="Subscriptions" />
-                    <div style={{
-                        display: "flex",
-                        height: "100%",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        margin: "auto"
-                    }}>
-                        <Welcome style={{ height: "100%" }} />
-                    </div>
-                </React.Fragment>
-            );
-        }
-
         return (
             <React.Fragment>
-                <NavBar title="Subscriptions" />
-                <div className="subs-grid-wrapper">
-                    <div className="subs-grid">
-                        {this.state.subscriptions.map(sub => {
-                            return (
-                                <SubscriptionItem
-                                    clickable
-                                    key={sub._id}
-                                    id={sub._id}
-                                    title={sub.title}
-                                    artwork={sub.artwork}
-                                />
-                            );
-                        })}
+                <NavBar title="Subscriptions">
+                    <Tooltip title="Add Podcasts">
+                        <IconButton
+                            edge="end"
+                            color="inherit"
+                            component={Link}
+                            to="/discover"
+                        >
+                            <AddIcon />
+                        </IconButton>
+                    </Tooltip>
+                </NavBar>
+                {this.state.noSubscriptions ? (
+                    <div className="subs-welcome-wrapper">
+                        <Welcome className="subs-welcome" />
                     </div>
-                </div>
-                <Fab
-                    component={Link}
-                    to="/discover"
-                    color="secondary"
-                    style={{
-                        position: "sticky",
-                        float: "right",
-                        bottom: "32px",
-                        right: "32px",
-                    }}
-                >
-                    <AddIcon />
-                </Fab>
+                ) : (
+                        <div className="subs-grid">
+                            {this.state.subscriptions.map(sub => {
+                                return (
+                                    <SubscriptionItem
+                                        clickable
+                                        key={sub._id}
+                                        id={sub._id}
+                                        title={sub.title}
+                                        artwork={sub.artwork}
+                                    />
+                                );
+                            })}
+                        </div>
+                    )
+                }
             </React.Fragment>
         );
+    }
+
+    compare(a, b) {
+        if (a.title < b.title) {
+            return -1;
+        } else if (a.title > b.title) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 }
 

@@ -25,7 +25,7 @@
 
 .Player {
     min-height: 145px;
-    z-index: 22;
+    z-index: 100;
     position: relative;
 }
 

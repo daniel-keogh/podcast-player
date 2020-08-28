@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import Discover from './components/Discover/Discover';
 import Player from './components/Player/Player';
 import Podcast from './components/Podcast/Podcast';
@@ -22,9 +22,10 @@ class App extends Component {
                     <div className="Main">
                         <div className="Body">
                             <Switch>
-                                <Route exact path="/" component={Subscriptions} />
+                                <Route path="/subscriptions" component={Subscriptions} />
                                 <Route path="/discover" component={Discover} />
                                 <Route path="/podcast/:id" render={this.PodcastPage} />
+                                <Redirect from="/" to="/subscriptions" />
                             </Switch>
                         </div>
                     </div>

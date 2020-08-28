@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
+import Tooltip from '@material-ui/core/Tooltip';
 import RssFeedIcon from '@material-ui/icons/RssFeed';
 import DiscoverListItem from './DiscoverListItem';
 import FeedFormDialog from './FeedFormDialog';
@@ -38,9 +39,11 @@ class Discover extends Component {
         return (
             <React.Fragment>
                 <NavBar title="Discover" history={this.props.history}>
-                    <IconButton edge="end" color="inherit" onClick={this.handleDialogOpen}>
-                        <RssFeedIcon />
-                    </IconButton>
+                    <Tooltip title="Add an RSS Feed">
+                        <IconButton edge="end" color="inherit" onClick={this.handleDialogOpen}>
+                            <RssFeedIcon />
+                        </IconButton>
+                    </Tooltip>
                 </NavBar>
 
                 <div>
@@ -81,29 +84,25 @@ class Discover extends Component {
 
     handleSearch = (e) => {
         // Don't search for anything if the searchbox is empty.
-        if (!this.state.searchTerm) {
-            e.preventDefault();
-            return;
-        }
-
-        // Search for the query entered into the search box.
-        axios.get(`http://localhost:4000/api/search/?term=${encodeURIComponent(this.state.searchTerm)}`)
-            .then(data => {
-                if (!data.data.results.length) {
-                    throw new Error("No search results found.");
-                } else {
+        if (this.state.searchTerm) {
+            // Search for the query entered into the search box.
+            axios.get(`/api/search/?term=${encodeURIComponent(this.state.searchTerm)}`)
+                .then(data => {
+                    if (!data.data.results.length) {
+                        throw new Error("No search results found.");
+                    } else {
+                        this.setState({
+                            searchResults: data.data.results,
+                            noResultsFound: false
+                        });
+                    }
+                })
+                .catch(() => {
                     this.setState({
-                        searchResults: data.data.results,
-                        noResultsFound: false
+                        noResultsFound: true
                     });
-                }
-            })
-            .catch(() => {
-                this.setState({
-                    noResultsFound: true
                 });
-            });
-
+        }
         e.preventDefault();
     }
 
@@ -118,11 +117,11 @@ class Discover extends Component {
             });
         };
 
-        // Show an error if the form is blank.
-        if (this.state.newFeed === '') {
+        // Show an error if an invalid URL is given.
+        if (!this.isURL(this.state.newFeed)) {
             showDialogError();
         } else {
-            axios.post(`http://localhost:4000/api/subscriptions`, {
+            axios.post(`/api/subscriptions`, {
                 feedUrl: this.state.newFeed
             }).then(() => {
                 this.handleDialogClose();
@@ -148,6 +147,16 @@ class Discover extends Component {
                 open: false
             }
         });
+    }
+
+    isURL(str) {
+        try {
+            new URL(str);
+        } catch (_) {
+            return false;
+        }
+
+        return true;
     }
 }
 

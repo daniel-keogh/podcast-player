@@ -1,6 +1,14 @@
-.subs-grid-wrapper {
-    margin: auto;
-    min-height: 100%;
+.subs-welcome-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.subs-welcome {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: center;
 }
 
 .subs-grid {
@@ -8,15 +16,5 @@
     grid-template-columns: repeat(auto-fit, 150px);
     gap: 1em;
     justify-content: center;
-    padding: 25px;
-}
-
-@media(max-width: 1400px) {
-    .subs-grid-wrapper {
-        margin: 0;
-    }
-    
-    .subs-grid {
-        padding: 25px 0;
-    }
+    padding: 28px 14px;
 }

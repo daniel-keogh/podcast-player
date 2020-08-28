@@ -14,7 +14,7 @@ class Podcast extends Component {
     }
 
     componentDidMount() {
-        axios.get(`http://localhost:4000/api/subscriptions/${this.props.match.params.id}`)
+        axios.get(`/api/subscriptions/${this.props.match.params.id}?limit=${this.state.numEpisodes}`)
             .then(res => {
                 this.setState({
                     podcast: res.data
@@ -94,16 +94,25 @@ class Podcast extends Component {
         );
     }
 
-    // Display another 50 episodes whenever the "Show More" button is clicked
+    // Display another 100 episodes whenever the "Show More" button is clicked
     handleShowMoreClicked = () => {
-        this.setState(state => ({
-            numEpisodes: state.numEpisodes + 50
-        }));
+        const increase = 100;
+
+        axios.get(`/api/subscriptions/${this.props.match.params.id}?limit=${this.state.numEpisodes + increase}`)
+            .then(res => {
+                this.setState(state => ({
+                    podcast: {
+                        ...state.podcast,
+                        episodes: res.data.episodes
+                    },
+                    numEpisodes: state.numEpisodes + increase
+                }));
+            });
     }
 
     handleSubscribe = () => {
         if (this.state.isSubscribed) {
-            axios.delete(`http://localhost:4000/api/subscriptions/${this.state.podcast.id}`)
+            axios.delete(`/api/subscriptions/${this.state.podcast._id}`)
                 .then(() => {
                     // Unfavourite the podcast after unsubscribing
                     if (this.state.podcast.favourite) {
@@ -121,27 +130,26 @@ class Podcast extends Component {
                 });
         } else {
             // Re-subscribe
-            axios.post(`http://localhost:4000/api/subscriptions`, {
+            axios.post(`/api/subscriptions`, {
                 feedUrl: this.state.podcast.feedUrl
-            }).then(() => {
-                this.setState(() => ({
+            }).then(res => {
+                this.setState(state => ({
+                    podcast: {
+                        ...state.podcast,
+                        ...res.data
+                    },
                     isSubscribed: true
-                }))
+                }));
             });
         }
     }
 
     handleFavourite = () => {
         // Take out everything except the episodes, since they shouldn't be sent in the body.
-        const { title, author, artwork, description, link, feedUrl } = this.state.podcast;
+        const { episodes, ...podcast } = this.state.podcast;
 
-        axios.put(`http://localhost:4000/api/subscriptions/${this.state.podcast.id}`, {
-            title,
-            author,
-            artwork,
-            description,
-            link,
-            feedUrl,
+        axios.put(`/api/subscriptions/${this.state.podcast._id}`, {
+            ...podcast,
             favourite: !this.state.podcast.favourite
         }).then(() => {
             this.setState(state => ({

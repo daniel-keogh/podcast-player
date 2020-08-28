@@ -3,9 +3,9 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { Link } from 'react-router-dom';
 
-function Welcome() {
+function Welcome(props) {
     return (
-        <div style={{ textAlign: "center" }}>
+        <div className={props.className}>
             <Typography variant="h5">
                 There's nothing here...
             </Typography>
