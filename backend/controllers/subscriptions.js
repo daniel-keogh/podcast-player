@@ -1,7 +1,8 @@
-const Podcast = require('../models/podcast');
 const FeedParser = require('feedparser');
 const fetch = require('node-fetch');
 const { validationResult } = require('express-validator');
+const Podcast = require('../models/podcast');
+const redisClient = require('../db/redis');
 
 exports.getAllSubscriptions = async (req, res, next) => {
     try {
@@ -65,19 +66,31 @@ exports.getSubscription = (req, res, next) => {
                         })
                         .on('end', function () {
                             // Send everything in the DB, as well as the `feedItems` array.
-                            const { _id, title, author, artwork, favourite, description, link, feedUrl } = sub;
+                            const data = {
+                                _id: sub._id,
+                                title: sub.title,
+                                author: sub.author,
+                                artwork: sub.artwork,
+                                favourite: sub.favourite,
+                                description: sub.description,
+                                link: sub.link,
+                                feedUrl: sub.feedUrl,
+                            };
 
-                            res.status(200).json({
-                                _id,
-                                title,
-                                author,
-                                artwork,
-                                favourite,
-                                description,
-                                link,
-                                feedUrl,
-                                episodes: feedItems.slice(0, req.query.limit),
-                            });
+                            try {
+                                // Cache with Redis
+                                redisClient.setex(data._id + "", 600, JSON.stringify({
+                                    ...data,
+                                    episodes: feedItems
+                                }));
+
+                                res.status(200).json({
+                                    ...data,
+                                    episodes: feedItems.slice(0, req.query.limit)
+                                });
+                            } catch (err) {
+                                this.emit('error', err);
+                            }
                         })
                         .on('error', function (err) {
                             err.status = 500;
@@ -189,6 +202,14 @@ exports.updateSubscription = (req, res, next) => {
 
 exports.deleteSubscription = async (req, res, next) => {
     try {
+        // Check for validation errors
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            const error = new Error(errors.array()[0].msg);
+            error.status = 422;
+            throw error;
+        }
+
         const sub = await Podcast.findByIdAndDelete(req.params.id);
 
         if (!sub) {

@@ -25,7 +25,8 @@
     "helmet": "^4.1.0",
     "mongoose": "^5.10.2",
     "morgan": "^1.10.0",
-    "node-fetch": "^2.6.0"
+    "node-fetch": "^2.6.0",
+    "redis": "^3.0.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"

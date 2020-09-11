@@ -1,5 +1,5 @@
 const express = require('express');
-const { body, query } = require('express-validator');
+const { body, query, param } = require('express-validator');
 const {
     getAllSubscriptions,
     getSubscription,
@@ -7,6 +7,7 @@ const {
     updateSubscription,
     deleteSubscription,
 } = require('../controllers/subscriptions');
+const { getCachedSubscription } = require('../middleware/cache');
 const Podcast = require('../models/podcast');
 
 const router = express.Router();
@@ -14,11 +15,14 @@ const router = express.Router();
 router.get('/', getAllSubscriptions);
 
 router.get('/:id', [
+    param('id')
+        .isMongoId()
+        .withMessage('id is invalid'),
     query('limit')
         .isInt({ min: 1 })
         .withMessage('limit must be a number greater than zero')
         .optional(),
-], getSubscription);
+], getCachedSubscription, getSubscription);
 
 router.post('/', [
     body('feedUrl')
@@ -35,6 +39,9 @@ router.post('/', [
 ], addSubscription);
 
 router.put('/:id', [
+    param('id')
+        .isMongoId()
+        .withMessage('id is invalid'),
     body('title')
         .notEmpty()
         .withMessage('title cannot be empty')
@@ -84,6 +91,10 @@ router.put('/:id', [
         .withMessage('favourite must be a boolean'),
 ], updateSubscription);
 
-router.delete('/:id', deleteSubscription);
+router.delete('/:id', [
+    param('id')
+        .isMongoId()
+        .withMessage('id is invalid'),
+], deleteSubscription);
 
 module.exports = router;
