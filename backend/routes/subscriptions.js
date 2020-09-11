@@ -8,6 +8,7 @@ const {
     deleteSubscription,
 } = require('../controllers/subscriptions');
 const { getCachedSubscription } = require('../middleware/cache');
+const isValid = require('../middleware/isValid');
 const Podcast = require('../models/podcast');
 
 const router = express.Router();
@@ -22,7 +23,7 @@ router.get('/:id', [
         .isInt({ min: 1 })
         .withMessage('limit must be a number greater than zero')
         .optional(),
-], getCachedSubscription, getSubscription);
+], isValid, getCachedSubscription, getSubscription);
 
 router.post('/', [
     body('feedUrl')
@@ -36,7 +37,7 @@ router.post('/', [
                 return Promise.reject(`Already subscribed to the given feedUrl`);
             }
         })
-], addSubscription);
+], isValid, addSubscription);
 
 router.put('/:id', [
     param('id')
@@ -89,12 +90,12 @@ router.put('/:id', [
         .withMessage('favourite cannot be empty')
         .isBoolean()
         .withMessage('favourite must be a boolean'),
-], updateSubscription);
+], isValid, updateSubscription);
 
 router.delete('/:id', [
     param('id')
         .isMongoId()
         .withMessage('id is invalid'),
-], deleteSubscription);
+], isValid, deleteSubscription);
 
 module.exports = router;

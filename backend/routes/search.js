@@ -1,6 +1,7 @@
 const express = require('express');
 const { query } = require('express-validator');
 const { search } = require('../controllers/search');
+const isValid = require('../middleware/isValid');
 
 const router = express.Router();
 
@@ -14,6 +15,6 @@ router.get('/', [
         .withMessage('term cannot be empty')
         .isString()
         .withMessage('term must be a string')
-], search);
+], isValid, search);
 
 module.exports = router;

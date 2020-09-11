@@ -1,15 +1,6 @@
 const fetch = require('node-fetch');
-const { validationResult } = require('express-validator');
 
 exports.search = (req, res, next) => {
-    // Check for validation errors
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        const error = new Error(errors.array()[0].msg);
-        error.status = 422;
-        throw error;
-    }
-
     const term = 'term=' + req.query.term;
     const limit = 'limit=' + (req.query.limit || 15);
 

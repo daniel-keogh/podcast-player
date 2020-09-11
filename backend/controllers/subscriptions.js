@@ -1,6 +1,5 @@
-const FeedParser = require('feedparser');
 const fetch = require('node-fetch');
-const { validationResult } = require('express-validator');
+const FeedParser = require('feedparser');
 const Podcast = require('../models/podcast');
 const redisClient = require('../db/redis');
 
@@ -15,14 +14,6 @@ exports.getAllSubscriptions = async (req, res, next) => {
 };
 
 exports.getSubscription = (req, res, next) => {
-    // Check for validation errors
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        const error = new Error(errors.array()[0].msg);
-        error.status = 422;
-        throw error;
-    }
-
     Podcast.findById(req.params.id)
         .then(sub => {
             if (!sub) {
@@ -107,14 +98,6 @@ exports.getSubscription = (req, res, next) => {
 };
 
 exports.addSubscription = (req, res, next) => {
-    // Check for validation errors
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        const error = new Error(errors.array()[0].msg);
-        error.status = 422;
-        throw error;
-    }
-
     // Extract the podcast's information from the RSS feed sent by the client.
     fetch(req.body.feedUrl)
         .then(data => {
@@ -161,14 +144,6 @@ exports.addSubscription = (req, res, next) => {
 };
 
 exports.updateSubscription = (req, res, next) => {
-    // Check for validation errors
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        const error = new Error(errors.array()[0].msg);
-        error.status = 422;
-        throw error;
-    }
-
     Podcast.findById(req.params.id)
         .then(podcast => {
             if (!podcast) {
@@ -202,14 +177,6 @@ exports.updateSubscription = (req, res, next) => {
 
 exports.deleteSubscription = async (req, res, next) => {
     try {
-        // Check for validation errors
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            const error = new Error(errors.array()[0].msg);
-            error.status = 422;
-            throw error;
-        }
-
         const sub = await Podcast.findByIdAndDelete(req.params.id);
 
         if (!sub) {

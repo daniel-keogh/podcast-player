@@ -6,6 +6,7 @@ module.exports = (error, req, res, next) => {
     }
 
     res.status(status).json({
-        msg: error.message || 'Internal Server Error'
+        msg: error.message || 'Internal Server Error',
+        statusCode: status
     });
 };
