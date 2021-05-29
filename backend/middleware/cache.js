@@ -12,7 +12,7 @@ exports.getCachedSubscription = (req, res, next) => {
 
             res.status(200).json({
                 ...subscription,
-                episodes: episodes.slice(0, req.query.limit)
+                episodes: episodes.slice(0, req.query.limit),
             });
         } else {
             next();
