@@ -5,9 +5,19 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import axios from 'axios';
 
-axios.defaults.baseURL = 'http://localhost:4000'
+import { AuthContextProvider } from './store/authContext';
+import { NowPlayingContextProvider } from './store/nowPlayingContext';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+axios.defaults.baseURL = 'http://localhost:4000';
+
+ReactDOM.render(
+    <AuthContextProvider>
+        <NowPlayingContextProvider>
+            <App />
+        </NowPlayingContextProvider>
+    </AuthContextProvider>,
+    document.getElementById('root')
+);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

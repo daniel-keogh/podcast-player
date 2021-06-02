@@ -4,20 +4,29 @@ import List from '@material-ui/core/List';
 import EpisodeListItem from './EpisodeListItem';
 import NavBar from '../NavBar/NavBar';
 import PodcastInfo from './PodcastInfo';
+import AuthContext from '../../store/authContext';
 import axios from 'axios';
 
 class Podcast extends Component {
+    static contextType = AuthContext;
+
     state = {
         podcast: {},
         numEpisodes: 50,
-        isSubscribed: true
-    }
+        isSubscribed: true,
+    };
 
     componentDidMount() {
-        axios.get(`/api/subscriptions/${this.props.match.params.id}?limit=${this.state.numEpisodes}`)
-            .then(res => {
+        axios
+            .get(
+                `/api/subscriptions/${this.props.match.params.id}?limit=${this.state.numEpisodes}`,
+                {
+                    headers: { Authorization: `Bearer ${this.context.token}` },
+                }
+            )
+            .then((res) => {
                 this.setState({
-                    podcast: res.data
+                    podcast: res.data,
                 });
             });
     }
@@ -32,7 +41,6 @@ class Podcast extends Component {
                             key={i}
                             episode={this.state.podcast.episodes[i]}
                             podcastTitle={this.state.podcast.title}
-                            playEpisode={this.props.playEpisode}
                         />
                     );
                 } else {
@@ -53,43 +61,38 @@ class Podcast extends Component {
             <React.Fragment>
                 <NavBar title={navTitle} history={this.props.history} />
                 {/* Only display the PodcastInfo component if `this.state.podcast` is not an empty object. */}
-                {Object.entries(this.state.podcast).length
-                    ? (
-                        <PodcastInfo
-                            title={this.state.podcast.title}
-                            author={this.state.podcast.author}
-                            description={this.state.podcast.description}
-                            artwork={this.state.podcast.artwork}
-                            link={this.state.podcast.link}
-                            favourite={this.state.podcast.favourite}
-                            isSubscribed={this.state.isSubscribed}
-                            onFavourite={this.handleFavourite}
-                            onSubscribe={this.handleSubscribe}
-                        />
-                    ) : null
-                }
+                {Object.entries(this.state.podcast).length ? (
+                    <PodcastInfo
+                        title={this.state.podcast.title}
+                        author={this.state.podcast.author}
+                        description={this.state.podcast.description}
+                        artwork={this.state.podcast.artwork}
+                        link={this.state.podcast.link}
+                        favourite={this.state.podcast.favourite}
+                        isSubscribed={this.state.isSubscribed}
+                        onFavourite={this.handleFavourite}
+                        onSubscribe={this.handleSubscribe}
+                    />
+                ) : null}
 
-                <List>
-                    {episodes}
-                </List>
+                <List>{episodes}</List>
 
                 {/* Only display the "Show More" button if there are episodes that aren't yet visible in the List. */}
-                {this.state.podcast.episodes && this.state.podcast.episodes.length >= this.state.numEpisodes
-                    ? (
-                        <Button
-                            style={{
-                                display: "block",
-                                margin: "32px auto"
-                            }}
-                            variant="outlined"
-                            color="primary"
-                            size="large"
-                            onClick={this.handleShowMoreClicked}
-                        >
-                            Show More
-                        </Button>
-                    ) : null
-                }
+                {this.state.podcast.episodes &&
+                this.state.podcast.episodes.length >= this.state.numEpisodes ? (
+                    <Button
+                        style={{
+                            display: 'block',
+                            margin: '32px auto',
+                        }}
+                        variant="outlined"
+                        color="primary"
+                        size="large"
+                        onClick={this.handleShowMoreClicked}
+                    >
+                        Show More
+                    </Button>
+                ) : null}
             </React.Fragment>
         );
     }
@@ -98,68 +101,97 @@ class Podcast extends Component {
     handleShowMoreClicked = () => {
         const increase = 100;
 
-        axios.get(`/api/subscriptions/${this.props.match.params.id}?limit=${this.state.numEpisodes + increase}`)
-            .then(res => {
-                this.setState(state => ({
+        axios
+            .get(
+                `/api/subscriptions/${this.props.match.params.id}?limit=${
+                    this.state.numEpisodes + increase
+                }`,
+                {
+                    headers: { Authorization: `Bearer ${this.context.token}` },
+                }
+            )
+            .then((res) => {
+                this.setState((state) => ({
                     podcast: {
                         ...state.podcast,
-                        episodes: res.data.episodes
+                        episodes: res.data.episodes,
                     },
-                    numEpisodes: state.numEpisodes + increase
+                    numEpisodes: state.numEpisodes + increase,
                 }));
             });
-    }
+    };
 
     handleSubscribe = () => {
         if (this.state.isSubscribed) {
-            axios.delete(`/api/subscriptions/${this.state.podcast._id}`)
+            axios
+                .delete(`/api/subscriptions/${this.state.podcast._id}`, {
+                    headers: { Authorization: `Bearer ${this.context.token}` },
+                })
                 .then(() => {
                     // Unfavourite the podcast after unsubscribing
                     if (this.state.podcast.favourite) {
-                        this.setState(state => ({
+                        this.setState((state) => ({
                             podcast: {
                                 ...state.podcast,
-                                favourite: false
-                            }
+                                favourite: false,
+                            },
                         }));
                     }
 
                     this.setState({
-                        isSubscribed: false
+                        isSubscribed: false,
                     });
                 });
         } else {
             // Re-subscribe
-            axios.post(`/api/subscriptions`, {
-                feedUrl: this.state.podcast.feedUrl
-            }).then(res => {
-                this.setState(state => ({
-                    podcast: {
-                        ...state.podcast,
-                        ...res.data
+            axios
+                .post(
+                    `/api/subscriptions`,
+                    {
+                        feedUrl: this.state.podcast.feedUrl,
                     },
-                    isSubscribed: true
-                }));
-            });
+                    {
+                        headers: {
+                            Authorization: `Bearer ${this.context.token}`,
+                        },
+                    }
+                )
+                .then((res) => {
+                    this.setState((state) => ({
+                        podcast: {
+                            ...state.podcast,
+                            ...res.data,
+                        },
+                        isSubscribed: true,
+                    }));
+                });
         }
-    }
+    };
 
     handleFavourite = () => {
         // Take out everything except the episodes, since they shouldn't be sent in the body.
         const { episodes, ...podcast } = this.state.podcast;
 
-        axios.put(`/api/subscriptions/${this.state.podcast._id}`, {
-            ...podcast,
-            favourite: !this.state.podcast.favourite
-        }).then(() => {
-            this.setState(state => ({
-                podcast: {
-                    ...state.podcast,
-                    favourite: !state.podcast.favourite
+        axios
+            .put(
+                `/api/subscriptions/${this.state.podcast._id}`,
+                {
+                    ...podcast,
+                    favourite: !this.state.podcast.favourite,
+                },
+                {
+                    headers: { Authorization: `Bearer ${this.context.token}` },
                 }
-            }));
-        });
-    }
+            )
+            .then(() => {
+                this.setState((state) => ({
+                    podcast: {
+                        ...state.podcast,
+                        favourite: !state.podcast.favourite,
+                    },
+                }));
+            });
+    };
 }
 
 export default Podcast;

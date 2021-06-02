@@ -6,30 +6,40 @@ import AddIcon from '@material-ui/icons/AddBox';
 import NavBar from '../NavBar/NavBar';
 import SubscriptionItem from './SubscriptionItem';
 import Welcome from './Welcome';
+
+import AuthContext from '../../store/authContext';
+
 import axios from 'axios';
 import './Subscriptions.css';
 
 class Subscriptions extends Component {
+    static contextType = AuthContext;
+
     state = {
         subscriptions: [],
-        noSubscriptions: false
-    }
+        noSubscriptions: false,
+    };
 
     componentDidMount() {
-        axios.get(`/api/subscriptions`)
-            .then(res => {
+        axios
+            .get(`/api/subscriptions`, {
+                headers: { Authorization: `Bearer ${this.context.token}` },
+            })
+            .then((res) => {
                 if (res.status !== 200 || res.data.subscriptions.length === 0) {
-                    throw new Error("No subscriptions");
+                    throw new Error('No subscriptions');
                 } else {
                     this.setState({
-                        subscriptions: res.data.subscriptions.sort(this.compare),
-                        noSubscriptions: false
+                        subscriptions: res.data.subscriptions.sort(
+                            this.compare
+                        ),
+                        noSubscriptions: false,
                     });
                 }
             })
             .catch(() => {
                 this.setState({
-                    noSubscriptions: true
+                    noSubscriptions: true,
                 });
             });
     }
@@ -54,21 +64,20 @@ class Subscriptions extends Component {
                         <Welcome className="subs-welcome" />
                     </div>
                 ) : (
-                        <div className="subs-grid">
-                            {this.state.subscriptions.map(sub => {
-                                return (
-                                    <SubscriptionItem
-                                        clickable
-                                        key={sub._id}
-                                        id={sub._id}
-                                        title={sub.title}
-                                        artwork={sub.artwork}
-                                    />
-                                );
-                            })}
-                        </div>
-                    )
-                }
+                    <div className="subs-grid">
+                        {this.state.subscriptions.map((sub) => {
+                            return (
+                                <SubscriptionItem
+                                    clickable
+                                    key={sub._id}
+                                    id={sub._id}
+                                    title={sub.title}
+                                    artwork={sub.artwork}
+                                />
+                            );
+                        })}
+                    </div>
+                )}
             </React.Fragment>
         );
     }

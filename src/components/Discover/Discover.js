@@ -9,19 +9,22 @@ import FeedFormDialog from './FeedFormDialog';
 import NavBar from '../NavBar/NavBar';
 import NoResultsFound from './NoResultsFound';
 import SearchForm from './SearchForm';
+import AuthContext from '../../store/authContext';
 import axios from 'axios';
 
 class Discover extends Component {
+    static contextType = AuthContext;
+
     state = {
         dialog: {
             open: false,
-            error: false
+            error: false,
         },
         newFeed: '',
         noResultsFound: false,
         searchTerm: '',
-        searchResults: []
-    }
+        searchResults: [],
+    };
 
     render() {
         const items = this.state.searchResults.map((item, index) => {
@@ -40,7 +43,11 @@ class Discover extends Component {
             <React.Fragment>
                 <NavBar title="Discover" history={this.props.history}>
                     <Tooltip title="Add an RSS Feed">
-                        <IconButton edge="end" color="inherit" onClick={this.handleDialogOpen}>
+                        <IconButton
+                            edge="end"
+                            color="inherit"
+                            onClick={this.handleDialogOpen}
+                        >
                             <RssFeedIcon />
                         </IconButton>
                     </Tooltip>
@@ -59,11 +66,11 @@ class Discover extends Component {
                 {/* Show the search results list, or the <NoResultsFound/> component if there were no results. */}
                 {!this.state.noResultsFound ? (
                     <div>
-                        <List>
-                            {items}
-                        </List>
+                        <List>{items}</List>
                     </div>
-                ) : <NoResultsFound />}
+                ) : (
+                    <NoResultsFound />
+                )}
 
                 <FeedFormDialog
                     open={this.state.dialog.open}
@@ -71,40 +78,51 @@ class Discover extends Component {
                     onDialogOpen={this.handleDialogOpen}
                     onDialogClose={this.handleDialogClose}
                     onFormChange={this.handleFormChange}
-                    onSubscribe={this.handleSubscribeFromFeed} />
+                    onSubscribe={this.handleSubscribeFromFeed}
+                />
             </React.Fragment>
         );
     }
 
     handleFormChange = (event) => {
         this.setState({
-            [event.target.name]: event.target.value
+            [event.target.name]: event.target.value,
         });
-    }
+    };
 
     handleSearch = (e) => {
         // Don't search for anything if the searchbox is empty.
         if (this.state.searchTerm) {
             // Search for the query entered into the search box.
-            axios.get(`/api/search/?term=${encodeURIComponent(this.state.searchTerm)}`)
-                .then(data => {
+            axios
+                .get(
+                    `/api/search/?term=${encodeURIComponent(
+                        this.state.searchTerm
+                    )}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${this.context.token}`,
+                        },
+                    }
+                )
+                .then((data) => {
                     if (!data.data.results.length) {
-                        throw new Error("No search results found.");
+                        throw new Error('No search results found.');
                     } else {
                         this.setState({
                             searchResults: data.data.results,
-                            noResultsFound: false
+                            noResultsFound: false,
                         });
                     }
                 })
                 .catch(() => {
                     this.setState({
-                        noResultsFound: true
+                        noResultsFound: true,
                     });
                 });
         }
         e.preventDefault();
-    }
+    };
 
     // Post the RSS feed entered in the dialog box to the server.
     handleSubscribeFromFeed = () => {
@@ -112,8 +130,8 @@ class Discover extends Component {
             this.setState({
                 dialog: {
                     open: true,
-                    error: true
-                }
+                    error: true,
+                },
             });
         };
 
@@ -121,33 +139,44 @@ class Discover extends Component {
         if (!this.isURL(this.state.newFeed)) {
             showDialogError();
         } else {
-            axios.post(`/api/subscriptions`, {
-                feedUrl: this.state.newFeed
-            }).then(() => {
-                this.handleDialogClose();
-            }).catch(() => {
-                showDialogError();
-            });
+            axios
+                .post(
+                    `/api/subscriptions`,
+                    {
+                        feedUrl: this.state.newFeed,
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${this.context.token}`,
+                        },
+                    }
+                )
+                .then(() => {
+                    this.handleDialogClose();
+                })
+                .catch(() => {
+                    showDialogError();
+                });
         }
-    }
+    };
 
     handleDialogOpen = () => {
         this.setState({
             dialog: {
                 error: false,
-                open: true
-            }
+                open: true,
+            },
         });
-    }
+    };
 
     handleDialogClose = () => {
         this.setState({
             dialog: {
                 error: false,
-                open: false
-            }
+                open: false,
+            },
         });
-    }
+    };
 
     isURL(str) {
         try {
