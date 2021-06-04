@@ -74,15 +74,16 @@ exports.login = (req, res, next) => {
 
 /** Resets the user's old password with a new one. */
 exports.passwordReset = (req, res, next) => {
-    const { email, password, oldPassword } = req.body;
+    const { password, oldPassword } = req.body;
 
-    User.findOne({ email })
+    User.findOne({ _id: req.user._id })
         .select('+password +salt')
         .exec()
         .then(async (user) => {
             if (user) {
                 // Check if the old password is correct
                 const hash = await bcrypt.hash(oldPassword, user.salt);
+
                 if (hash === user.password) {
                     user.password = password;
                     await user.save();

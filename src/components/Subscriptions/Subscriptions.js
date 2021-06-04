@@ -8,7 +8,7 @@ import AddIcon from '@material-ui/icons/AddBox';
 import NavBar from '../NavBar/NavBar';
 import SubscriptionItem from './SubscriptionItem';
 import Welcome from './Welcome';
-import axios from 'axios';
+import axios from '../../config/axios';
 import './Subscriptions.css';
 
 const useStyles = (theme) => ({

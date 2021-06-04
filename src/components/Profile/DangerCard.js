@@ -47,8 +47,12 @@ function DangerCard(props) {
     };
 
     const handleDialogSubmit = () => {
-        props.onProfileUpdated();
-        handleDialogClose();
+        if (dialog.type === 'CLOSE_ACCOUNT') {
+            props.onProfileDeleted();
+        } else {
+            props.onProfileUpdated();
+            handleDialogClose();
+        }
     };
 
     const listItems = [

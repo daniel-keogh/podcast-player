@@ -7,7 +7,7 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import CheckCircleOutline from '@material-ui/icons/CheckCircleOutline';
-import axios from 'axios';
+import axios from '../../config/axios';
 
 class DiscoverListItem extends Component {
     state = {

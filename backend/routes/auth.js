@@ -2,6 +2,7 @@ const express = require('express');
 const { body } = require('express-validator');
 const { login, passwordReset, registerUser } = require('../controllers/auth');
 const { isUniqueEmail } = require('../helpers/validators');
+const { authenticate } = require('../middleware/passport');
 const isValid = require('../middleware/isValid');
 
 const router = express.Router();
@@ -42,10 +43,8 @@ router.post(
 
 router.put(
     '/password_reset',
+    authenticate,
     [
-        body('email')
-            .isEmail()
-            .withMessage('Email must be a valid email address'),
         body('password')
             .isLength({ min: 6 })
             .withMessage('Password must be at least 6 characters long'),

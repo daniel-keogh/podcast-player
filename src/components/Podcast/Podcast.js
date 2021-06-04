@@ -5,7 +5,7 @@ import List from '@material-ui/core/List';
 import EpisodeListItem from './EpisodeListItem';
 import NavBar from '../NavBar/NavBar';
 import PodcastInfo from './PodcastInfo';
-import axios from 'axios';
+import axios from '../../config/axios';
 
 class Podcast extends Component {
     state = {

@@ -9,7 +9,7 @@ import FeedFormDialog from './FeedFormDialog';
 import NavBar from '../NavBar/NavBar';
 import NoResultsFound from './NoResultsFound';
 import SearchForm from './SearchForm';
-import axios from 'axios';
+import axios from '../../config/axios';
 
 class Discover extends Component {
     state = {

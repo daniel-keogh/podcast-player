@@ -7,7 +7,7 @@ import NavBar from '../NavBar/NavBar';
 import AuthContext from '../../store/authContext';
 import DangerCard from './DangerCard';
 import ProfileCard from './ProfileCard';
-import axios from 'axios';
+import axios from '../../config/axios';
 
 const useStyles = makeStyles((theme) => ({
     section: {
@@ -22,7 +22,6 @@ const useStyles = makeStyles((theme) => ({
 function Profile() {
     const classes = useStyles();
     const history = useHistory();
-
     const authContext = useContext(AuthContext);
 
     const [profileUpdated, setProfileUpdated] = useState(false);
@@ -33,6 +32,8 @@ function Profile() {
     });
 
     useEffect(() => {
+        if (!authContext.userId) return;
+
         axios.get(`/api/users/${authContext.userId}`).then((res) => {
             const { email, registeredSince, subscriptions } = res.data;
 
@@ -44,7 +45,7 @@ function Profile() {
 
             setProfileUpdated(false);
         });
-    }, [authContext.token, authContext.userId, profileUpdated]);
+    }, [authContext.userId, profileUpdated]);
 
     const handleProfileUpdated = () => setProfileUpdated(true);
 
@@ -80,7 +81,10 @@ function Profile() {
                     >
                         Danger Area
                     </Typography>
-                    <DangerCard onProfileUpdated={handleProfileUpdated} />
+                    <DangerCard
+                        onProfileUpdated={handleProfileUpdated}
+                        onProfileDeleted={handleLogout}
+                    />
                 </section>
             </Container>
         </React.Fragment>

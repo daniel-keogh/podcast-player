@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react';
-import axios from 'axios';
+import axios from '../config/axios';
 
 import AuthContext from '../store/authContext';
 
@@ -18,7 +18,7 @@ function useAuth() {
         ) {
             setError('All fields are required.');
             return false;
-        } else if (password.length < 6) {
+        } else if (password !== undefined && password.length < 6) {
             setError('Password must be longer than 6 characters.');
             return false;
         } else if (
@@ -92,7 +92,7 @@ function useAuth() {
         }
 
         return axios
-            .put(`/api/auth/password_reset`, {
+            .put(`/api/password_reset`, {
                 oldPassword,
                 password,
             })
