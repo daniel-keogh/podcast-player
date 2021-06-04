@@ -12,13 +12,13 @@ router.get(
     [
         query('limit')
             .isInt({ min: 1 })
-            .withMessage('limit must be greater than zero')
+            .withMessage('Limit must be greater than zero')
             .optional(),
         query('term')
             .notEmpty()
-            .withMessage('term cannot be empty')
+            .withMessage('Term cannot be empty')
             .isString()
-            .withMessage('term must be a string'),
+            .withMessage('Term must be a string'),
     ],
     isValid,
     search

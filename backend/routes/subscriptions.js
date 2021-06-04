@@ -21,10 +21,10 @@ router.get(
     [
         param('id')
             .isMongoId()
-            .withMessage('id is invalid'),
+            .withMessage('ID is invalid'),
         query('limit')
             .isInt({ min: 1 })
-            .withMessage('limit must be a number greater than zero')
+            .withMessage('Limit must be a number greater than zero')
             .optional(),
     ],
     isValid,
@@ -38,9 +38,9 @@ router.post(
     [
         body('feedUrl')
             .notEmpty()
-            .withMessage('feedUrl cannot be empty')
+            .withMessage('Feed URL cannot be empty')
             .isURL()
-            .withMessage('feedUrl must be a valid URL'),
+            .withMessage('Feed URL must be a valid URL'),
     ],
     isValid,
     addSubscription
@@ -52,7 +52,7 @@ router.delete(
     [
         param('id')
             .isMongoId()
-            .withMessage('id is invalid')
+            .withMessage('ID is invalid')
             .custom(isUserSubscribed),
     ],
     isValid,

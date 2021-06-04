@@ -13,7 +13,7 @@ router.get(
     [
         param('id')
             .isMongoId()
-            .withMessage('id is invalid')
+            .withMessage('ID is invalid')
     ],
     isValid,
     getUser
@@ -25,10 +25,10 @@ router.put(
     [
         param('id')
             .isMongoId()
-            .withMessage('id is invalid'),
+            .withMessage('ID is invalid'),
         body('email')
             .isEmail()
-            .withMessage('email must be a valid email address')
+            .withMessage('Email must be a valid email address')
             .custom(isUniqueEmail),
     ],
     isValid,
@@ -41,7 +41,7 @@ router.delete(
     [
         param('id')
             .isMongoId()
-            .withMessage('id is invalid')
+            .withMessage('ID is invalid')
     ],
     isValid,
     deleteUser

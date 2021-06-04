@@ -22,7 +22,7 @@ const UserSchema = new Schema({
         type: String,
         select: false,
     },
-    registered_since: {
+    registeredSince: {
         type: Date,
         default: Date.now,
     },

@@ -9,9 +9,11 @@ exports.getCachedSubscription = (req, res, next) => {
 
         if (data) {
             const { episodes, ...subscription } = JSON.parse(data);
+            const isSubscribed = req.user.subscriptions.indexOf(subscription._id) !== -1;
 
             res.status(200).json({
                 ...subscription,
+                isSubscribed,
                 episodes: episodes.slice(0, req.query.limit),
             });
         } else {

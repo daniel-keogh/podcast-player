@@ -72,10 +72,11 @@ exports.getSubscription = (req, res, next) => {
                                 title: sub.title,
                                 author: sub.author,
                                 artwork: sub.artwork,
-                                favourite: sub.favourite,
+                                subscriberCount: sub.subscriberCount,
                                 description: sub.description,
                                 link: sub.link,
                                 feedUrl: sub.feedUrl,
+                                isSubscribed: req.user.subscriptions.indexOf(sub._id) !== -1
                             };
 
                             try {

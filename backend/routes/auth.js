@@ -11,14 +11,14 @@ router.post(
     [
         body('email')
             .isEmail()
-            .withMessage('email must be a valid email address')
+            .withMessage('Email must be a valid email address')
             .normalizeEmail()
             .custom(isUniqueEmail),
         body('password')
             .isLength({ min: 6 })
-            .withMessage('password must be at least 6 characters long')
+            .withMessage('Password must be at least 6 characters long')
             .isString()
-            .withMessage('password must be a string'),
+            .withMessage('Password must be a string'),
     ],
     isValid,
     registerUser
@@ -29,12 +29,12 @@ router.post(
     [
         body('email')
             .isEmail()
-            .withMessage('email must be a valid email address'),
+            .withMessage('Email must be a valid email address'),
         body('password')
             .notEmpty()
-            .withMessage('password cannot be empty')
+            .withMessage('Password cannot be empty')
             .isString()
-            .withMessage('password must be a string'),
+            .withMessage('Password must be a string'),
     ],
     isValid,
     login
@@ -45,15 +45,15 @@ router.put(
     [
         body('email')
             .isEmail()
-            .withMessage('email must be a valid email address'),
+            .withMessage('Email must be a valid email address'),
         body('password')
             .isLength({ min: 6 })
-            .withMessage('password must be at least 6 characters long'),
-        body('old_password')
+            .withMessage('Password must be at least 6 characters long'),
+        body('oldPassword')
             .notEmpty()
-            .withMessage('old_password cannot be empty')
+            .withMessage('Old password cannot be empty')
             .isString()
-            .withMessage('old_password must be a string'),
+            .withMessage('Old password must be a string'),
     ],
     isValid,
     passwordReset

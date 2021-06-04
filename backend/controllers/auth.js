@@ -9,12 +9,12 @@ exports.registerUser = (req, res, next) => {
     new User({ email, password })
         .save()
         .then((user) => {
-            const { _id, email, registered_since } = user;
+            const { _id, email, registeredSince } = user;
 
             res.status(201).json({
                 _id,
                 email,
-                registered_since,
+                registeredSince,
             });
         })
         .catch((err) => {
@@ -45,13 +45,13 @@ exports.login = (req, res, next) => {
             throw error;
         })
         .then((user) => {
-            const { _id, email, registered_since } = user;
+            const { _id, email, registeredSince } = user;
 
             const token = jwt.sign(
                 {
                     _id,
                     email,
-                    registered_since,
+                    registeredSince,
                 },
                 process.env.JWT_SECRET
             );
@@ -74,7 +74,7 @@ exports.login = (req, res, next) => {
 
 /** Resets the user's old password with a new one. */
 exports.passwordReset = (req, res, next) => {
-    const { email, password, old_password } = req.body;
+    const { email, password, oldPassword } = req.body;
 
     User.findOne({ email })
         .select('+password +salt')
@@ -82,7 +82,7 @@ exports.passwordReset = (req, res, next) => {
         .then(async (user) => {
             if (user) {
                 // Check if the old password is correct
-                const hash = await bcrypt.hash(old_password, user.salt);
+                const hash = await bcrypt.hash(oldPassword, user.salt);
                 if (hash === user.password) {
                     user.password = password;
                     await user.save();
