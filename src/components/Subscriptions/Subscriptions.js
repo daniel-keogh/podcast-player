@@ -1,20 +1,29 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { withStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import AddIcon from '@material-ui/icons/AddBox';
 import NavBar from '../NavBar/NavBar';
 import SubscriptionItem from './SubscriptionItem';
 import Welcome from './Welcome';
-
-import AuthContext from '../../store/authContext';
-
 import axios from 'axios';
 import './Subscriptions.css';
 
-class Subscriptions extends Component {
-    static contextType = AuthContext;
+const useStyles = (theme) => ({
+    root: {
+        flexGrow: 1,
+    },
+    menuButton: {
+        marginLeft: theme.spacing(2),
+    },
+    title: {
+        flexGrow: 1,
+    },
+});
 
+class Subscriptions extends Component {
     state = {
         subscriptions: [],
         noSubscriptions: false,
@@ -22,9 +31,7 @@ class Subscriptions extends Component {
 
     componentDidMount() {
         axios
-            .get(`/api/subscriptions`, {
-                headers: { Authorization: `Bearer ${this.context.token}` },
-            })
+            .get(`/api/subscriptions`)
             .then((res) => {
                 if (res.status !== 200 || res.data.subscriptions.length === 0) {
                     throw new Error('No subscriptions');
@@ -45,9 +52,11 @@ class Subscriptions extends Component {
     }
 
     render() {
+        const { classes } = this.props;
+
         return (
             <React.Fragment>
-                <NavBar title="Subscriptions">
+                <NavBar title="Subscriptions" hideBackButton>
                     <Tooltip title="Add Podcasts">
                         <IconButton
                             edge="end"
@@ -56,6 +65,18 @@ class Subscriptions extends Component {
                             to="/discover"
                         >
                             <AddIcon />
+                        </IconButton>
+                    </Tooltip>
+
+                    <Tooltip title="Profile">
+                        <IconButton
+                            className={classes.menuButton}
+                            edge="end"
+                            color="inherit"
+                            component={Link}
+                            to="/profile"
+                        >
+                            <AccountCircleIcon />
                         </IconButton>
                     </Tooltip>
                 </NavBar>
@@ -93,4 +114,4 @@ class Subscriptions extends Component {
     }
 }
 
-export default Subscriptions;
+export default withStyles(useStyles)(Subscriptions);

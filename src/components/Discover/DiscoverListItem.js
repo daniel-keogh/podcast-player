@@ -7,12 +7,9 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import CheckCircleOutline from '@material-ui/icons/CheckCircleOutline';
-import AuthContext from '../../store/authContext';
 import axios from 'axios';
 
 class DiscoverListItem extends Component {
-    static contextType = AuthContext;
-
     state = {
         isSubscribed: false,
     };
@@ -49,17 +46,9 @@ class DiscoverListItem extends Component {
     handleSubscribe = () => {
         if (!this.state.isSubscribed) {
             axios
-                .post(
-                    `/api/subscriptions`,
-                    {
-                        feedUrl: this.props.feedUrl,
-                    },
-                    {
-                        headers: {
-                            Authorization: `Bearer ${this.context.token}`,
-                        },
-                    }
-                )
+                .post(`/api/subscriptions`, {
+                    feedUrl: this.props.feedUrl,
+                })
                 .then(() => {
                     this.setState({
                         isSubscribed: true,

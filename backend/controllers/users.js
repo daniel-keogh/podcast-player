@@ -22,11 +22,17 @@ exports.getUser = async (req, res, next) => {
 exports.updateUser = async (req, res, next) => {
     const { email } = req.body;
 
-    user.email = email;
+    req.user.email = email;
 
     try {
-        const user = await user.save();
-        res.status(200).json(user);
+        const { _id, email, registeredSince, subscriptions } =
+            await req.user.save();
+
+        res.status(200).json({
+            _id,
+            email,
+            registeredSince,
+        });
     } catch (err) {
         err.status = 500;
         next(err);

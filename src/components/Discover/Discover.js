@@ -9,12 +9,9 @@ import FeedFormDialog from './FeedFormDialog';
 import NavBar from '../NavBar/NavBar';
 import NoResultsFound from './NoResultsFound';
 import SearchForm from './SearchForm';
-import AuthContext from '../../store/authContext';
 import axios from 'axios';
 
 class Discover extends Component {
-    static contextType = AuthContext;
-
     state = {
         dialog: {
             open: false,
@@ -27,10 +24,10 @@ class Discover extends Component {
     };
 
     render() {
-        const items = this.state.searchResults.map((item, index) => {
+        const items = this.state.searchResults.map((item) => {
             return (
                 <DiscoverListItem
-                    key={index}
+                    key={item.feedUrl}
                     title={item.title}
                     author={item.author}
                     artwork={item.artwork}
@@ -41,7 +38,7 @@ class Discover extends Component {
 
         return (
             <React.Fragment>
-                <NavBar title="Discover" history={this.props.history}>
+                <NavBar title="Discover">
                     <Tooltip title="Add an RSS Feed">
                         <IconButton
                             edge="end"
@@ -98,12 +95,7 @@ class Discover extends Component {
                 .get(
                     `/api/search/?term=${encodeURIComponent(
                         this.state.searchTerm
-                    )}`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${this.context.token}`,
-                        },
-                    }
+                    )}`
                 )
                 .then((data) => {
                     if (!data.data.results.length) {
@@ -140,17 +132,9 @@ class Discover extends Component {
             showDialogError();
         } else {
             axios
-                .post(
-                    `/api/subscriptions`,
-                    {
-                        feedUrl: this.state.newFeed,
-                    },
-                    {
-                        headers: {
-                            Authorization: `Bearer ${this.context.token}`,
-                        },
-                    }
-                )
+                .post(`/api/subscriptions`, {
+                    feedUrl: this.state.newFeed,
+                })
                 .then(() => {
                     this.handleDialogClose();
                 })

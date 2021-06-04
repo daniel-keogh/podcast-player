@@ -8,19 +8,33 @@ const NowPlayingContext = React.createContext({
     stop: () => {},
 });
 
+const NOW_PLAYING_KEY = 'now-playing';
+
 export function NowPlayingContextProvider(props) {
+    const local = JSON.parse(localStorage.getItem(NOW_PLAYING_KEY));
+
     const [nowPlaying, setNowPlaying] = useState({
-        src: '',
-        epTitle: '',
-        podTitle: '',
+        src: local?.src || '',
+        epTitle: local?.epTitle || '',
+        podTitle: local?.podTitle || '',
     });
 
     const playEpisode = ({ src, epTitle, podTitle }) => {
         setNowPlaying({ src, epTitle, podTitle });
+
+        localStorage.setItem(
+            NOW_PLAYING_KEY,
+            JSON.stringify({
+                src,
+                epTitle,
+                podTitle,
+            })
+        );
     };
 
     const stop = () => {
         setNowPlaying({ src: '', epTitle: '', podTitle: '' });
+        localStorage.removeItem(NOW_PLAYING_KEY);
     };
 
     const context = {

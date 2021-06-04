@@ -11,6 +11,7 @@ import './App.css';
 const Auth = React.lazy(() => import('./components/Auth/Auth'));
 const Podcast = React.lazy(() => import('./components/Podcast/Podcast'));
 const Discover = React.lazy(() => import('./components/Discover/Discover'));
+const Profile = React.lazy(() => import('./components/Profile/Profile'));
 const Subscriptions = React.lazy(() => import('./components/Subscriptions/Subscriptions'));
 
 function App() {
@@ -23,39 +24,44 @@ function App() {
                 <div className="Main">
                     <div className="Body">
                         <Suspense fallback={<></>}>
-                            <Switch>
-                                {!auth.isAuthorized ? (
-                                    <React.Fragment>
-                                        <Route path="/auth">
-                                            <Auth />
-                                        </Route>
-                                        <Route path="/">
-                                            <Redirect to="/auth" />
-                                        </Route>
-                                    </React.Fragment>
-                                ) : (
-                                    <React.Fragment>
-                                        <Route path="/subscriptions">
-                                            <Subscriptions />
-                                        </Route>
-                                        <Route path="/discover">
-                                            <Discover />
-                                        </Route>
-                                        <Route path="/podcast/:id">
-                                            <Podcast />
-                                        </Route>
-                                        <Route path="/">
-                                            <Redirect to="/subscriptions" />
-                                        </Route>
-                                    </React.Fragment>
-                                )}
-                            </Switch>
+                            {!auth.isAuthorized ? (
+                                <Switch>
+                                    <Route path="/auth">
+                                        <Auth />
+                                    </Route>
+                                    <Route path="/">
+                                        <Redirect to="/auth" />
+                                    </Route>
+                                </Switch>
+                            ) : (
+                                <Switch>
+                                    <Route path="/subscriptions">
+                                        <Subscriptions />
+                                    </Route>
+                                    <Route path="/discover">
+                                        <Discover />
+                                    </Route>
+                                    <Route path="/profile">
+                                        <Profile />
+                                    </Route>
+                                    <Route path="/podcast/:id">
+                                        <Podcast />
+                                    </Route>
+                                    <Route path="/">
+                                        <Redirect to="/subscriptions" />
+                                    </Route>
+                                </Switch>
+                            )}
                         </Suspense>
                     </div>
                 </div>
                 <div
                     className="Player"
-                    style={nowPlaying.src === '' ? { display: 'none' } : null}
+                    style={
+                        !auth.isAuthorized || nowPlaying.src === ''
+                            ? { display: 'none' }
+                            : null
+                    }
                 >
                     <Player nowPlaying={nowPlaying} />
                 </div>

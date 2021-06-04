@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
 function AuthForm(props) {
     const classes = useStyles();
 
-    const { error, sendAuthRequest } = useAuth(props.isLogin);
+    const { error, login, register } = useAuth(props.isLogin);
 
     const [form, setForm] = useState({
         email: '',
@@ -60,7 +60,9 @@ function AuthForm(props) {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const success = await sendAuthRequest(form);
+        const success = props.isLogin
+            ? await login(form)
+            : await register(form);
 
         if (success) {
             props.onAuthorized();

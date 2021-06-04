@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect, Route, useHistory } from 'react-router-dom';
+import { Redirect, Route, Switch, useHistory } from 'react-router-dom';
 import AuthForm from './AuthForm';
 
 function Auth() {
@@ -8,7 +8,7 @@ function Auth() {
     const onAuthorized = () => history.replace('/subscriptions');
 
     return (
-        <React.Fragment>
+        <Switch>
             <Route path="/auth" exact>
                 <Redirect to="/auth/login" />
             </Route>
@@ -18,7 +18,7 @@ function Auth() {
             <Route path="/auth/register">
                 <AuthForm onAuthorized={onAuthorized} />
             </Route>
-        </React.Fragment>
+        </Switch>
     );
 }
 

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import jwt from 'jwt-decode';
 
 const AuthContext = React.createContext({
@@ -9,13 +10,33 @@ const AuthContext = React.createContext({
     logout: () => {},
 });
 
-export function AuthContextProvider(props) {
-    const token = localStorage.getItem('token');
+export const TOKEN_KEY = 'token';
 
-    const [auth, setAuth] = useState({
-        token,
-        isAuthorized: !!token,
-        userId: !!token ? jwt(token) : '',
+/**
+ * Adds JWT to any future request headers.
+ * @param {string} token A JSON Web Token.
+ */
+function setAuthHeader(token) {
+    axios.defaults.headers = {
+        Authorization: `Bearer ${token}`,
+    };
+}
+
+export function AuthContextProvider(props) {
+    const token = localStorage.getItem(TOKEN_KEY);
+
+    const [auth, setAuth] = useState(() => {
+        const state = {
+            token,
+            isAuthorized: !!token,
+            userId: !!token ? jwt(token)._id : '',
+        };
+
+        if (state.isAuthorized) {
+            setAuthHeader(token);
+        }
+
+        return state;
     });
 
     const login = (token) => {
@@ -27,7 +48,8 @@ export function AuthContextProvider(props) {
             userId,
         });
 
-        localStorage.setItem('token', token);
+        setAuthHeader(token);
+        localStorage.setItem(TOKEN_KEY, token);
     };
 
     const logout = () => {
@@ -37,7 +59,7 @@ export function AuthContextProvider(props) {
             userId: '',
         });
 
-        localStorage.removeItem('token');
+        localStorage.removeItem(TOKEN_KEY);
     };
 
     const context = {

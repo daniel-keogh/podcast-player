@@ -25,7 +25,7 @@ function NavBar(props) {
         <AppBar position="sticky" className="NavBar">
             <Toolbar>
                 {/* Only show the back button if the history prop was passed to this component. */}
-                {history ? (
+                {!props.hideBackButton && history ? (
                     <IconButton
                         className={classes.backButton}
                         edge="start"
