@@ -55,7 +55,7 @@ class DiscoverListItem extends Component {
                 .catch((err) => {
                     if (err.response) {
                         // Already subscribed
-                        if (err.response.status === 422) {
+                        if (err.response.status === 409) {
                             this.setState({
                                 isSubscribed: true,
                             });

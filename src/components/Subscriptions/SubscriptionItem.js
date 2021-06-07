@@ -27,7 +27,7 @@ function SubscriptionItem(props) {
     );
 
     return (
-        <Card className={classes.root} elevation={props.flat ? 0 : 3}>
+        <Card className={classes.root} elevation={3}>
             {/* If `props.clickable` is true then the card should route to a given podcast via its ID */}
             {props.clickable ? (
                 <CardActionArea

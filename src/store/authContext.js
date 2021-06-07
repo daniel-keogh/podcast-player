@@ -5,8 +5,8 @@ const AuthContext = React.createContext({
     token: '',
     userId: '',
     isAuthorized: false,
-    login: (token) => {},
-    logout: () => {},
+    login: (token) => { },
+    logout: () => { },
 });
 
 export const TOKEN_KEY = 'token';

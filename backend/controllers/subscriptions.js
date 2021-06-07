@@ -25,9 +25,7 @@ exports.getSubscription = (req, res, next) => {
     Podcast.findById(req.params.id)
         .then((sub) => {
             if (!sub) {
-                const error = new Error(
-                    `Subscription with ID "${req.params.id}" not found`
-                );
+                const error = new Error(`Subscription with ID "${req.params.id}" not found`);
                 error.status = 404;
                 throw error;
             }
@@ -207,9 +205,7 @@ exports.deleteSubscription = async (req, res, next) => {
         const sub = await Podcast.findById(req.params.id);
 
         if (!sub) {
-            const error = new Error(
-                `Podcast with ID "${req.params.id}" not found`
-            );
+            const error = new Error(`Podcast with ID "${req.params.id}" not found`);
             error.status = 404;
             throw error;
         } else {

@@ -7,8 +7,8 @@ const NowPlayingContext = React.createContext({
     podId: '',
     podArtwork: '',
     autoplay: false,
-    playEpisode: ({ src, epTitle, podTitle, podId, podArtwork }) => {},
-    stop: () => {},
+    playEpisode: ({ src, epTitle, podTitle, podId, podArtwork }) => { },
+    stop: () => { },
 });
 
 const NOW_PLAYING_KEY = 'now-playing';
@@ -56,7 +56,7 @@ export function NowPlayingContextProvider(props) {
             podTitle: '',
             podId: '',
             podArtwork: '',
-            autoplay: false,
+            autoplay: true,
         });
         localStorage.removeItem(NOW_PLAYING_KEY);
     };

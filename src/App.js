@@ -1,5 +1,6 @@
 import React, { Suspense, useContext } from 'react';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
+import CssBaseline from '@material-ui/core/CssBaseline';
 import AuthContext from './store/authContext';
 import NowPlayingContext from './store/nowPlayingContext';
 import Player from './components/Player/Player';
@@ -17,6 +18,7 @@ function App() {
 
     return (
         <BrowserRouter>
+            <CssBaseline />
             <div className="app">
                 <div className="main">
                     <div className="body">

@@ -39,8 +39,8 @@ class Player extends Component {
                     onSliderChange={this.handleSliderChange}
                 />
                 <audio
-                    autoPlay={this.context.autoPlay}
-                    src={this.context.src || null}
+                    autoPlay={this.context.autoplay}
+                    src={this.context.src || ''}
                     onTimeUpdate={this.handleTimeUpdate}
                     ref={this.audioElement}
                 ></audio>

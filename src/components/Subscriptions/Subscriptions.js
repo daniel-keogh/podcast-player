@@ -17,7 +17,7 @@ const useStyles = (theme) => ({
     },
     welcomeWrapper: {
         display: 'flex',
-        justtifyContent: 'center',
+        justifyContent: 'center',
         alignItems: 'center',
     },
     welcome: {

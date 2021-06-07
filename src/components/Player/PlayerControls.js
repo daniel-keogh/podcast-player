@@ -10,17 +10,25 @@ import PauseCircleFilledIcon from '@material-ui/icons/PauseCircleFilled';
 import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
 import Forward30Icon from '@material-ui/icons/Forward30';
 import Replay30Icon from '@material-ui/icons/Replay30';
-import SubscriptionItem from '../Subscriptions/SubscriptionItem';
+import PlayerArtwork from './PlayerArtwork';
 
 const useStyles = makeStyles(() => ({
+    root: {
+        display: 'flex',
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        height: '100%',
+        padding: '8px 32px',
+    },
     controlsLeft: {
-        padding: '0 8px 0 32px',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
+        paddingRight: '32px',
     },
     controlsCenter: {
-        paddingLeft: '32px',
         textAlign: 'center',
         width: '100%',
         minWidth: 0,
@@ -48,7 +56,7 @@ function PlayerControls(props) {
     const classes = useStyles();
 
     return (
-        <Card className="controls-card" elevation={3}>
+        <Card className={classes.root} elevation={3}>
             <div className={classes.controlsLeft}>
                 <ButtonGroup variant="text">
                     <Button onClick={props.onReplay}>
@@ -101,13 +109,13 @@ function PlayerControls(props) {
                         onChange={props.onSliderChange}
                     />
                 </div>
-                <SubscriptionItem
-                    clickable
-                    flat
-                    id={props.podId}
-                    title={props.podTitle}
-                    artwork={props.podArtwork}
-                />
+                {props.podId && props.podTitle && props.podArtwork ? (
+                    <PlayerArtwork
+                        id={props.podId}
+                        title={props.podTitle}
+                        artwork={props.podArtwork}
+                    />
+                ) : null}
             </div>
         </Card>
     );

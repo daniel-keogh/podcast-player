@@ -205,7 +205,7 @@ class Podcast extends Component {
         let message = err.response?.data?.msg;
 
         if (!message) {
-            message = 'HTTP error occurred';
+            message = 'There was a problem with the network';
         }
 
         this.setState({

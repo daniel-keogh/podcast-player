@@ -52,7 +52,7 @@ function ProfileCard(props) {
                     <Button
                         variant="outlined"
                         color="secondary"
-                        size="large"
+                        size="medium"
                         endIcon={<ExitToAppIcon />}
                         onClick={props.onLogout}
                     >

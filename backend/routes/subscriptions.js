@@ -1,11 +1,6 @@
 const express = require('express');
 const { body, query, param } = require('express-validator');
-const {
-    getAllSubscriptions,
-    getSubscription,
-    addSubscription,
-    deleteSubscription,
-} = require('../controllers/subscriptions');
+const { getAllSubscriptions, getSubscription, addSubscription, deleteSubscription } = require('../controllers/subscriptions');
 const { getCachedSubscription } = require('../middleware/cache');
 const { authenticate } = require('../middleware/passport');
 const isValid = require('../middleware/isValid');
@@ -13,7 +8,11 @@ const { isUserSubscribed } = require('../helpers/validators');
 
 const router = express.Router();
 
-router.get('/', authenticate, getAllSubscriptions);
+router.get(
+    '/',
+    authenticate,
+    getAllSubscriptions
+);
 
 router.get(
     '/:id',

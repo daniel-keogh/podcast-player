@@ -25,13 +25,13 @@ exports.updateUser = async (req, res, next) => {
     req.user.email = email;
 
     try {
-        const { _id, email, registeredSince, subscriptions } =
-            await req.user.save();
+        const { _id, email, registeredSince, subscriptions } = await req.user.save();
 
         res.status(200).json({
             _id,
             email,
             registeredSince,
+            subscriptions
         });
     } catch (err) {
         err.status = 500;

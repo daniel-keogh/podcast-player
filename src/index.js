@@ -7,12 +7,24 @@ import * as serviceWorker from './serviceWorker';
 import { AuthContextProvider } from './store/authContext';
 import { NowPlayingContextProvider } from './store/nowPlayingContext';
 
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import { deepPurple, orange } from '@material-ui/core/colors';
+
+const theme = createMuiTheme({
+    palette: {
+        primary: deepPurple,
+        secondary: orange,
+    },
+});
+
 ReactDOM.render(
-    <AuthContextProvider>
-        <NowPlayingContextProvider>
-            <App />
-        </NowPlayingContextProvider>
-    </AuthContextProvider>,
+    <ThemeProvider theme={theme}>
+        <AuthContextProvider>
+            <NowPlayingContextProvider>
+                <App />
+            </NowPlayingContextProvider>
+        </AuthContextProvider>
+    </ThemeProvider>,
     document.getElementById('root')
 );
 

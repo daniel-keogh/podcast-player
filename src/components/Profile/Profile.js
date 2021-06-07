@@ -35,12 +35,11 @@ function Profile() {
         if (!authContext.userId) return;
 
         axios.get(`/api/users/${authContext.userId}`).then((res) => {
-            const { email, registeredSince, subscriptions } = res.data;
+            const { email, registeredSince } = res.data;
 
             setProfileInfo({
                 email,
                 registeredSince,
-                subscriptions: subscriptions.length,
             });
 
             setProfileUpdated(false);
@@ -69,7 +68,6 @@ function Profile() {
                     <ProfileCard
                         email={profileInfo.email}
                         registeredSince={profileInfo.registeredSince}
-                        subscriptions={profileInfo.subscriptions}
                         onLogout={handleLogout}
                     />
                 </section>

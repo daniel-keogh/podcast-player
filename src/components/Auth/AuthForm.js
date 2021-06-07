@@ -3,17 +3,15 @@ import { Link as RouterLink } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
 import Container from '@material-ui/core/Container';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
 import Link from '@material-ui/core/Link';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import GitHubIcon from '@material-ui/icons/GitHub';
-
 import PasswordInput from './PasswordInput';
 import { useAuth } from '../../hooks';
-import { IconButton } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -72,7 +70,6 @@ function AuthForm(props) {
 
     return (
         <Container component="main" maxWidth="xs">
-            <CssBaseline />
             <div className={classes.paper}>
                 <Avatar
                     className={classes.avatar}
@@ -154,7 +151,10 @@ function AuthForm(props) {
                 </form>
             </div>
             <div className={classes.footer}>
-                <IconButton href="https://github.com/daniel-keogh/podcast-player">
+                <IconButton
+                    href="https://github.com/daniel-keogh/podcast-player"
+                    target="_blank"
+                >
                     <GitHubIcon />
                 </IconButton>
             </div>

@@ -67,7 +67,7 @@ function DangerCard(props) {
             type: 'CHANGE_PASSWORD',
         },
         {
-            icon: <WarningOutlinedIcon />,
+            icon: <WarningOutlinedIcon color="secondary" />,
             text: 'Delete Your Account',
             type: 'CLOSE_ACCOUNT',
         },
