@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Container from '@material-ui/core/Container';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
@@ -16,6 +17,7 @@ class Discover extends Component {
         dialog: {
             open: false,
             error: false,
+            errorMessage: '',
         },
         newFeed: '',
         noResultsFound: false,
@@ -50,7 +52,7 @@ class Discover extends Component {
                     </Tooltip>
                 </NavBar>
 
-                <div>
+                <Container component="main" maxWidth="lg">
                     <SearchForm
                         searchLabel="Search Podcasts..."
                         searchTerm={this.state.searchTerm}
@@ -58,25 +60,24 @@ class Discover extends Component {
                         onSubmit={this.handleSearch}
                     />
                     <Divider />
-                </div>
 
-                {/* Show the search results list, or the <NoResultsFound/> component if there were no results. */}
-                {!this.state.noResultsFound ? (
-                    <div>
+                    {/* Show the search results list, or the <NoResultsFound/> component if there were no results. */}
+                    {!this.state.noResultsFound ? (
                         <List>{items}</List>
-                    </div>
-                ) : (
-                    <NoResultsFound />
-                )}
+                    ) : (
+                        <NoResultsFound />
+                    )}
 
-                <FeedFormDialog
-                    open={this.state.dialog.open}
-                    error={this.state.dialog.error}
-                    onDialogOpen={this.handleDialogOpen}
-                    onDialogClose={this.handleDialogClose}
-                    onFormChange={this.handleFormChange}
-                    onSubscribe={this.handleSubscribeFromFeed}
-                />
+                    <FeedFormDialog
+                        open={this.state.dialog.open}
+                        error={this.state.dialog.error}
+                        errorMessage={this.state.dialog.errorMessage}
+                        onDialogOpen={this.handleDialogOpen}
+                        onDialogClose={this.handleDialogClose}
+                        onFormChange={this.handleFormChange}
+                        onSubscribe={this.handleSubscribeFromFeed}
+                    />
+                </Container>
             </React.Fragment>
         );
     }
@@ -118,18 +119,19 @@ class Discover extends Component {
 
     // Post the RSS feed entered in the dialog box to the server.
     handleSubscribeFromFeed = () => {
-        const showDialogError = () => {
+        const showDialogError = (errorMessage) => {
             this.setState({
                 dialog: {
                     open: true,
                     error: true,
+                    errorMessage,
                 },
             });
         };
 
         // Show an error if an invalid URL is given.
         if (!this.isURL(this.state.newFeed)) {
-            showDialogError();
+            showDialogError('Please enter a valid URL');
         } else {
             axios
                 .post(`/api/subscriptions`, {
@@ -138,8 +140,8 @@ class Discover extends Component {
                 .then(() => {
                     this.handleDialogClose();
                 })
-                .catch(() => {
-                    showDialogError();
+                .catch((err) => {
+                    showDialogError(err.response?.data?.msg);
                 });
         }
     };
@@ -149,6 +151,7 @@ class Discover extends Component {
             dialog: {
                 error: false,
                 open: true,
+                errorMessage: '',
             },
         });
     };
@@ -158,6 +161,7 @@ class Discover extends Component {
             dialog: {
                 error: false,
                 open: false,
+                errorMessage: '',
             },
         });
     };

@@ -1,11 +1,8 @@
 import React, { Suspense, useContext } from 'react';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
-
 import AuthContext from './store/authContext';
 import NowPlayingContext from './store/nowPlayingContext';
-
 import Player from './components/Player/Player';
-
 import './App.css';
 
 const Auth = React.lazy(() => import('./components/Auth/Auth'));
@@ -20,9 +17,9 @@ function App() {
 
     return (
         <BrowserRouter>
-            <div className="App">
-                <div className="Main">
-                    <div className="Body">
+            <div className="app">
+                <div className="main">
+                    <div className="body">
                         <Suspense fallback={<></>}>
                             {!auth.isAuthorized ? (
                                 <Switch>
@@ -30,6 +27,9 @@ function App() {
                                         <Auth />
                                     </Route>
                                     <Route path="/">
+                                        <Redirect to="/auth" />
+                                    </Route>
+                                    <Route path="*">
                                         <Redirect to="/auth" />
                                     </Route>
                                 </Switch>
@@ -50,13 +50,16 @@ function App() {
                                     <Route path="/">
                                         <Redirect to="/subscriptions" />
                                     </Route>
+                                    <Route path="*">
+                                        <Redirect to="/subscriptions" />
+                                    </Route>
                                 </Switch>
                             )}
                         </Suspense>
                     </div>
                 </div>
                 <div
-                    className="Player"
+                    className="player"
                     style={
                         !auth.isAuthorized || nowPlaying.src === ''
                             ? { display: 'none' }

@@ -15,11 +15,11 @@ function PasswordInput(props) {
     return (
         <React.Fragment>
             <TextField
-                autoFocus
                 fullWidth
                 variant="outlined"
                 margin="normal"
                 type={showPassword ? 'text' : 'password'}
+                autoFocus={props.autoFocus}
                 id={props.id}
                 name={props.id}
                 label={props.label}

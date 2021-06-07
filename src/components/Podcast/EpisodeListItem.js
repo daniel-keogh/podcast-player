@@ -16,27 +16,23 @@ function EpisodeListItem(props) {
             src: props.episode.audio.url,
             epTitle: props.episode.title,
             podTitle: props.podcastTitle,
+            podId: props.id,
+            podArtwork: props.artwork,
         });
     };
 
     return (
-        <React.Fragment>
-            <ListItem divider>
-                <ListItemText
-                    primary={props.episode.title}
-                    secondary={new Date(props.episode.date).toDateString()}
-                />
-                <ListItemSecondaryAction>
-                    <IconButton
-                        edge="end"
-                        color="secondary"
-                        onClick={handlePlay}
-                    >
-                        <PlayCircleOutlineIcon />
-                    </IconButton>
-                </ListItemSecondaryAction>
-            </ListItem>
-        </React.Fragment>
+        <ListItem divider>
+            <ListItemText
+                primary={props.episode.title}
+                secondary={new Date(props.episode.date).toDateString()}
+            />
+            <ListItemSecondaryAction>
+                <IconButton edge="end" color="secondary" onClick={handlePlay}>
+                    <PlayCircleOutlineIcon />
+                </IconButton>
+            </ListItemSecondaryAction>
+        </ListItem>
     );
 }
 

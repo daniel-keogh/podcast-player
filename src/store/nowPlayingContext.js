@@ -4,23 +4,38 @@ const NowPlayingContext = React.createContext({
     src: '',
     epTitle: '',
     podTitle: '',
-    playEpisode: ({ src, epTitle, podTitle }) => {},
+    podId: '',
+    podArtwork: '',
+    autoplay: false,
+    playEpisode: ({ src, epTitle, podTitle, podId, podArtwork }) => {},
     stop: () => {},
 });
 
 const NOW_PLAYING_KEY = 'now-playing';
 
 export function NowPlayingContextProvider(props) {
-    const local = JSON.parse(localStorage.getItem(NOW_PLAYING_KEY));
+    const local = JSON.parse(localStorage.getItem(NOW_PLAYING_KEY)) || {};
+
+    const { src, epTitle, podTitle, podId, podArtwork } = local;
 
     const [nowPlaying, setNowPlaying] = useState({
-        src: local?.src || '',
-        epTitle: local?.epTitle || '',
-        podTitle: local?.podTitle || '',
+        src: src || '',
+        epTitle: epTitle || '',
+        podTitle: podTitle || '',
+        podId: podId || '',
+        podArtwork: podArtwork || '',
+        autoplay: false,
     });
 
-    const playEpisode = ({ src, epTitle, podTitle }) => {
-        setNowPlaying({ src, epTitle, podTitle });
+    const playEpisode = ({ src, epTitle, podTitle, podId, podArtwork }) => {
+        setNowPlaying({
+            src,
+            epTitle,
+            podTitle,
+            podId,
+            podArtwork,
+            autoplay: true,
+        });
 
         localStorage.setItem(
             NOW_PLAYING_KEY,
@@ -28,12 +43,21 @@ export function NowPlayingContextProvider(props) {
                 src,
                 epTitle,
                 podTitle,
+                podId,
+                podArtwork,
             })
         );
     };
 
     const stop = () => {
-        setNowPlaying({ src: '', epTitle: '', podTitle: '' });
+        setNowPlaying({
+            src: '',
+            epTitle: '',
+            podTitle: '',
+            podId: '',
+            podArtwork: '',
+            autoplay: false,
+        });
         localStorage.removeItem(NOW_PLAYING_KEY);
     };
 
@@ -41,6 +65,9 @@ export function NowPlayingContextProvider(props) {
         src: nowPlaying.src,
         epTitle: nowPlaying.epTitle,
         podTitle: nowPlaying.podTitle,
+        podId: nowPlaying.podId,
+        podArtwork: nowPlaying.podArtwork,
+        autoplay: nowPlaying.autoplay,
         playEpisode,
         stop,
     };

@@ -18,9 +18,6 @@ function useAuth() {
         ) {
             setError('All fields are required.');
             return false;
-        } else if (password !== undefined && password.length < 6) {
-            setError('Password must be longer than 6 characters.');
-            return false;
         } else if (
             confirmPassword !== undefined &&
             password !== confirmPassword

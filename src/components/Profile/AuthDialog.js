@@ -14,8 +14,7 @@ function AuthDialog(props) {
     const changePassword = props.type === 'CHANGE_PASSWORD';
     const closeAccount = props.type === 'CLOSE_ACCOUNT';
 
-    const { error, resetError, updateEmail, updatePassword, deleteAccount } =
-        useAuth(changePassword);
+    const { error, resetError, updateEmail, updatePassword, deleteAccount } = useAuth(changePassword);
 
     const [form, setForm] = useState({
         email: '',
@@ -89,6 +88,7 @@ function AuthDialog(props) {
                 ) : null}
                 {changePassword ? (
                     <PasswordInput
+                        autoFocus
                         id="oldPassword"
                         label="Old Password"
                         value={form.oldPassword}

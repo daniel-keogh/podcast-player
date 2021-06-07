@@ -16,30 +16,28 @@ class DiscoverListItem extends Component {
 
     render() {
         return (
-            <React.Fragment>
-                <ListItem divider>
-                    <ListItemAvatar>
-                        <Avatar src={this.props.artwork} />
-                    </ListItemAvatar>
-                    <ListItemText
-                        primary={this.props.title}
-                        secondary={this.props.author}
-                    />
-                    <ListItemSecondaryAction>
-                        <IconButton
-                            edge="end"
-                            color="secondary"
-                            onClick={this.handleSubscribe}
-                        >
-                            {this.state.isSubscribed ? (
-                                <CheckCircleOutline color="secondary" />
-                            ) : (
-                                <AddCircleOutlineIcon color="primary" />
-                            )}
-                        </IconButton>
-                    </ListItemSecondaryAction>
-                </ListItem>
-            </React.Fragment>
+            <ListItem divider>
+                <ListItemAvatar>
+                    <Avatar src={this.props.artwork} />
+                </ListItemAvatar>
+                <ListItemText
+                    primary={this.props.title}
+                    secondary={this.props.author}
+                />
+                <ListItemSecondaryAction>
+                    <IconButton
+                        edge="end"
+                        color="secondary"
+                        onClick={this.handleSubscribe}
+                    >
+                        {this.state.isSubscribed ? (
+                            <CheckCircleOutline color="secondary" />
+                        ) : (
+                            <AddCircleOutlineIcon color="primary" />
+                        )}
+                    </IconButton>
+                </ListItemSecondaryAction>
+            </ListItem>
         );
     }
 

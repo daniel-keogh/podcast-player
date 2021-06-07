@@ -57,7 +57,7 @@ function Profile() {
     return (
         <React.Fragment>
             <NavBar title="Profile" />
-            <Container maxWidth="sm">
+            <Container maxWidth="md">
                 <section className={classes.section}>
                     <Typography
                         variant="h5"

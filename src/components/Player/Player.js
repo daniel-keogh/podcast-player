@@ -24,6 +24,8 @@ class Player extends Component {
                 <PlayerControls
                     epTitle={this.context.epTitle}
                     podTitle={this.context.podTitle}
+                    podId={this.context.podId}
+                    podArtwork={this.context.podArtwork}
                     currentTime={this.state.currentTime}
                     duration={this.state.duration}
                     isPaused={
@@ -37,7 +39,7 @@ class Player extends Component {
                     onSliderChange={this.handleSliderChange}
                 />
                 <audio
-                    autoPlay
+                    autoPlay={this.context.autoPlay}
                     src={this.context.src || null}
                     onTimeUpdate={this.handleTimeUpdate}
                     ref={this.audioElement}
