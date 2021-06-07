@@ -10,44 +10,60 @@ import PauseCircleFilledIcon from '@material-ui/icons/PauseCircleFilled';
 import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
 import Forward30Icon from '@material-ui/icons/Forward30';
 import Replay30Icon from '@material-ui/icons/Replay30';
+import SubscriptionItem from '../Subscriptions/SubscriptionItem';
 
 const useStyles = makeStyles(() => ({
     controlsLeft: {
         padding: '0 8px 0 32px',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
     controlsCenter: {
-        padding: '0 32px 0 8px',
+        paddingLeft: '32px',
         textAlign: 'center',
         width: '100%',
-        minWidth: 0
+        minWidth: 0,
+        display: 'flex',
+        justifyContent: 'stretch',
+        alignItems: 'center',
     },
     nowPlaying: {
-        whiteSpace: 'nowrap'
+        whiteSpace: 'nowrap',
+    },
+    seekbarContainer: {
+        flexGrow: 1,
+        paddingRight: '32px',
     },
     seekbar: {
-        width: '90%'
+        width: '90%',
     },
     playIcon: {
         height: '52px',
-        width: '52px'
-    }
+        width: '52px',
+    },
 }));
 
 function PlayerControls(props) {
     const classes = useStyles();
 
     return (
-        <Card className="ControlsCard" elevation={3}>
+        <Card className="controls-card" elevation={3}>
             <div className={classes.controlsLeft}>
                 <ButtonGroup variant="text">
                     <Button onClick={props.onReplay}>
                         <Replay30Icon fontSize="large" />
                     </Button>
                     <Button onClick={props.onPlayPauseClicked} color="primary">
-                        {props.isPaused ? <PlayCircleFilledIcon className={classes.playIcon} /> : <PauseCircleFilledIcon className={classes.playIcon} />}
+                        {props.isPaused ? (
+                            <PlayCircleFilledIcon
+                                className={classes.playIcon}
+                            />
+                        ) : (
+                            <PauseCircleFilledIcon
+                                className={classes.playIcon}
+                            />
+                        )}
                     </Button>
                     <Button onClick={props.onForward}>
                         <Forward30Icon fontSize="large" />
@@ -55,32 +71,45 @@ function PlayerControls(props) {
                 </ButtonGroup>
             </div>
             <div className={classes.controlsCenter}>
-                <CardContent className={classes.nowPlaying}>
-                    <Typography component="h6" variant="h6" noWrap>
-                        {props.epTitle}
-                    </Typography>
-                    <Typography color="textSecondary" variant="subtitle2" noWrap>
-                        {props.podTitle}
-                    </Typography>
-                </CardContent>
-                <Slider
-                    className={classes.seekbar}
-                    defaultValue={0}
-                    value={(props.currentTime / props.duration) * 100}
-                    marks={[
-                        {
-                            value: 0,
-                            label: formatSeconds(props.currentTime)
-                        },
-                        {
-                            value: 100,
-                            label: formatSeconds(props.duration)
-                        }
-                    ]}
-                    onChange={props.onSliderChange}
+                <div className={classes.seekbarContainer}>
+                    <CardContent className={classes.nowPlaying}>
+                        <Typography component="h6" variant="h6" noWrap>
+                            {props.epTitle}
+                        </Typography>
+                        <Typography
+                            color="textSecondary"
+                            variant="subtitle2"
+                            noWrap
+                        >
+                            {props.podTitle}
+                        </Typography>
+                    </CardContent>
+                    <Slider
+                        className={classes.seekbar}
+                        defaultValue={0}
+                        value={(props.currentTime / props.duration) * 100}
+                        marks={[
+                            {
+                                value: 0,
+                                label: formatSeconds(props.currentTime),
+                            },
+                            {
+                                value: 100,
+                                label: formatSeconds(props.duration),
+                            },
+                        ]}
+                        onChange={props.onSliderChange}
+                    />
+                </div>
+                <SubscriptionItem
+                    clickable
+                    flat
+                    id={props.podId}
+                    title={props.podTitle}
+                    artwork={props.podArtwork}
                 />
             </div>
-        </Card >
+        </Card>
     );
 }
 
@@ -88,12 +117,11 @@ function PlayerControls(props) {
  * Based on this S.O. answer: https://stackoverflow.com/a/37096512
  */
 function formatSeconds(secs) {
-    if (Number.isNaN(secs))
-        return '00:00';
+    if (Number.isNaN(secs)) return '00:00';
 
     const h = String(Math.floor(secs / 3600)).padStart(2, '0');
-    const m = String(Math.floor(secs % 3600 / 60)).padStart(2, '0');
-    const s = String(Math.floor(secs % 3600 % 60)).padStart(2, '0');
+    const m = String(Math.floor((secs % 3600) / 60)).padStart(2, '0');
+    const s = String(Math.floor((secs % 3600) % 60)).padStart(2, '0');
 
     if (h === '00') {
         return `${m}:${s}`;

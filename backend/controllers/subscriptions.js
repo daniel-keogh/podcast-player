@@ -3,9 +3,13 @@ const FeedParser = require('feedparser');
 const Podcast = require('../models/podcast');
 const redisClient = require('../db/redis');
 
+/** Gets all the user's subscriptions. */
 exports.getAllSubscriptions = async (req, res, next) => {
     try {
-        const subscriptions = await Podcast.find();
+        const subscriptions = await Podcast.where('_id')
+            .in(req.user.subscriptions)
+            .exec();
+
         res.status(200).json({ subscriptions });
     } catch (err) {
         err.status = 500;
@@ -13,17 +17,23 @@ exports.getAllSubscriptions = async (req, res, next) => {
     }
 };
 
+/**
+ * Gets a single subscription by its ID.
+ * The parsed feed will be cached for 10 minutes.
+ */
 exports.getSubscription = (req, res, next) => {
     Podcast.findById(req.params.id)
-        .then(sub => {
+        .then((sub) => {
             if (!sub) {
-                const error = new Error(`Subscription with ID "${req.params.id}" not found`);
+                const error = new Error(
+                    `Subscription with ID "${req.params.id}" not found`
+                );
                 error.status = 404;
                 throw error;
             }
 
             fetch(sub.feedUrl)
-                .then(data => {
+                .then((data) => {
                     if (data.status !== 200) {
                         const error = new Error('Error fetching the feed');
                         error.status = data.status;
@@ -31,7 +41,7 @@ exports.getSubscription = (req, res, next) => {
                     }
                     return data.body;
                 })
-                .then(body => {
+                .then((body) => {
                     /* Get all the episodes of this podcast using feedparser.
                      * [https://www.npmjs.com/package/feedparser#usage].
                      */
@@ -48,7 +58,7 @@ exports.getSubscription = (req, res, next) => {
                                     feedItems.push({
                                         title: item.title,
                                         date: item.date,
-                                        audio: item.enclosures[0]
+                                        audio: item.enclosures[0],
                                     });
                                 }
                             } catch (err) {
@@ -62,22 +72,30 @@ exports.getSubscription = (req, res, next) => {
                                 title: sub.title,
                                 author: sub.author,
                                 artwork: sub.artwork,
-                                favourite: sub.favourite,
+                                subscriberCount: sub.subscriberCount,
                                 description: sub.description,
                                 link: sub.link,
                                 feedUrl: sub.feedUrl,
+                                isSubscribed: req.user.subscriptions.indexOf(sub._id) !== -1
                             };
 
                             try {
                                 // Cache with Redis
-                                redisClient.setex(data._id + "", 600, JSON.stringify({
-                                    ...data,
-                                    episodes: feedItems
-                                }));
+                                redisClient.setex(
+                                    data._id + '',
+                                    600,
+                                    JSON.stringify({
+                                        ...data,
+                                        episodes: feedItems,
+                                    })
+                                );
 
                                 res.status(200).json({
                                     ...data,
-                                    episodes: feedItems.slice(0, req.query.limit)
+                                    episodes: feedItems.slice(
+                                        0,
+                                        req.query.limit
+                                    ),
                                 });
                             } catch (err) {
                                 this.emit('error', err);
@@ -89,7 +107,7 @@ exports.getSubscription = (req, res, next) => {
                         });
                 });
         })
-        .catch(err => {
+        .catch((err) => {
             if (!err.status) {
                 err.status = 500;
             }
@@ -97,10 +115,43 @@ exports.getSubscription = (req, res, next) => {
         });
 };
 
-exports.addSubscription = (req, res, next) => {
+/**
+ * Adds a new subscription for the current user.
+ * If the podcast already exists then that one is returned instead of creating a new one.
+ */
+exports.addSubscription = async (req, res, next) => {
+    // Handle the scenario where the feed already exists in the DB
+    try {
+        const existingPodcast = await Podcast.findOne({
+            feedUrl: req.body.feedUrl,
+        });
+
+        if (existingPodcast) {
+            // Make sure the user isn't already subscribed
+            if (req.user.subscriptions.indexOf(existingPodcast._id) === -1) {
+                req.user.subscriptions.push(existingPodcast._id);
+                await req.user.save();
+
+                existingPodcast.subscriberCount++;
+                await existingPodcast.save();
+
+                return res.status(202).json({ result: existingPodcast });
+            } else {
+                const error = new Error('Already subscribed to that feed');
+                error.status = 409;
+                throw error;
+            }
+        }
+    } catch (err) {
+        if (!err.status) {
+            err.status = 500;
+        }
+        return next(err);
+    }
+
     // Extract the podcast's information from the RSS feed sent by the client.
     fetch(req.body.feedUrl)
-        .then(data => {
+        .then((data) => {
             if (data.status !== 200) {
                 const error = new Error('Error fetching the feed');
                 error.status = data.status;
@@ -108,7 +159,7 @@ exports.addSubscription = (req, res, next) => {
             }
             return data.body;
         })
-        .then(body => {
+        .then((body) => {
             const feedparser = new FeedParser({ addmeta: false });
 
             body.pipe(feedparser)
@@ -120,22 +171,27 @@ exports.addSubscription = (req, res, next) => {
                         artwork: this.meta.image.url,
                         description: this.meta.description,
                         link: this.meta.link,
-                        feedUrl: req.body.feedUrl
+                        feedUrl: req.body.feedUrl,
+                        subscriberCount: 1,
                     });
 
                     try {
                         const result = await podcast.save();
+
+                        req.user.subscriptions.push(result._id);
+                        await req.user.save();
+
                         res.status(201).json({ result });
                     } catch (err) {
                         this.emit('error', err);
-                    };
+                    }
                 })
                 .on('error', function (err) {
                     err.status = 500;
                     next(err);
                 });
         })
-        .catch(err => {
+        .catch((err) => {
             if (!err.status) {
                 err.status = 500;
             }
@@ -143,49 +199,29 @@ exports.addSubscription = (req, res, next) => {
         });
 };
 
-exports.updateSubscription = (req, res, next) => {
-    Podcast.findById(req.params.id)
-        .then(podcast => {
-            if (!podcast) {
-                const error = new Error(`Podcast with ID "${req.params.id}" not found`);
-                error.status = 404;
-                throw error;
-            }
-
-            const { title, author, artwork, description, link, feedUrl, favourite } = req.body;
-
-            podcast.title = title;
-            podcast.author = author;
-            podcast.artwork = artwork;
-            podcast.description = description;
-            podcast.link = link;
-            podcast.feedUrl = feedUrl;
-            podcast.favourite = favourite;
-
-            return podcast.save();
-        })
-        .then(podcast => {
-            res.status(200).json({ podcast });
-        })
-        .catch(err => {
-            if (!err.status) {
-                err.status = 500;
-            }
-            next(err);
-        });
-};
-
+/**
+ * Removes a feed from the user's subscriptions.
+ */
 exports.deleteSubscription = async (req, res, next) => {
     try {
-        const sub = await Podcast.findByIdAndDelete(req.params.id);
+        const sub = await Podcast.findById(req.params.id);
 
         if (!sub) {
-            const error = new Error(`Podcast with ID "${req.params.id}" not found`);
+            const error = new Error(
+                `Podcast with ID "${req.params.id}" not found`
+            );
             error.status = 404;
             throw error;
-        }
+        } else {
+            const index = req.user.subscriptions.indexOf(req.params.id);
+            req.user.subscriptions.splice(index, 1);
+            await req.user.save();
 
-        res.status(204).send();
+            sub.subscriberCount--;
+            await sub.save();
+
+            res.status(204).send();
+        }
     } catch (err) {
         if (!err.status) {
             err.status = 500;

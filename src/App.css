@@ -1,35 +1,29 @@
-.App {
+.app {
     display: flex;
     flex-direction: column;
     height: 100vh;
 }
 
-.Main {
+.main {
     height: 100%;
     display: flex;
     flex-direction: column;
     overflow: hidden;
 }
 
-.Main .Body {
+.main .body {
     height: 100%;
     width: 100vw;
     overflow-y: scroll;
 }
 
-/* Selects all content within Body except for the NavBar */
-.Main .Body > *:not(.NavBar) {
-    max-width: 1400px;
-    margin: auto;
-}
-
-.Player {
+.player {
     min-height: 145px;
     z-index: 100;
     position: relative;
 }
 
-.Player .ControlsCard {
+.player .controls-card {
     display: flex;
     position: absolute;
     bottom: 0;

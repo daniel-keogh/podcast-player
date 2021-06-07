@@ -4,98 +4,59 @@ const {
     getAllSubscriptions,
     getSubscription,
     addSubscription,
-    updateSubscription,
     deleteSubscription,
 } = require('../controllers/subscriptions');
 const { getCachedSubscription } = require('../middleware/cache');
+const { authenticate } = require('../middleware/passport');
 const isValid = require('../middleware/isValid');
-const Podcast = require('../models/podcast');
+const { isUserSubscribed } = require('../helpers/validators');
 
 const router = express.Router();
 
-router.get('/', getAllSubscriptions);
+router.get('/', authenticate, getAllSubscriptions);
 
-router.get('/:id', [
-    param('id')
-        .isMongoId()
-        .withMessage('id is invalid'),
-    query('limit')
-        .isInt({ min: 1 })
-        .withMessage('limit must be a number greater than zero')
-        .optional(),
-], isValid, getCachedSubscription, getSubscription);
+router.get(
+    '/:id',
+    authenticate,
+    [
+        param('id')
+            .isMongoId()
+            .withMessage('ID is invalid'),
+        query('limit')
+            .isInt({ min: 1 })
+            .withMessage('Limit must be a number greater than zero')
+            .optional(),
+    ],
+    isValid,
+    getCachedSubscription,
+    getSubscription
+);
 
-router.post('/', [
-    body('feedUrl')
-        .notEmpty()
-        .withMessage('feedUrl cannot be empty')
-        .isURL()
-        .withMessage('feedUrl must be a valid URL')
-        .custom(async value => {
-            const podcast = await Podcast.findOne({ feedUrl: value });
-            if (podcast) {
-                return Promise.reject(`Already subscribed to the given feedUrl`);
-            }
-        })
-], isValid, addSubscription);
+router.post(
+    '/',
+    authenticate,
+    [
+        body('feedUrl')
+            .notEmpty()
+            .withMessage('Feed URL cannot be empty')
+            .isURL()
+            .withMessage('Feed URL must be a valid URL'),
+    ],
+    isValid,
+    addSubscription
+);
 
-router.put('/:id', [
-    param('id')
-        .isMongoId()
-        .withMessage('id is invalid'),
-    body('title')
-        .notEmpty()
-        .withMessage('title cannot be empty')
-        .isString()
-        .withMessage('title must be a string'),
-    body('author')
-        .notEmpty()
-        .withMessage('author cannot be empty')
-        .isString()
-        .withMessage('author must be a string'),
-    body('artwork')
-        .notEmpty()
-        .withMessage('artwork cannot be empty')
-        .isURL()
-        .withMessage('artwork must be a valid URL'),
-    body('description')
-        .notEmpty()
-        .withMessage('description cannot be empty')
-        .isString()
-        .withMessage('description must be a string'),
-    body('link')
-        .notEmpty()
-        .withMessage('link cannot be empty')
-        .isURL()
-        .withMessage('link must be a valid URL'),
-    body('feedUrl')
-        .notEmpty()
-        .withMessage('feedUrl cannot be empty')
-        .isURL()
-        .withMessage('feedUrl must be a valid URL')
-        .custom(async (value, { req }) => {
-            const podcast = await Podcast.findOne({
-                $and: [
-                    { feedUrl: value },
-                    { _id: { $ne: req.params.id } }
-                ]
-            });
-
-            if (podcast) {
-                return Promise.reject('Already subscribed to the given feedUrl');
-            }
-        }),
-    body('favourite')
-        .notEmpty()
-        .withMessage('favourite cannot be empty')
-        .isBoolean()
-        .withMessage('favourite must be a boolean'),
-], isValid, updateSubscription);
-
-router.delete('/:id', [
-    param('id')
-        .isMongoId()
-        .withMessage('id is invalid'),
-], isValid, deleteSubscription);
+router.delete(
+    '/:id',
+    authenticate,
+    [
+        param('id')
+            .isMongoId()
+            .withMessage('ID is invalid')
+            .custom(isUserSubscribed),
+    ],
+    isValid,
+    deleteSubscription
+);
 
 module.exports = router;

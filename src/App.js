@@ -1,59 +1,76 @@
-import React, { Component } from 'react';
+import React, { Suspense, useContext } from 'react';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
-import Discover from './components/Discover/Discover';
+import AuthContext from './store/authContext';
+import NowPlayingContext from './store/nowPlayingContext';
 import Player from './components/Player/Player';
-import Podcast from './components/Podcast/Podcast';
-import Subscriptions from './components/Subscriptions/Subscriptions';
 import './App.css';
 
-class App extends Component {
-    state = {
-        nowPlaying: {
-            src: '',
-            epTitle: '',
-            podTitle: ''
-        }
-    }
+const Auth = React.lazy(() => import('./components/Auth/Auth'));
+const Podcast = React.lazy(() => import('./components/Podcast/Podcast'));
+const Discover = React.lazy(() => import('./components/Discover/Discover'));
+const Profile = React.lazy(() => import('./components/Profile/Profile'));
+const Subscriptions = React.lazy(() => import('./components/Subscriptions/Subscriptions'));
 
-    render() {
-        return (
-            <BrowserRouter>
-                <div className="App">
-                    <div className="Main">
-                        <div className="Body">
-                            <Switch>
-                                <Route path="/subscriptions" component={Subscriptions} />
-                                <Route path="/discover" component={Discover} />
-                                <Route path="/podcast/:id" render={this.PodcastPage} />
-                                <Redirect from="/" to="/subscriptions" />
-                            </Switch>
-                        </div>
-                    </div>
-                    <div className="Player" style={this.state.nowPlaying.src === '' ? { display: 'none' } : null}>
-                        <Player nowPlaying={this.state.nowPlaying} />
+function App() {
+    const nowPlaying = useContext(NowPlayingContext);
+    const auth = useContext(AuthContext);
+
+    return (
+        <BrowserRouter>
+            <div className="app">
+                <div className="main">
+                    <div className="body">
+                        <Suspense fallback={<></>}>
+                            {!auth.isAuthorized ? (
+                                <Switch>
+                                    <Route path="/auth">
+                                        <Auth />
+                                    </Route>
+                                    <Route path="/">
+                                        <Redirect to="/auth" />
+                                    </Route>
+                                    <Route path="*">
+                                        <Redirect to="/auth" />
+                                    </Route>
+                                </Switch>
+                            ) : (
+                                <Switch>
+                                    <Route path="/subscriptions">
+                                        <Subscriptions />
+                                    </Route>
+                                    <Route path="/discover">
+                                        <Discover />
+                                    </Route>
+                                    <Route path="/profile">
+                                        <Profile />
+                                    </Route>
+                                    <Route path="/podcast/:id">
+                                        <Podcast />
+                                    </Route>
+                                    <Route path="/">
+                                        <Redirect to="/subscriptions" />
+                                    </Route>
+                                    <Route path="*">
+                                        <Redirect to="/subscriptions" />
+                                    </Route>
+                                </Switch>
+                            )}
+                        </Suspense>
                     </div>
                 </div>
-            </BrowserRouter>
-        );
-    }
-
-    /* Below function necessary in order to pass props to the Podcast component.
-     * Reference: https://github.com/ReactTraining/react-router/issues/4105#issuecomment-287262726
-     */
-    PodcastPage = (props) => {
-        return (
-            <Podcast
-                playEpisode={this.playEpisode}
-                {...props}
-            />
-        );
-    }
-
-    playEpisode = (episode) => {
-        this.setState({
-            nowPlaying: { ...episode }
-        });
-    }
+                <div
+                    className="player"
+                    style={
+                        !auth.isAuthorized || nowPlaying.src === ''
+                            ? { display: 'none' }
+                            : null
+                    }
+                >
+                    <Player nowPlaying={nowPlaying} />
+                </div>
+            </div>
+        </BrowserRouter>
+    );
 }
 
 export default App;
