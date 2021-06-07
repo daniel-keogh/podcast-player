@@ -53,6 +53,11 @@ class Podcast extends Component {
         const prevParams = new URLSearchParams(prevProps.location.search);
         const prevLimit = +prevParams.get('limit');
 
+        if (limit > this.state.numEpisodes) {
+            this.fetchMore(limit);
+            return;
+        }
+
         if (limit !== prevLimit) {
             this.setState({
                 numEpisodes: limit,
@@ -159,21 +164,7 @@ class Podcast extends Component {
     handleShowMoreClicked = () => {
         const params = new URLSearchParams(this.props.history.location.search);
         const limit = (+params.get('limit') || this.state.numEpisodes) + 100;
-
-        axios
-            .get(
-                `/api/subscriptions/${this.props.match.params.id}?limit=${limit}`
-            )
-            .then((res) => {
-                this.setState((state) => ({
-                    podcast: {
-                        ...state.podcast,
-                        episodes: res.data.episodes,
-                    },
-                    numEpisodes: limit,
-                }));
-            })
-            .catch(this.onHttpError);
+        this.fetchMore(limit);
     };
 
     handleSubscribe = () => {
@@ -216,6 +207,23 @@ class Podcast extends Component {
                 message: '',
             },
         });
+    };
+
+    fetchMore = (limit) => {
+        axios
+            .get(
+                `/api/subscriptions/${this.props.match.params.id}?limit=${limit}`
+            )
+            .then((res) => {
+                this.setState((state) => ({
+                    podcast: {
+                        ...state.podcast,
+                        episodes: res.data.episodes,
+                    },
+                    numEpisodes: limit,
+                }));
+            })
+            .catch(this.onHttpError);
     };
 
     onHttpError = (err) => {
