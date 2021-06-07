@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import ListItem from '@material-ui/core/ListItem';
@@ -9,61 +10,59 @@ import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import CheckCircleOutline from '@material-ui/icons/CheckCircleOutline';
 import axios from '../../config/axios';
 
-class DiscoverListItem extends Component {
-    state = {
-        isSubscribed: false,
-    };
+const useStyles = makeStyles((theme) => ({
+    isSubscribedIcon: {
+        color: theme.palette.success.main,
+    },
+}));
 
-    render() {
-        return (
-            <ListItem divider>
-                <ListItemAvatar>
-                    <Avatar src={this.props.artwork} />
-                </ListItemAvatar>
-                <ListItemText
-                    primary={this.props.title}
-                    secondary={this.props.author}
-                />
-                <ListItemSecondaryAction>
-                    <IconButton
-                        edge="end"
-                        color="secondary"
-                        onClick={this.handleSubscribe}
-                    >
-                        {this.state.isSubscribed ? (
-                            <CheckCircleOutline color="secondary" />
-                        ) : (
-                            <AddCircleOutlineIcon color="primary" />
-                        )}
-                    </IconButton>
-                </ListItemSecondaryAction>
-            </ListItem>
-        );
-    }
+function DiscoverListItem(props) {
+    const classes = useStyles();
+    const [isSubscribed, setIsSubscribed] = useState(false);
 
-    handleSubscribe = () => {
-        if (!this.state.isSubscribed) {
+    const handleSubscribe = () => {
+        if (!isSubscribed) {
             axios
                 .post(`/api/subscriptions`, {
-                    feedUrl: this.props.feedUrl,
+                    feedUrl: props.feedUrl,
                 })
                 .then(() => {
-                    this.setState({
-                        isSubscribed: true,
-                    });
+                    setIsSubscribed(true);
                 })
                 .catch((err) => {
                     if (err.response) {
                         // Already subscribed
                         if (err.response.status === 409) {
-                            this.setState({
-                                isSubscribed: true,
-                            });
+                            setIsSubscribed(true);
                         }
                     }
                 });
         }
     };
+
+    return (
+        <ListItem divider>
+            <ListItemAvatar>
+                <Avatar src={props.artwork} />
+            </ListItemAvatar>
+            <ListItemText primary={props.title} secondary={props.author} />
+            <ListItemSecondaryAction>
+                <IconButton
+                    edge="end"
+                    color="secondary"
+                    onClick={handleSubscribe}
+                >
+                    {isSubscribed ? (
+                        <CheckCircleOutline
+                            className={classes.isSubscribedIcon}
+                        />
+                    ) : (
+                        <AddCircleOutlineIcon color="primary" />
+                    )}
+                </IconButton>
+            </ListItemSecondaryAction>
+        </ListItem>
+    );
 }
 
 export default DiscoverListItem;

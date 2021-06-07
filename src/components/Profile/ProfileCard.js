@@ -31,6 +31,9 @@ const useStyles = makeStyles((theme) => ({
         width: theme.spacing(10),
         height: theme.spacing(10),
     },
+    logoutButton: {
+        color: theme.palette.warning.main,
+    },
 }));
 
 function ProfileCard(props) {
@@ -51,8 +54,8 @@ function ProfileCard(props) {
                 <div className={classes.buttonWrapper}>
                     <Button
                         variant="outlined"
-                        color="secondary"
                         size="medium"
+                        className={classes.logoutButton}
                         endIcon={<ExitToAppIcon />}
                         onClick={props.onLogout}
                     >

@@ -12,7 +12,7 @@ import Forward30Icon from '@material-ui/icons/Forward30';
 import Replay30Icon from '@material-ui/icons/Replay30';
 import PlayerArtwork from './PlayerArtwork';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
     root: {
         display: 'flex',
         position: 'absolute',
@@ -50,6 +50,9 @@ const useStyles = makeStyles(() => ({
         height: '52px',
         width: '52px',
     },
+    seekIcon: {
+        color: theme.palette.grey[700],
+    },
 }));
 
 function PlayerControls(props) {
@@ -59,7 +62,10 @@ function PlayerControls(props) {
         <Card className={classes.root} elevation={3}>
             <div className={classes.controlsLeft}>
                 <ButtonGroup variant="text">
-                    <Button onClick={props.onReplay}>
+                    <Button
+                        onClick={props.onReplay}
+                        className={classes.seekIcon}
+                    >
                         <Replay30Icon fontSize="large" />
                     </Button>
                     <Button onClick={props.onPlayPauseClicked} color="primary">
@@ -73,7 +79,10 @@ function PlayerControls(props) {
                             />
                         )}
                     </Button>
-                    <Button onClick={props.onForward}>
+                    <Button
+                        onClick={props.onForward}
+                        className={classes.seekIcon}
+                    >
                         <Forward30Icon fontSize="large" />
                     </Button>
                 </ButtonGroup>

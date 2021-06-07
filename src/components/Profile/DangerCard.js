@@ -13,14 +13,17 @@ import WarningOutlinedIcon from '@material-ui/icons/WarningOutlined';
 
 import AuthDialog from './AuthDialog';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
     root: {
         width: '100%',
     },
     inline: {
         display: 'inline',
     },
-});
+    dangerButton: {
+        color: theme.palette.warning.main,
+    },
+}));
 
 function DangerCard(props) {
     const classes = useStyles();
@@ -67,7 +70,7 @@ function DangerCard(props) {
             type: 'CHANGE_PASSWORD',
         },
         {
-            icon: <WarningOutlinedIcon color="secondary" />,
+            icon: <WarningOutlinedIcon className={classes.dangerButton} />,
             text: 'Delete Your Account',
             type: 'CLOSE_ACCOUNT',
         },
