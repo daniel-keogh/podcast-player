@@ -1,5 +1,5 @@
 import React, { Suspense, useContext } from 'react';
-import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
+import { HashRouter, Route, Switch, Redirect } from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import AuthContext from './store/authContext';
 import NowPlayingContext from './store/nowPlayingContext';
@@ -17,7 +17,7 @@ function App() {
     const auth = useContext(AuthContext);
 
     return (
-        <BrowserRouter>
+        <HashRouter basename="/">
             <CssBaseline />
             <div className="app">
                 <div className="main">
@@ -71,7 +71,7 @@ function App() {
                     <Player nowPlaying={nowPlaying} />
                 </div>
             </div>
-        </BrowserRouter>
+        </HashRouter>
     );
 }
 

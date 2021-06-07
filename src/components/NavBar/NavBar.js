@@ -2,6 +2,7 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import IconButton from '@material-ui/core/IconButton';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -41,6 +42,7 @@ function NavBar(props) {
                 {/* Any buttons that go at the end of the NavBar should be passed as children. */}
                 {props.children ? props.children : null}
             </Toolbar>
+            {props.isLoading && <LinearProgress color="secondary" />}
         </AppBar>
     );
 }

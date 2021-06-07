@@ -13,6 +13,7 @@ class Podcast extends Component {
     state = {
         podcast: {},
         numEpisodes: 50,
+        isLoading: true,
         snackbar: {
             open: false,
             message: '',
@@ -37,16 +38,32 @@ class Podcast extends Component {
                     numEpisodes: limit,
                 });
             })
-            .catch(this.onHttpError);
+            .catch(this.onHttpError)
+            .finally(() => {
+                this.setState({
+                    isLoading: false,
+                });
+            });
     }
 
-    componentDidUpdate() {
-        const params = new URLSearchParams(this.props.history.location.search);
+    componentDidUpdate(prevProps) {
+        const params = new URLSearchParams(this.props.location.search);
         const limit = +params.get('limit');
 
-        if (limit !== this.state.numEpisodes) {
+        const prevParams = new URLSearchParams(prevProps.location.search);
+        const prevLimit = +prevParams.get('limit');
+
+        if (limit !== prevLimit) {
+            this.setState({
+                numEpisodes: limit,
+            });
+        } else if (limit !== this.state.numEpisodes) {
             this.props.history.replace(
                 `/podcast/${this.state.podcast._id}?limit=${this.state.numEpisodes}`
+            );
+        } else if (!limit || limit <= 0) {
+            this.props.history.replace(
+                `/podcast/${this.state.podcast._id}?limit=${50}`
             );
         }
     }
@@ -81,7 +98,7 @@ class Podcast extends Component {
 
         return (
             <React.Fragment>
-                <NavBar title={navTitle} />
+                <NavBar title={navTitle} isLoading={this.state.isLoading} />
 
                 <Container maxWidth="lg">
                     {/* Only display the PodcastInfo component if `this.state.podcast` is not an empty object. */}
