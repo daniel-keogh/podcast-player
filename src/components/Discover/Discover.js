@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import Container from '@material-ui/core/Container';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
@@ -25,6 +26,27 @@ class Discover extends Component {
         searchResults: [],
     };
 
+    componentDidMount() {
+        const params = new URLSearchParams(this.props.history.location.search);
+        const term = params.get('term');
+
+        if (term) {
+            this.setState({ searchTerm: term }, this.search);
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        const params = new URLSearchParams(this.props.location.search);
+        const term = params.get('term');
+
+        const prevParams = new URLSearchParams(prevProps.location.search);
+        const prevTerm = prevParams.get('term');
+
+        if (term && term !== prevTerm) {
+            this.setState({ searchTerm: term }, this.search);
+        }
+    }
+
     render() {
         const items = this.state.searchResults.map((item) => {
             return (
@@ -34,6 +56,7 @@ class Discover extends Component {
                     author={item.author}
                     artwork={item.artwork}
                     feedUrl={item.feedUrl}
+                    isSubscribed={item.isSubscribed}
                 />
             );
         });
@@ -52,7 +75,11 @@ class Discover extends Component {
                     </Tooltip>
                 </NavBar>
 
-                <Container component="main" maxWidth="lg">
+                <Container
+                    component="main"
+                    maxWidth="lg"
+                    style={{ paddingBottom: '32px' }}
+                >
                     <SearchForm
                         searchLabel="Search Podcasts..."
                         searchTerm={this.state.searchTerm}
@@ -89,31 +116,8 @@ class Discover extends Component {
     };
 
     handleSearch = (e) => {
-        // Don't search for anything if the searchbox is empty.
-        if (this.state.searchTerm) {
-            // Search for the query entered into the search box.
-            axios
-                .get(
-                    `/api/search/?term=${encodeURIComponent(
-                        this.state.searchTerm
-                    )}`
-                )
-                .then((data) => {
-                    if (!data.data.results.length) {
-                        throw new Error('No search results found.');
-                    } else {
-                        this.setState({
-                            searchResults: data.data.results,
-                            noResultsFound: false,
-                        });
-                    }
-                })
-                .catch(() => {
-                    this.setState({
-                        noResultsFound: true,
-                    });
-                });
-        }
+        // Search for the query entered into the search box.
+        this.search();
         e.preventDefault();
     };
 
@@ -166,6 +170,37 @@ class Discover extends Component {
         });
     };
 
+    search = () => {
+        const term = this.state.searchTerm.trim();
+
+        if (!term) {
+            return;
+        }
+
+        axios
+            .get(`/api/search/?term=${encodeURIComponent(term)}`)
+            .then((data) => {
+                if (!data.data.results.length) {
+                    throw new Error('No search results found.');
+                } else {
+                    this.setState({
+                        searchResults: data.data.results,
+                        noResultsFound: false,
+                    });
+                }
+            })
+            .catch(() => {
+                this.setState({
+                    noResultsFound: true,
+                });
+            })
+            .finally(() => {
+                this.props.history.replace(
+                    `/discover?term=${encodeURIComponent(term)}`
+                );
+            });
+    };
+
     isURL(str) {
         try {
             new URL(str);
@@ -177,4 +212,4 @@ class Discover extends Component {
     }
 }
 
-export default Discover;
+export default withRouter(Discover);

@@ -34,6 +34,12 @@ const UserSchema = new Schema({
     ],
 });
 
+/** Returns an array of all the feeds the user is subscribed to. */
+UserSchema.statics.findFeedsByUserId = async function (id) {
+    const user = await this.findById(id).populate('subscriptions', 'feedUrl');
+    return user.subscriptions.map((n) => n.feedUrl);
+};
+
 UserSchema.pre('save', async function (next) {
     // If the password has been updated, always make sure the
     // new password is hashed before saving to the database

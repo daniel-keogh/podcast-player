@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
 
 function DiscoverListItem(props) {
     const classes = useStyles();
-    const [isSubscribed, setIsSubscribed] = useState(false);
+    const [isSubscribed, setIsSubscribed] = useState(props.isSubscribed);
 
     const handleSubscribe = () => {
         if (!isSubscribed) {
