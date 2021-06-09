@@ -5,6 +5,7 @@ import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import NavBar from '../NavBar/NavBar';
 import AuthContext from '../../store/authContext';
+import NowPlayingContext from '../../store/nowPlayingContext';
 import DangerCard from './DangerCard';
 import ProfileCard from './ProfileCard';
 import axios from '../../config/axios';
@@ -23,6 +24,7 @@ function Profile() {
     const classes = useStyles();
     const history = useHistory();
     const authContext = useContext(AuthContext);
+    const nowPlayingContext = useContext(NowPlayingContext);
 
     const [profileUpdated, setProfileUpdated] = useState(false);
     const [profileInfo, setProfileInfo] = useState({
@@ -49,6 +51,7 @@ function Profile() {
     const handleProfileUpdated = () => setProfileUpdated(true);
 
     const handleLogout = () => {
+        nowPlayingContext.stop();
         authContext.logout();
         history.replace('/auth');
     };

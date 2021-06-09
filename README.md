@@ -1,18 +1,18 @@
 # Podcast Player
 
-A podcast player application built with the MERN stack.
+A podcast player application built with the "MERN" stack, i.e. React.js, Express MongoDB, and Node.
 
 ## Installation
 
-Run `npm install` in the project's root to install the necessary dependencies.
+Run `npm install` from within the project's root to install the necessary dependencies.
 
 ## Server Setup
 
-You should create a file named `.env` with the same structure as the [`.env.example`](./backend/.env.example) file already provided.
+You'll need to create a file named `.env` with the same structure as the [`.env.example`](./backend/.env.example) file already provided in the `backend/` directory.
 
 ### MongoDB
 
-You'll need to have Mongo running either locally, or by entering a URL to the `MONGO_URI` key in the `.env` file.
+You'll need to have MongoDB running either locally, or by entering a URL to the `MONGO_URI` key in the `.env` file.
 
 ### Redis
 
@@ -41,3 +41,7 @@ Runs the client and server concurrently.
 ### `npm run build`
 
 Generates a production build of the React app inside the `build` directory.
+
+## Screenshots
+
+![Screenshot](https://user-images.githubusercontent.com/37158241/121348755-a340c700-c920-11eb-9814-0b6cf3b55161.PNG)

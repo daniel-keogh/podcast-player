@@ -1,4 +1,4 @@
-import React, { Suspense, useContext } from 'react';
+import React, { Suspense, useContext, useEffect } from 'react';
 import { HashRouter, Route, Switch, Redirect } from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import AuthContext from './store/authContext';
@@ -15,6 +15,15 @@ const Subscriptions = React.lazy(() => import('./components/Subscriptions/Subscr
 function App() {
     const nowPlaying = useContext(NowPlayingContext);
     const auth = useContext(AuthContext);
+
+    useEffect(() => {
+        // Set the page title based on what's playing
+        if (auth.isAuthorized && nowPlaying.epTitle && nowPlaying.podTitle) {
+            document.title = `${nowPlaying.epTitle} | ${nowPlaying.podTitle} \u00b7 Podcast Player`;
+        } else {
+            document.title = 'Podcast Player';
+        }
+    }, [auth.isAuthorized, nowPlaying.epTitle, nowPlaying.podTitle]);
 
     return (
         <HashRouter basename="/">

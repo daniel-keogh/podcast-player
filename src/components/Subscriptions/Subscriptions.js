@@ -49,9 +49,7 @@ class Subscriptions extends Component {
                     throw new Error('No subscriptions');
                 } else {
                     this.setState({
-                        subscriptions: res.data.subscriptions.sort(
-                            this.compare
-                        ),
+                        subscriptions: res.data.subscriptions.sort(this.compare),
                         noSubscriptions: false,
                     });
                 }
