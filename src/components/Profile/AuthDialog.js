@@ -14,7 +14,7 @@ function AuthDialog(props) {
     const changePassword = props.type === 'CHANGE_PASSWORD';
     const closeAccount = props.type === 'CLOSE_ACCOUNT';
 
-    const { error, resetError, updateEmail, updatePassword, deleteAccount } = useAuth(changePassword);
+    const { error, resetError, updateEmail, updatePassword, deleteAccount } = useAuth();
 
     const [form, setForm] = useState({
         email: '',

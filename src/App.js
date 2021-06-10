@@ -3,6 +3,7 @@ import { HashRouter, Route, Switch, Redirect } from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import AuthContext from './store/authContext';
 import NowPlayingContext from './store/nowPlayingContext';
+import NavBar from './components/NavBar/NavBar';
 import Player from './components/Player/Player';
 import './App.css';
 
@@ -31,8 +32,8 @@ function App() {
             <div className="app">
                 <div className="main">
                     <div className="body">
-                        <Suspense fallback={<></>}>
-                            {!auth.isAuthorized ? (
+                        {!auth.isAuthorized ? (
+                            <Suspense fallback={<></>}>
                                 <Switch>
                                     <Route path="/auth">
                                         <Auth />
@@ -44,7 +45,9 @@ function App() {
                                         <Redirect to="/auth" />
                                     </Route>
                                 </Switch>
-                            ) : (
+                            </Suspense>
+                        ) : (
+                            <Suspense fallback={<NavBar />}>
                                 <Switch>
                                     <Route path="/subscriptions">
                                         <Subscriptions />
@@ -71,8 +74,8 @@ function App() {
                                         <Redirect to="/subscriptions" />
                                     </Route>
                                 </Switch>
-                            )}
-                        </Suspense>
+                            </Suspense>
+                        )}
                     </div>
                 </div>
                 <div
@@ -83,7 +86,7 @@ function App() {
                             : null
                     }
                 >
-                    <Player nowPlaying={nowPlaying} />
+                    <Player />
                 </div>
             </div>
         </HashRouter>
