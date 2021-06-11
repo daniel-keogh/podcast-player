@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-const Podcast = require('./podcast');
+const Podcast = require('./Podcast');
 
 const Schema = mongoose.Schema;
 

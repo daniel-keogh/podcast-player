@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 const FeedParser = require('feedparser');
-const Podcast = require('../models/podcast');
+const Podcast = require('../models/Podcast');
 const redisClient = require('../db/redis');
 
 /** Gets all the user's subscriptions. */
