@@ -12,9 +12,6 @@ exports.getUser = async (req, res, next) => {
             res.status(200).json(user);
         }
     } catch (err) {
-        if (!err.status) {
-            err.status = 500;
-        }
         next(err);
     }
 };
@@ -34,7 +31,6 @@ exports.updateUser = async (req, res, next) => {
             subscriptions
         });
     } catch (err) {
-        err.status = 500;
         next(err);
     }
 };
@@ -59,9 +55,6 @@ exports.deleteUser = async (req, res, next) => {
 
         res.status(204).send();
     } catch (err) {
-        if (!err.status) {
-            err.status = 500;
-        }
         next(err);
     }
 };

@@ -17,10 +17,7 @@ exports.registerUser = (req, res, next) => {
                 registeredSince,
             });
         })
-        .catch((err) => {
-            err.status = 500;
-            next(err);
-        });
+        .catch(next);
 };
 
 /** Logs a user in with their email & password and returns their auth token. */
@@ -28,19 +25,18 @@ exports.login = (req, res, next) => {
     const { email, password } = req.body;
 
     User.findOne({ email })
-        .select('+password +salt')
+        .select('+password')
         .exec()
         .then(async (user) => {
             if (user) {
                 // Validate password
-                const hash = await bcrypt.hash(password, user.salt);
-                if (hash === user.password) {
+                if (await bcrypt.compare(password, user.password)) {
                     return user;
                 }
             }
 
             // Auth error
-            const error = new Error();
+            const error = new Error('User email or password is incorrect');
             error.status = 401;
             throw error;
         })
@@ -62,14 +58,7 @@ exports.login = (req, res, next) => {
                 token,
             });
         })
-        .catch((err) => {
-            if (err.status === 401) {
-                err.message = 'User email or password is incorrect';
-            } else {
-                err.status = 500;
-            }
-            next(err);
-        });
+        .catch(next);
 };
 
 /** Resets the user's old password with a new one. */
@@ -77,16 +66,16 @@ exports.passwordReset = (req, res, next) => {
     const { password, oldPassword } = req.body;
 
     User.findOne({ _id: req.user._id })
-        .select('+password +salt')
+        .select('+password')
         .exec()
         .then(async (user) => {
             if (user) {
                 // Check if the old password is correct
-                const hash = await bcrypt.hash(oldPassword, user.salt);
-
-                if (hash === user.password) {
+                if (await bcrypt.compare(oldPassword, user.password)) {
                     user.password = password;
+
                     await user.save();
+                    
                     res.status(200).json({
                         msg: 'Password reset successfully',
                     });
@@ -94,16 +83,9 @@ exports.passwordReset = (req, res, next) => {
             }
 
             // Auth error
-            const error = new Error();
+            const error = new Error('User email or password is incorrect');
             error.status = 401;
             throw error;
         })
-        .catch((err) => {
-            if (err.status === 401) {
-                err.message = 'User email or password is incorrect';
-            } else {
-                err.status = 500;
-            }
-            next(err);
-        });
+        .catch(next);
 };

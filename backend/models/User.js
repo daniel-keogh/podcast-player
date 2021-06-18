@@ -18,10 +18,6 @@ const UserSchema = new Schema({
         select: false,
         minlength: 6,
     },
-    salt: {
-        type: String,
-        select: false,
-    },
     registeredSince: {
         type: Date,
         default: Date.now,
@@ -48,8 +44,8 @@ UserSchema.pre('save', async function (next) {
     }
 
     try {
-        this.salt = await bcrypt.genSalt();
-        this.password = await bcrypt.hash(this.password, this.salt);
+        const salt = await bcrypt.genSalt();
+        this.password = await bcrypt.hash(this.password, salt);
         next();
     } catch (err) {
         next(err);

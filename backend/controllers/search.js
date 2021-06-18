@@ -10,22 +10,17 @@ exports.search = (req, res, next) => {
             // Search iTunes for podcasts related to the `term` query parameter sent by the client.
             fetch(`https://itunes.apple.com/search?${term}&${limit}&entity=podcast`)
                 .then((data) => data.json())
-                .then(async (data) => {
-                    const results = data.results.map((result) => {
-                        return {
-                            title: result.collectionName,
-                            author: result.artistName,
-                            artwork: result.artworkUrl100,
-                            feedUrl: result.feedUrl,
-                            isSubscribed: feeds.indexOf(result.feedUrl) !== -1,
-                        };
-                    });
+                .then((data) => {
+                    const results = data.results.map((result) => ({
+                        title: result.collectionName,
+                        author: result.artistName,
+                        artwork: result.artworkUrl100,
+                        feedUrl: result.feedUrl,
+                        isSubscribed: feeds.indexOf(result.feedUrl) !== -1,
+                    }));
 
                     res.status(200).json({ results });
                 });
         })
-        .catch((err) => {
-            err.status = 500;
-            next(err);
-        });
+        .catch(next);
 };

@@ -6,13 +6,13 @@ const redisClient = require('../db/redis');
 /** Gets all the user's subscriptions. */
 exports.getAllSubscriptions = async (req, res, next) => {
     try {
-        const subscriptions = await Podcast.where('_id')
+        const subscriptions = await Podcast
+            .where('_id')
             .in(req.user.subscriptions)
             .exec();
 
         res.status(200).json({ subscriptions });
     } catch (err) {
-        err.status = 500;
         next(err);
     }
 };
@@ -100,17 +100,11 @@ exports.getSubscription = (req, res, next) => {
                             }
                         })
                         .on('error', function (err) {
-                            err.status = 500;
                             next(err);
                         });
                 });
         })
-        .catch((err) => {
-            if (!err.status) {
-                err.status = 500;
-            }
-            next(err);
-        });
+        .catch(next);
 };
 
 /**
@@ -128,12 +122,15 @@ exports.addSubscription = async (req, res, next) => {
             // Make sure the user isn't already subscribed
             if (req.user.subscriptions.indexOf(existingPodcast._id) === -1) {
                 req.user.subscriptions.push(existingPodcast._id);
-                await req.user.save();
 
                 existingPodcast.subscriberCount++;
-                await existingPodcast.save();
+                
+                await Promise.all([
+                    req.user.save(), 
+                    existingPodcast.save(),
+                ]);
 
-                return res.status(202).json({ result: existingPodcast });
+                return res.status(200).json({ result: existingPodcast });
             } else {
                 const error = new Error('Already subscribed to that feed');
                 error.status = 409;
@@ -141,9 +138,6 @@ exports.addSubscription = async (req, res, next) => {
             }
         }
     } catch (err) {
-        if (!err.status) {
-            err.status = 500;
-        }
         return next(err);
     }
 
@@ -185,16 +179,10 @@ exports.addSubscription = async (req, res, next) => {
                     }
                 })
                 .on('error', function (err) {
-                    err.status = 500;
                     next(err);
                 });
         })
-        .catch((err) => {
-            if (!err.status) {
-                err.status = 500;
-            }
-            next(err);
-        });
+        .catch(next);
 };
 
 /**
@@ -211,17 +199,17 @@ exports.deleteSubscription = async (req, res, next) => {
         } else {
             const index = req.user.subscriptions.indexOf(req.params.id);
             req.user.subscriptions.splice(index, 1);
-            await req.user.save();
 
             sub.subscriberCount--;
-            await sub.save();
+
+            await Promise.all([
+                req.user.save(),
+                sub.save(),
+            ]);
 
             res.status(204).send();
         }
     } catch (err) {
-        if (!err.status) {
-            err.status = 500;
-        }
         next(err);
     }
 };
