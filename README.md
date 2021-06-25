@@ -16,7 +16,7 @@ You'll need to have MongoDB running either locally, or by entering a URL to the 
 
 ### Redis
 
-[Redis](https://redis.io/download) is used for caching on the server. Once installed & added to your path, you should start the Redis server as follows.
+[Redis](https://redis.io/download) can be used for caching on the server. Once installed & added to your path, you can start the Redis server as follows.
 
 ```sh
 $ redis-server

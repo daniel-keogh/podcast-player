@@ -1,6 +1,10 @@
 const redisClient = require('../db/redis');
 
 exports.getCachedSubscription = (req, res, next) => {
+    if (!redisClient.connected) {
+        return next();
+    }
+
     redisClient.get(req.params.id, (err, data) => {
         if (err) {
             err.status = 500;

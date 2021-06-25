@@ -3,7 +3,7 @@ const User = require('../models/User');
 
 exports.search = (req, res, next) => {
     const term = 'term=' + req.query.term;
-    const limit = 'limit=' + (req.query.limit || 15);
+    const limit = 'limit=' + (req.query.limit || 10);
 
     User.findFeedsByUserId(req.user._id)
         .then((feeds) => {

@@ -34,8 +34,12 @@ instance.interceptors.response.use(
         if (!whitelist.includes(err?.response?.config?.url)) {
             if (err?.response?.status === 401) {
                 localStorage.removeItem(TOKEN_KEY);
-                window.location.href = '/auth';
+                window.location.href = '/#/auth';
             }
+        }
+
+        if (err?.response?.status === 429) {
+            window.location.href = '/#/rate_limit';
         }
 
         return Promise.reject(err);

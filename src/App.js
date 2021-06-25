@@ -8,6 +8,7 @@ import Player from './components/Player/Player';
 import './App.css';
 
 const Auth = React.lazy(() => import('./components/Auth/Auth'));
+const Error = React.lazy(() => import('./components/Error/Error'));
 const Podcast = React.lazy(() => import('./components/Podcast/Podcast'));
 const Discover = React.lazy(() => import('./components/Discover/Discover'));
 const Profile = React.lazy(() => import('./components/Profile/Profile'));
@@ -67,6 +68,12 @@ function App() {
                                             />
                                         )}
                                     ></Route>
+                                    <Route path="/rate_limit">
+                                        <Error
+                                            heading="Too Many Requests!"
+                                            message="Try that again later."
+                                        />
+                                    </Route>
                                     <Route path="/">
                                         <Redirect to="/subscriptions" />
                                     </Route>

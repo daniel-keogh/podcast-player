@@ -79,14 +79,16 @@ exports.getSubscription = (req, res, next) => {
 
                             try {
                                 // Cache with Redis
-                                redisClient.setex(
-                                    data._id + '',
-                                    600,
-                                    JSON.stringify({
-                                        ...data,
-                                        episodes: feedItems,
-                                    })
-                                );
+                                if (redisClient.connected) {
+                                    redisClient.setex(
+                                        data._id + '',
+                                        600,
+                                        JSON.stringify({
+                                            ...data,
+                                            episodes: feedItems,
+                                        })
+                                    );
+                                }
 
                                 res.status(200).json({
                                     ...data,

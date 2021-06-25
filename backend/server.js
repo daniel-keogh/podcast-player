@@ -2,6 +2,7 @@ const cors = require('cors');
 const express = require('express');
 const helmet = require('helmet');
 const morgan = require('morgan');
+const rateLimit = require('express-rate-limit');
 const dotenv = require('dotenv');
 const passport = require('passport');
 const path = require('path');
@@ -19,23 +20,36 @@ const userRoutes = require('./routes/users');
 
 const app = express();
 
+app.set('trust proxy', 1);
+
 app.use(express.static(path.join(__dirname, '../build')));
 app.use(express.json());
 app.use(cors({ origin: /^.+localhost:3000$/ }));
 app.use(helmet());
 app.use(morgan('dev'));
 
+// Rate limit
+const limiter = rateLimit({
+    windowMs: process.env.RATE_LIMIT_SECS * 1000,
+    max: process.env.RATE_LIMIT_MAX,
+    handler: (req, res, next) => {
+        const error = new Error(`Too Many Requests`);
+        error.status = 429;
+        next(error); 
+    }
+});
+
 // Passport
 app.use(passport.initialize());
 passport.use(jwtStrategy);
 
 // Routes
-app.use('/api', authRoutes);
-app.use('/api/search', searchRoutes);
-app.use('/api/subscriptions', subscriptionRoutes);
-app.use('/api/users', userRoutes);
+app.use('/api', limiter, authRoutes);
+app.use('/api/search', limiter, searchRoutes);
+app.use('/api/subscriptions', limiter, subscriptionRoutes);
+app.use('/api/users', limiter, userRoutes);
 
-app.all('/api/*', (req, res, next) => {
+app.all('/api/*', limiter, (req, res, next) => {
     // Return a JSON response instead of the default Express HTML one
     const error = new Error(`Cannot ${req.method} to the specified path`);
     error.status = 404;
@@ -56,9 +70,7 @@ mongoose
         useUnifiedTopology: true,
     })
     .then((db) => {
-        console.log(
-            `[info]: Connected to MongoDB at "${db.connection.host}:${db.connection.port}"`
-        );
+        console.log(`[info]: Connected to MongoDB at "${db.connection.host}:${db.connection.port}"`);
     })
     .catch((err) => {
         console.error(`[error]: ${err.message}`);
