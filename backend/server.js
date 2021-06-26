@@ -26,7 +26,7 @@ app.use(express.static(path.join(__dirname, '../build')));
 app.use(express.json());
 app.use(cors({ origin: /^.+localhost:3000$/ }));
 app.use(helmet());
-app.use(morgan('dev'));
+app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 
 // Rate limit
 app.use(
