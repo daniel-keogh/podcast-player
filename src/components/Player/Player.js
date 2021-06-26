@@ -73,10 +73,7 @@ class Player extends Component {
     handleForward = () => {
         // If near the end of the file, set the current time to the total duration
         // (prevents currentTime being set to a number greater than the duration).
-        if (
-            this.state.currentTime + this.state.skipTime >=
-            this.state.duration
-        ) {
+        if (this.state.currentTime + this.state.skipTime >= this.state.duration) {
             this.audioElement.current.currentTime = this.state.duration;
         } else {
             this.audioElement.current.currentTime += this.state.skipTime;
@@ -93,8 +90,7 @@ class Player extends Component {
     // Syncs the slider with the current playback position.
     handleSliderChange = (e, value) => {
         // Convert the slider's new value property from a % to a time.
-        this.audioElement.current.currentTime =
-            this.state.duration * value * 0.01;
+        this.audioElement.current.currentTime = this.state.duration * value * 0.01;
 
         this.setState({
             currentTime: this.audioElement.current.currentTime,

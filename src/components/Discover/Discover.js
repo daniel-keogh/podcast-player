@@ -48,19 +48,6 @@ class Discover extends Component {
     }
 
     render() {
-        const items = this.state.searchResults.map((item) => {
-            return (
-                <DiscoverListItem
-                    key={item.feedUrl}
-                    title={item.title}
-                    author={item.author}
-                    artwork={item.artwork}
-                    feedUrl={item.feedUrl}
-                    isSubscribed={item.isSubscribed}
-                />
-            );
-        });
-
         return (
             <React.Fragment>
                 <NavBar title="Discover">
@@ -88,17 +75,22 @@ class Discover extends Component {
                     />
                     <Divider />
 
-                    {/* Show the search results list, or the <NoResultsFound/> component if there were no results. */}
+                    {/* Show the search results list, or the NoResultsFound component if there were no results. */}
                     {!this.state.noResultsFound ? (
-                        <List>{items}</List>
+                        <List>
+                            {this.state.searchResults.map((item) => (
+                                <DiscoverListItem
+                                    {...item}
+                                    key={item.feedUrl}
+                                />
+                            ))}
+                        </List>
                     ) : (
                         <NoResultsFound />
                     )}
 
                     <FeedFormDialog
-                        open={this.state.dialog.open}
-                        error={this.state.dialog.error}
-                        errorMessage={this.state.dialog.errorMessage}
+                        {...this.state.dialog}
                         onDialogOpen={this.handleDialogOpen}
                         onDialogClose={this.handleDialogClose}
                         onFormChange={this.handleFormChange}
@@ -141,9 +133,7 @@ class Discover extends Component {
                 .post(`/api/subscriptions`, {
                     feedUrl: this.state.newFeed,
                 })
-                .then(() => {
-                    this.handleDialogClose();
-                })
+                .then(this.handleDialogClose)
                 .catch((err) => {
                     showDialogError(err.response?.data?.msg);
                 });
@@ -195,9 +185,11 @@ class Discover extends Component {
                 });
             })
             .finally(() => {
-                this.props.history.replace(
-                    `/discover?term=${encodeURIComponent(term)}`
-                );
+                if (window.location.hash !== '#/rate_limit') {
+                    this.props.history.replace(
+                        `/discover?term=${encodeURIComponent(term)}`
+                    );
+                }
             });
     };
 

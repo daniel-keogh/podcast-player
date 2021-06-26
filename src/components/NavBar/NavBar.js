@@ -23,7 +23,7 @@ function NavBar(props) {
     const history = useHistory();
 
     return (
-        <AppBar position="sticky" className="NavBar">
+        <AppBar position="sticky">
             <Toolbar>
                 {/* Only show the back button if the history prop was passed to this component. */}
                 {!props.hideBackButton && history ? (
@@ -40,7 +40,7 @@ function NavBar(props) {
                     {props.title}
                 </Typography>
                 {/* Any buttons that go at the end of the NavBar should be passed as children. */}
-                {props.children ? props.children : null}
+                {props.children}
             </Toolbar>
             {props.isLoading && <LinearProgress color="secondary" />}
         </AppBar>

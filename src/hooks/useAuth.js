@@ -30,7 +30,10 @@ function useAuth() {
 
     const login = ({ email, password }) => {
         if (!isValidForm({ email, password })) {
-            return Promise.resolve(false);
+            return Promise.resolve({
+                success: false,
+                data: null,
+            });
         }
 
         return axios
@@ -40,14 +43,20 @@ function useAuth() {
             })
             .then((data) => {
                 ctx.login(data.data.token);
-                return ctx.isAuthorized;
+                return {
+                    success: ctx.isAuthorized,
+                    data,
+                };
             })
             .catch(handleError);
     };
 
     const register = ({ email, password, confirmPassword }) => {
         if (!isValidForm({ email, password, confirmPassword })) {
-            return Promise.resolve(false);
+            return Promise.resolve({
+                success: false,
+                data: null,
+            });
         }
 
         return axios
@@ -63,29 +72,39 @@ function useAuth() {
             })
             .then((data) => {
                 ctx.login(data.data.token);
-                return ctx.isAuthorized;
+                return {
+                    success: ctx.isAuthorized,
+                    data,
+                };
             })
             .catch(handleError);
     };
 
     const updateEmail = ({ email }) => {
         if (!isValidForm({ email })) {
-            return Promise.resolve(false);
+            return Promise.resolve({
+                success: false,
+                data: null,
+            });
         }
 
         return axios
             .put(`/api/users/${ctx.userId}`, {
                 email,
             })
-            .then((data) => {
-                return data.status === 200;
-            })
+            .then((data) => ({
+                success: data.status === 200,
+                data,
+            }))
             .catch(handleError);
     };
 
     const updatePassword = ({ oldPassword, password, confirmPassword }) => {
         if (!isValidForm({ password, confirmPassword })) {
-            return Promise.resolve(false);
+            return Promise.resolve({
+                success: false,
+                data: null,
+            });
         }
 
         return axios
@@ -93,15 +112,19 @@ function useAuth() {
                 oldPassword,
                 password,
             })
-            .then((data) => {
-                return data.status === 200;
-            })
+            .then((data) => ({
+                success: data.status === 200,
+                data,
+            }))
             .catch(handleError);
     };
 
     const deleteAccount = ({ email, password }) => {
         if (!isValidForm({ email, password })) {
-            return Promise.resolve(false);
+            return Promise.resolve({
+                success: false,
+                data: null,
+            });
         }
 
         return login({ email, password })
@@ -111,9 +134,10 @@ function useAuth() {
                         email,
                         password,
                     })
-                    .then((data) => {
-                        return data.status === 204;
-                    });
+                    .then((data) => ({
+                        success: data.status === 204,
+                        data,
+                    }));
             })
             .catch(handleError);
     };
@@ -124,7 +148,11 @@ function useAuth() {
         } else {
             setError('An error occurred. Try again later.');
         }
-        return false;
+
+        return {
+            success: false,
+            data: null,
+        };
     };
 
     return {

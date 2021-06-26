@@ -9,8 +9,8 @@ import './App.css';
 
 const Auth = React.lazy(() => import('./components/Auth/Auth'));
 const Error = React.lazy(() => import('./components/Error/Error'));
-const Podcast = React.lazy(() => import('./components/Podcast/Podcast'));
 const Discover = React.lazy(() => import('./components/Discover/Discover'));
+const Podcast = React.lazy(() => import('./components/Podcast/Podcast'));
 const Profile = React.lazy(() => import('./components/Profile/Profile'));
 const Subscriptions = React.lazy(() => import('./components/Subscriptions/Subscriptions'));
 
@@ -27,6 +27,15 @@ function App() {
         }
     }, [auth.isAuthorized, nowPlaying.epTitle, nowPlaying.podTitle]);
 
+    const rateLimit = (
+        <Route path="/rate_limit">
+            <Error
+                heading="Too Many Requests!"
+                message={'Please wait a while & try that again later.'}
+            />
+        </Route>
+    );
+
     return (
         <HashRouter basename="/">
             <CssBaseline />
@@ -39,6 +48,7 @@ function App() {
                                     <Route path="/auth">
                                         <Auth />
                                     </Route>
+                                    {rateLimit}
                                     <Route path="/">
                                         <Redirect to="/auth" />
                                     </Route>
@@ -68,12 +78,7 @@ function App() {
                                             />
                                         )}
                                     ></Route>
-                                    <Route path="/rate_limit">
-                                        <Error
-                                            heading="Too Many Requests!"
-                                            message="Try that again later."
-                                        />
-                                    </Route>
+                                    {rateLimit}
                                     <Route path="/">
                                         <Redirect to="/subscriptions" />
                                     </Route>

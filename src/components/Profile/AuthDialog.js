@@ -33,19 +33,19 @@ function AuthDialog(props) {
     };
 
     const handleSubmit = async () => {
-        let success = false;
+        let response = {};
 
         if (changeEmail) {
-            success = await updateEmail(form);
+            response = await updateEmail(form);
         } else if (changePassword) {
-            success = await updatePassword(form);
+            response = await updatePassword(form);
         } else if (closeAccount) {
-            success = await deleteAccount(form);
+            response = await deleteAccount(form);
         }
 
-        if (success) {
+        if (response.success) {
             resetError();
-            props.onSubmit();
+            props.onSubmit(response.data);
         }
     };
 

@@ -7,13 +7,13 @@ import NavBar from '../NavBar/NavBar';
 const useStyles = makeStyles((theme) => ({
     root: {
         position: 'absolute',
-        top: '50%',
+        top: '40%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
         textAlign: 'center',
     },
     heading: {
-        marginBottom: theme.spacing(1),
+        marginBottom: theme.spacing(2),
     }
 }));
 

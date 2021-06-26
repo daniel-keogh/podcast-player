@@ -2,7 +2,7 @@ import axios from 'axios';
 import { TOKEN_KEY } from '../store/authContext';
 
 const instance = axios.create({
-    baseURL: 'http://localhost:4000',
+    baseURL: process.env.NODE_ENV === 'production' ? process.env.HOST_NAME : 'http://localhost:4000',
 });
 
 instance.interceptors.request.use(
@@ -35,6 +35,7 @@ instance.interceptors.response.use(
             if (err?.response?.status === 401) {
                 localStorage.removeItem(TOKEN_KEY);
                 window.location.href = '/#/auth';
+                return;
             }
         }
 

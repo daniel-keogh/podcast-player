@@ -59,7 +59,7 @@ function AuthForm(props) {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const success = props.isLogin
+        const { success } = props.isLogin
             ? await login(form)
             : await register(form);
 

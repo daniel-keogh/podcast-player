@@ -29,27 +29,30 @@ app.use(helmet());
 app.use(morgan('dev'));
 
 // Rate limit
-const limiter = rateLimit({
-    windowMs: process.env.RATE_LIMIT_SECS * 1000,
-    max: process.env.RATE_LIMIT_MAX,
-    handler: (req, res, next) => {
-        const error = new Error(`Too Many Requests`);
-        error.status = 429;
-        next(error); 
-    }
-});
+app.use(
+    '/api/',
+    rateLimit({
+        windowMs: process.env.RATE_LIMIT_SECS * 1000,
+        max: process.env.RATE_LIMIT_MAX,
+        handler: (req, res, next) => {
+            const error = new Error(`Too Many Requests`);
+            error.status = 429;
+            next(error);
+        },
+    })
+);
 
 // Passport
 app.use(passport.initialize());
 passport.use(jwtStrategy);
 
 // Routes
-app.use('/api', limiter, authRoutes);
-app.use('/api/search', limiter, searchRoutes);
-app.use('/api/subscriptions', limiter, subscriptionRoutes);
-app.use('/api/users', limiter, userRoutes);
+app.use('/api', authRoutes);
+app.use('/api/search', searchRoutes);
+app.use('/api/subscriptions', subscriptionRoutes);
+app.use('/api/users', userRoutes);
 
-app.all('/api/*', limiter, (req, res, next) => {
+app.all('/api/*', (req, res, next) => {
     // Return a JSON response instead of the default Express HTML one
     const error = new Error(`Cannot ${req.method} to the specified path`);
     error.status = 404;

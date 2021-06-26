@@ -53,23 +53,8 @@ class Podcast extends Component {
         const prevParams = new URLSearchParams(prevProps.location.search);
         const prevLimit = +prevParams.get('limit');
 
-        if (limit > this.state.numEpisodes) {
-            this.fetchMore(limit);
-            return;
-        }
-
-        if (limit !== prevLimit) {
-            this.setState({
-                numEpisodes: limit,
-            });
-        } else if (limit !== this.state.numEpisodes) {
-            this.props.history.replace(
-                `/podcast/${this.state.podcast._id}?limit=${this.state.numEpisodes}`
-            );
-        } else if (!limit || limit <= 0) {
-            this.props.history.replace(
-                `/podcast/${this.state.podcast._id}?limit=${50}`
-            );
+        if (limit && limit !== prevLimit) {
+            this.setState({ numEpisodes: limit }, () => this.fetchMore(limit));
         }
     }
 
@@ -94,12 +79,7 @@ class Podcast extends Component {
         }
 
         // If the title was passed as a prop use that, otherwise wait until `componentDidMount()` updates the state.
-        let navTitle;
-        if (this.props.location.state && 'title' in this.props.location.state) {
-            navTitle = this.props.location.state.title;
-        } else {
-            navTitle = this.state.podcast.title;
-        }
+        const navTitle = this.props.location.state?.title || this.state.podcast.title;
 
         return (
             <React.Fragment>
@@ -109,13 +89,7 @@ class Podcast extends Component {
                     {/* Only display the PodcastInfo component if `this.state.podcast` is not an empty object. */}
                     {Object.entries(this.state.podcast).length ? (
                         <PodcastInfo
-                            title={this.state.podcast.title}
-                            author={this.state.podcast.author}
-                            description={this.state.podcast.description}
-                            artwork={this.state.podcast.artwork}
-                            link={this.state.podcast.link}
-                            subscriberCount={this.state.podcast.subscriberCount}
-                            isSubscribed={this.state.podcast.isSubscribed}
+                            {...this.state.podcast}
                             onSubscribe={this.handleSubscribe}
                         />
                     ) : null}
@@ -123,9 +97,7 @@ class Podcast extends Component {
                     <List>{episodes}</List>
 
                     {/* Only display the "Show More" button if there are episodes that aren't yet visible in the List. */}
-                    {this.state.podcast.episodes &&
-                    this.state.podcast.episodes.length >=
-                        this.state.numEpisodes ? (
+                    {this.state.podcast.episodes?.length >= this.state.numEpisodes ? (
                         <Button
                             style={{
                                 display: 'block',
@@ -223,7 +195,14 @@ class Podcast extends Component {
                     numEpisodes: limit,
                 }));
             })
-            .catch(this.onHttpError);
+            .catch(this.onHttpError)
+            .finally(() => {
+                if (window.location.hash !== '#/rate_limit') {
+                    this.props.history.replace(
+                        `/podcast/${this.state.podcast._id}?limit=${limit}`
+                    );
+                }
+            });
     };
 
     onHttpError = (err) => {

@@ -26,15 +26,10 @@ function DiscoverListItem(props) {
                 .post(`/api/subscriptions`, {
                     feedUrl: props.feedUrl,
                 })
-                .then(() => {
-                    setIsSubscribed(true);
-                })
+                .then(() => setIsSubscribed(true))
                 .catch((err) => {
-                    if (err.response) {
-                        // Already subscribed
-                        if (err.response.status === 409) {
-                            setIsSubscribed(true);
-                        }
+                    if (err?.response?.status === 409) {
+                        setIsSubscribed(true); // Already subscribed
                     }
                 });
         }
