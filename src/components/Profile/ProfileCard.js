@@ -48,9 +48,11 @@ function ProfileCard(props) {
                 <Typography variant="h5" component="h2">
                     {props.email}
                 </Typography>
-                <Typography className={classes.userSince} color="textSecondary">
-                    Listening since {moment(props.registeredSince).fromNow()}
-                </Typography>
+                {props.registeredSince &&
+                    <Typography className={classes.userSince} color="textSecondary">
+                        Listening since {moment(props.registeredSince).fromNow()}
+                    </Typography>
+                }
                 <div className={classes.buttonWrapper}>
                     <Button
                         variant="outlined"
