@@ -16,6 +16,7 @@ const { jwtStrategy } = require('./middleware/passport');
 const authRoutes = require('./routes/auth');
 const searchRoutes = require('./routes/search');
 const subscriptionRoutes = require('./routes/subscriptions');
+const popularRoutes = require('./routes/popular');
 const userRoutes = require('./routes/users');
 
 const app = express();
@@ -50,6 +51,7 @@ passport.use(jwtStrategy);
 app.use('/api', authRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/subscriptions', subscriptionRoutes);
+app.use('/api/popular', popularRoutes);
 app.use('/api/users', userRoutes);
 
 app.all('/api/*', (req, res, next) => {

@@ -1,7 +1,5 @@
-const fetch = require('node-fetch');
-const FeedParser = require('feedparser');
 const Podcast = require('../models/Podcast');
-const redisClient = require('../db/redis');
+const { parseSubscription, parseMeta } = require('../helpers/feedParsing');
 
 /** Gets all the user's subscriptions. */
 exports.getAllSubscriptions = async (req, res, next) => {
@@ -21,92 +19,41 @@ exports.getAllSubscriptions = async (req, res, next) => {
  * Gets a single subscription by its ID.
  * The parsed feed will be cached for 10 minutes.
  */
-exports.getSubscription = (req, res, next) => {
-    Podcast.findById(req.params.id)
-        .then((sub) => {
-            if (!sub) {
-                const error = new Error(`Subscription with ID "${req.params.id}" not found`);
-                error.status = 404;
-                throw error;
-            }
+exports.getSubscription = async (req, res, next) => {
+    try {
+        const sub = await Podcast.findById(req.params.id);
 
-            fetch(sub.feedUrl)
-                .then((data) => {
-                    if (data.status !== 200) {
-                        const error = new Error('Error fetching the feed');
-                        error.status = data.status;
-                        throw error;
-                    }
-                    return data.body;
-                })
-                .then((body) => {
-                    /* Get all the episodes of this podcast using feedparser.
-                     * [https://www.npmjs.com/package/feedparser#usage].
-                     */
-                    const feedparser = new FeedParser({ addmeta: false });
-                    const feedItems = [];
+        if (!sub) {
+            const error = new Error(`Subscription with ID "${req.params.id}" not found`);
+            error.status = 404;
+            throw error;
+        }
 
-                    body.pipe(feedparser)
-                        .on('readable', function () {
-                            try {
-                                // Read through each item in the feed and add it to the `feedItems` array.
-                                const item = this.read();
-
-                                if (item !== null) {
-                                    feedItems.push({
-                                        title: item.title,
-                                        date: item.date,
-                                        audio: item.enclosures[0],
-                                    });
-                                }
-                            } catch (err) {
-                                this.emit('error', err);
-                            }
-                        })
-                        .on('end', function () {
-                            // Send everything in the DB, as well as the `feedItems` array.
-                            const data = {
-                                _id: sub._id,
-                                title: sub.title,
-                                author: sub.author,
-                                artwork: sub.artwork,
-                                subscriberCount: sub.subscriberCount,
-                                description: sub.description,
-                                link: sub.link,
-                                feedUrl: sub.feedUrl,
-                                isSubscribed: req.user.subscriptions.indexOf(sub._id) !== -1
-                            };
-
-                            try {
-                                // Cache with Redis
-                                if (redisClient.connected) {
-                                    redisClient.setex(
-                                        data._id + '',
-                                        600,
-                                        JSON.stringify({
-                                            ...data,
-                                            episodes: feedItems,
-                                        })
-                                    );
-                                }
-
-                                res.status(200).json({
-                                    ...data,
-                                    episodes: feedItems.slice(
-                                        0,
-                                        req.query.limit
-                                    ),
-                                });
-                            } catch (err) {
-                                this.emit('error', err);
-                            }
-                        })
-                        .on('error', function (err) {
-                            next(err);
-                        });
-                });
-        })
-        .catch(next);
+        const episodes = await parseSubscription(sub);
+        
+        // Send everything in the DB, as well as the `episodes` array.
+        res.status(200).json({
+            _id: sub._id,
+            title: sub.title,
+            author: sub.author,
+            artwork: sub.artwork,
+            subscriberCount: sub.subscriberCount,
+            description: sub.description,
+            link: sub.link,
+            feedUrl: sub.feedUrl,
+            isSubscribed: req.user.subscriptions.indexOf(sub._id) !== -1,
+            episodes: episodes
+                .map((item) => ({
+                    title: item.title,
+                    audio: item.audio,
+                    date: item.date,
+                    guid: item.guid,
+                }))
+                .slice(0, req.query.limit),
+        });
+    } catch (err) {
+        next(err);
+    }
 };
 
 /**
@@ -126,9 +73,9 @@ exports.addSubscription = async (req, res, next) => {
                 req.user.subscriptions.push(existingPodcast._id);
 
                 existingPodcast.subscriberCount++;
-                
+
                 await Promise.all([
-                    req.user.save(), 
+                    req.user.save(),
                     existingPodcast.save(),
                 ]);
 
@@ -144,47 +91,24 @@ exports.addSubscription = async (req, res, next) => {
     }
 
     // Extract the podcast's information from the RSS feed sent by the client.
-    fetch(req.body.feedUrl)
-        .then((data) => {
-            if (data.status !== 200) {
-                const error = new Error('Error fetching the feed');
-                error.status = data.status;
-                throw error;
-            }
-            return data.body;
-        })
-        .then((body) => {
-            const feedparser = new FeedParser({ addmeta: false });
+    try {
+        const data = await parseMeta(req.body.feedUrl);
 
-            body.pipe(feedparser)
-                .on('readable', async function () {
-                    // All of the properties needed are in the `meta` section of the feed.
-                    const podcast = new Podcast({
-                        title: this.meta.title,
-                        author: this.meta.author,
-                        artwork: this.meta.image.url,
-                        description: this.meta.description,
-                        link: this.meta.link,
-                        feedUrl: req.body.feedUrl,
-                        subscriberCount: 1,
-                    });
+        const podcast = new Podcast({
+            ...data,
+            feedUrl: req.body.feedUrl,
+            subscriberCount: 1,
+        });
 
-                    try {
-                        const result = await podcast.save();
+        const result = await podcast.save();
 
-                        req.user.subscriptions.push(result._id);
-                        await req.user.save();
+        req.user.subscriptions.push(result._id);
+        await req.user.save();
 
-                        res.status(201).json({ result });
-                    } catch (err) {
-                        this.emit('error', err);
-                    }
-                })
-                .on('error', function (err) {
-                    next(err);
-                });
-        })
-        .catch(next);
+        res.status(201).json({ result });
+    } catch (err) {
+        next(err);
+    }
 };
 
 /**
@@ -211,6 +135,50 @@ exports.deleteSubscription = async (req, res, next) => {
 
             res.status(204).send();
         }
+    } catch (err) {
+        next(err);
+    }
+};
+
+/** Gets all episodes for a given subscription. */
+exports.getAllEpisodes = async (req, res, next) => {
+    try {
+        const sub = await Podcast.findById(req.params.id);
+
+        if (!sub) {
+            const error = new Error(`Subscription with ID "${req.params.id}" not found`);
+            error.status = 404;
+            throw error;
+        }
+
+        const episodes = await parseSubscription(sub);
+
+        res.status(200).json({
+            episodes: episodes.slice(0, req.query.limit),
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
+/** Gets a single episode by its UUID. */
+exports.getEpisode = async (req, res, next) => {
+    try {
+        const sub = await Podcast.findById(req.params.id);
+
+        if (!sub) {
+            const error = new Error(`Subscription with ID "${req.params.id}" not found`);
+            error.status = 404;
+            throw error;
+        }
+
+        const episodes = await parseSubscription(sub, (item) => item.guid === req.params.guid);
+
+        const result = episodes.length > 0 ? episodes[0] : {};
+
+        res.status(200).json({
+            episode: result,
+        });
     } catch (err) {
         next(err);
     }
