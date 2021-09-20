@@ -1,0 +1,16 @@
+node_modules/
+
+README.md
+LICENSE
+
+.git
+.gitignore
+
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+Procfile
+
+backend/node_modules/
+backend/.env.example

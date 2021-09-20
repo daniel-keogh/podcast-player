@@ -42,6 +42,22 @@ Runs the client and server concurrently.
 
 Generates a production build of the React app inside the `build` directory.
 
+## Build using Docker
+
+To run using Docker Compose:
+
+### Production
+
+```sh
+docker-compose up
+```
+
+### Development
+
+```sh
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+```
+
 ## Screenshots
 
 ![Screenshot](https://user-images.githubusercontent.com/37158241/121348755-a340c700-c920-11eb-9814-0b6cf3b55161.PNG)
