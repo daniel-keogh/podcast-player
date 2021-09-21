@@ -8,7 +8,7 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import CheckCircleOutline from '@material-ui/icons/CheckCircleOutline';
-import axios from '../../config/axios';
+import axios from '@config/axios';
 
 const useStyles = makeStyles((theme) => ({
     isSubscribedIcon: {

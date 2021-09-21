@@ -11,7 +11,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import MailOutlineIcon from '@material-ui/icons/MailOutline';
 import WarningOutlinedIcon from '@material-ui/icons/WarningOutlined';
 
-import AuthDialog from './AuthDialog';
+import AuthDialog from '@/Profile/AuthDialog';
 
 const useStyles = makeStyles((theme) => ({
     root: {

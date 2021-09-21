@@ -4,8 +4,8 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
-import EpisodeInfoDialog from './EpisodeInfoDialog';
-import NowPlayingContext from '../../store/nowPlayingContext';
+import EpisodeInfoDialog from '@/Podcast/EpisodeInfoDialog';
+import NowPlayingContext from '@store/nowPlayingContext';
 
 function EpisodeListItem(props) {
     const [dialogOpen, setDialogOpen] = useState(false);

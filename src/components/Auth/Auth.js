@@ -1,6 +1,6 @@
 import React from 'react';
 import { Redirect, Route, Switch, useHistory } from 'react-router-dom';
-import AuthForm from './AuthForm';
+import AuthForm from '@/Auth/AuthForm';
 
 function Auth() {
     const history = useHistory();

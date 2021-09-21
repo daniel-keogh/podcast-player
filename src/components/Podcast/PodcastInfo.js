@@ -8,7 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import Headset from '@material-ui/icons/Headset';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import RemoveOutlinedIcon from '@material-ui/icons/RemoveOutlined';
-import SubscriptionItem from '../Subscriptions/SubscriptionItem';
+import SubscriptionItem from '@/Subscriptions/SubscriptionItem';
 
 const useStyles = makeStyles(() => ({
     root: {

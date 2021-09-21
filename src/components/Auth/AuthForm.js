@@ -10,8 +10,8 @@ import Link from '@material-ui/core/Link';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import GitHubIcon from '@material-ui/icons/GitHub';
-import PasswordInput from './PasswordInput';
-import { useAuth } from '../../hooks';
+import PasswordInput from '@/Auth/PasswordInput';
+import { useAuth } from '@hooks';
 
 const useStyles = makeStyles((theme) => ({
     paper: {

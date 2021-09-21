@@ -10,7 +10,7 @@ const RedisClient = (function () {
     });
 
     client.on('connect', () => {
-        console.log(`[info] Connected to Redis on port ${REDIS_PORT}`);
+        console.log(`[info]: Connected to Redis on port ${REDIS_PORT}`);
     });
 
     client.on('error', (err) => {

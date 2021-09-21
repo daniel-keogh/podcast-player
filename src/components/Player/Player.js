@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import PlayerControls from './PlayerControls';
-import NowPlayingContext from '../../store/nowPlayingContext';
+import PlayerControls from '@/Player/PlayerControls';
+import NowPlayingContext from '@store/nowPlayingContext';
 
 class Player extends Component {
     static contextType = NowPlayingContext;

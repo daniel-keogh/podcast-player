@@ -3,12 +3,12 @@ import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
-import NavBar from '../NavBar/NavBar';
-import AuthContext from '../../store/authContext';
-import NowPlayingContext from '../../store/nowPlayingContext';
-import DangerCard from './DangerCard';
-import ProfileCard from './ProfileCard';
-import axios from '../../config/axios';
+import NavBar from '@/NavBar/NavBar';
+import DangerCard from '@/Profile/DangerCard';
+import ProfileCard from '@/Profile/ProfileCard';
+import AuthContext from '@store/authContext';
+import NowPlayingContext from '@store/nowPlayingContext';
+import axios from '@config/axios';
 
 const useStyles = makeStyles((theme) => ({
     section: {

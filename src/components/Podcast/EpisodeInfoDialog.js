@@ -14,9 +14,9 @@ import PlayIcon from '@material-ui/icons/PlayCircleOutline';
 import CalendarIcon from '@material-ui/icons/CalendarTodayTwoTone';
 import CloseIcon from '@material-ui/icons/Close';
 
-import SubscriptionItem from '../Subscriptions/SubscriptionItem';
+import SubscriptionItem from '@/Subscriptions/SubscriptionItem';
 
-import axios from '../../config/axios';
+import axios from '@config/axios';
 import sanitize from 'sanitize-html';
 
 const styles = (theme) => ({

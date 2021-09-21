@@ -7,13 +7,14 @@ import List from '@material-ui/core/List';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import RssFeedIcon from '@material-ui/icons/RssFeed';
-import DiscoverListItem from './DiscoverListItem';
-import FeedFormDialog from './FeedFormDialog';
-import NavBar from '../NavBar/NavBar';
-import NoResultsFound from './NoResultsFound';
-import SearchForm from './SearchForm';
-import Popular from './Popular';
-import axios from '../../config/axios';
+
+import DiscoverListItem from '@/Discover/DiscoverListItem';
+import FeedFormDialog from '@/Discover/FeedFormDialog';
+import NavBar from '@/NavBar/NavBar';
+import NoResultsFound from '@/Discover/NoResultsFound';
+import SearchForm from '@/Discover/SearchForm';
+import Popular from '@/Discover/Popular';
+import axios from '@config/axios';
 
 class Discover extends Component {
     state = {

@@ -4,10 +4,10 @@ import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
 import List from '@material-ui/core/List';
 import Snackbar from '@material-ui/core/Snackbar';
-import EpisodeListItem from './EpisodeListItem';
-import NavBar from '../NavBar/NavBar';
-import PodcastInfo from './PodcastInfo';
-import axios from '../../config/axios';
+import NavBar from '@/NavBar/NavBar';
+import EpisodeListItem from '@/Podcast/EpisodeListItem';
+import PodcastInfo from '@/Podcast/PodcastInfo';
+import axios from '@config/axios';
 
 class Podcast extends Component {
     state = {

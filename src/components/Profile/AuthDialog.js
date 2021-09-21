@@ -6,8 +6,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-import PasswordInput from '../Auth/PasswordInput';
-import { useAuth } from '../../hooks';
+import PasswordInput from '@/Auth/PasswordInput';
+import { useAuth } from '@hooks';
 
 function AuthDialog(props) {
     const changeEmail = props.type === 'CHANGE_EMAIL';
