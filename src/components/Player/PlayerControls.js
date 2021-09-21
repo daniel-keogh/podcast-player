@@ -6,10 +6,12 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Slider from '@material-ui/core/Slider';
 import Typography from '@material-ui/core/Typography';
+
 import PauseCircleFilledIcon from '@material-ui/icons/PauseCircleFilled';
 import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
 import Forward30Icon from '@material-ui/icons/Forward30';
 import Replay30Icon from '@material-ui/icons/Replay30';
+
 import PlayerArtwork from './PlayerArtwork';
 
 const useStyles = makeStyles((theme) => ({
@@ -26,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        paddingRight: '32px',
+        paddingRight: '24px',
     },
     controlsCenter: {
         textAlign: 'center',
@@ -36,22 +38,22 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'stretch',
         alignItems: 'center',
     },
-    nowPlaying: {
-        whiteSpace: 'nowrap',
-    },
-    seekbarContainer: {
-        flexGrow: 1,
-        paddingRight: '32px',
-    },
-    seekbar: {
-        width: '90%',
-    },
     playIcon: {
         height: '52px',
         width: '52px',
     },
     seekIcon: {
         color: theme.palette.grey[700],
+    },
+    nowPlaying: {
+        whiteSpace: 'nowrap',
+    },
+    seekbarContainer: {
+        flexGrow: 1,
+        paddingRight: '24px',
+    },
+    seekbar: {
+        width: '90%',
     },
 }));
 
@@ -87,6 +89,7 @@ function PlayerControls(props) {
                     </Button>
                 </ButtonGroup>
             </div>
+
             <div className={classes.controlsCenter}>
                 <div className={classes.seekbarContainer}>
                     <CardContent className={classes.nowPlaying}>
@@ -118,6 +121,7 @@ function PlayerControls(props) {
                         onChange={props.onSliderChange}
                     />
                 </div>
+
                 {props.podId && props.podTitle && props.podArtwork ? (
                     <PlayerArtwork
                         id={props.podId}

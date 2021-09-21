@@ -52,8 +52,8 @@ export function AuthContextProvider(props) {
     const logout = () => {
         setAuth({
             token: '',
-            isAuthorized: false,
             userId: '',
+            isAuthorized: false,
         });
 
         localStorage.removeItem(TOKEN_KEY);
@@ -61,8 +61,8 @@ export function AuthContextProvider(props) {
 
     const context = {
         token: auth.token,
-        isAuthorized: auth.isAuthorized,
         userId: auth.userId,
+        isAuthorized: auth.isAuthorized,
         login,
         logout,
     };

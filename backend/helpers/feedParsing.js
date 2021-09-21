@@ -2,7 +2,7 @@ const fetch = require('node-fetch');
 const FeedParser = require('feedparser');
 const redisClient = require('../db/redis');
 
-exports.parseSubscription = (subscription, episodeFilter = (item) => true) => {
+exports.parseSubscription = (subscription) => {
     return new Promise((resolve, reject) => {
         fetch(subscription.feedUrl)
             .then((data) => {
@@ -26,7 +26,7 @@ exports.parseSubscription = (subscription, episodeFilter = (item) => true) => {
                             // Read through each item in the feed and add it to the `feedItems` array.
                             const item = this.read();
 
-                            if (!!item && episodeFilter(item)) {
+                            if (!!item) {
                                 feedItems.push({
                                     guid: item.guid,
                                     title: item.title,

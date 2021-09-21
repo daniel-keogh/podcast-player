@@ -172,12 +172,11 @@ exports.getEpisode = async (req, res, next) => {
             throw error;
         }
 
-        const episodes = await parseSubscription(sub, (item) => item.guid === req.params.guid);
-
-        const result = episodes.length > 0 ? episodes[0] : {};
+        const episodes = await parseSubscription(sub);
+        const result = episodes.filter((item) => item.guid === req.params.guid);
 
         res.status(200).json({
-            episode: result,
+            episode: result?.length > 0 ? result[0] : {},
         });
     } catch (err) {
         next(err);

@@ -5,12 +5,14 @@ import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
 import Tooltip from '@material-ui/core/Tooltip';
+import Typography from '@material-ui/core/Typography';
 import RssFeedIcon from '@material-ui/icons/RssFeed';
 import DiscoverListItem from './DiscoverListItem';
 import FeedFormDialog from './FeedFormDialog';
 import NavBar from '../NavBar/NavBar';
 import NoResultsFound from './NoResultsFound';
 import SearchForm from './SearchForm';
+import Popular from './Popular';
 import axios from '../../config/axios';
 
 class Discover extends Component {
@@ -67,27 +69,42 @@ class Discover extends Component {
                     maxWidth="lg"
                     style={{ paddingBottom: '32px' }}
                 >
-                    <SearchForm
-                        searchLabel="Search Podcasts..."
-                        searchTerm={this.state.searchTerm}
-                        onFormChange={this.handleFormChange}
-                        onSubmit={this.handleSearch}
-                    />
-                    <Divider />
+                    <Container
+                        component="section"
+                        maxWidth="lg"
+                        style={{ marginTop: '42px' }}
+                    >
+                        <Typography variant="h5" component="h5">
+                            Search for Podcasts
+                        </Typography>
 
-                    {/* Show the search results list, or the NoResultsFound component if there were no results. */}
-                    {!this.state.noResultsFound ? (
-                        <List>
-                            {this.state.searchResults.map((item) => (
-                                <DiscoverListItem
-                                    {...item}
-                                    key={item.feedUrl}
-                                />
-                            ))}
-                        </List>
-                    ) : (
-                        <NoResultsFound />
-                    )}
+                        <SearchForm
+                            searchLabel="Search Podcasts..."
+                            searchTerm={this.state.searchTerm}
+                            onFormChange={this.handleFormChange}
+                            onSubmit={this.handleSearch}
+                        />
+
+                        <Divider />
+
+                        {/* Show the search results list, or the NoResultsFound component if there were no results. */}
+                        {!this.state.noResultsFound ? (
+                            <List>
+                                {this.state.searchResults.map((item) => (
+                                    <DiscoverListItem
+                                        {...item}
+                                        key={item.feedUrl}
+                                    />
+                                ))}
+                            </List>
+                        ) : (
+                            <NoResultsFound />
+                        )}
+                    </Container>
+
+                    <Container component="section" maxWidth="lg">
+                        <Popular />
+                    </Container>
 
                     <FeedFormDialog
                         {...this.state.dialog}

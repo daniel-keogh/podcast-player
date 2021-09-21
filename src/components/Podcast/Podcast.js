@@ -79,7 +79,8 @@ class Podcast extends Component {
         }
 
         // If the title was passed as a prop use that, otherwise wait until `componentDidMount()` updates the state.
-        const navTitle = this.props.location.state?.title || this.state.podcast.title;
+        const navTitle =
+            this.props.location.state?.title || this.state.podcast.title;
 
         return (
             <React.Fragment>
@@ -97,7 +98,8 @@ class Podcast extends Component {
                     <List>{episodes}</List>
 
                     {/* Only display the "Show More" button if there are episodes that aren't yet visible in the List. */}
-                    {this.state.podcast.episodes?.length >= this.state.numEpisodes ? (
+                    {this.state.podcast.episodes?.length >=
+                    this.state.numEpisodes ? (
                         <Button
                             style={{
                                 display: 'block',

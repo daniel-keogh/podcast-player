@@ -67,7 +67,7 @@ exports.getCachedEpisodeByGuid = (req, res, next) => {
             const result = episodes.filter((item) => item.guid === guid);
 
             res.status(200).json({
-                episodes: result?.length > 0 ? result[0] : {},
+                episode: result?.length > 0 ? result[0] : {},
             });
         } else {
             next();
