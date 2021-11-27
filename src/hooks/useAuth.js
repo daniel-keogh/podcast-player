@@ -1,7 +1,7 @@
 import { useState, useContext } from 'react';
-import axios from '../config/axios';
 
 import AuthContext from '../store/authContext';
+import AuthService from '../services/AuthService';
 
 function useAuth() {
     const [error, setError] = useState('');
@@ -10,7 +10,7 @@ function useAuth() {
 
     const resetError = () => setError('');
 
-    const isValidForm = ({ email, password, confirmPassword }) => {
+    const _isValidForm = ({ email, password, confirmPassword }) => {
         if (
             password === '' ||
             (confirmPassword !== undefined && confirmPassword === '') ||
@@ -28,131 +28,101 @@ function useAuth() {
         return true;
     };
 
-    const login = ({ email, password }) => {
-        if (!isValidForm({ email, password })) {
-            return Promise.resolve({
+    const _authHandler = async (fields, callback) => {
+        if (!_isValidForm(fields)) {
+            return {
                 success: false,
                 data: null,
-            });
+            };
         }
 
-        return axios
-            .post(`/api/login`, {
-                email,
-                password,
-            })
-            .then((data) => {
-                ctx.login(data.data.token);
-                return {
-                    success: ctx.isAuthorized,
-                    data,
-                };
-            })
-            .catch(handleError);
+        try {
+            return await callback();
+        } catch (err) {
+            if (err.response) {
+                setError(err.response.data.msg + '.');
+            } else {
+                setError('An error occurred. Try again later.');
+            }
+
+            return {
+                success: false,
+                data: null,
+            };
+        }
     };
 
-    const register = ({ email, password, confirmPassword }) => {
-        if (!isValidForm({ email, password, confirmPassword })) {
-            return Promise.resolve({
-                success: false,
-                data: null,
-            });
-        }
+    const login = async ({ email, password }) => {
+        return _authHandler({ email, password }, async () => {
+            const data = await AuthService.login({ email, password });
 
-        return axios
-            .post('/api/register', {
-                email,
-                password,
-            })
-            .then(() => {
-                return axios.post('/api/login', {
-                    email,
-                    password,
-                });
-            })
-            .then((data) => {
-                ctx.login(data.data.token);
-                return {
-                    success: ctx.isAuthorized,
-                    data,
-                };
-            })
-            .catch(handleError);
+            ctx.login(data.token);
+
+            return {
+                success: ctx.isAuthorized,
+                data,
+            };
+        });
     };
 
-    const updateEmail = ({ email }) => {
-        if (!isValidForm({ email })) {
-            return Promise.resolve({
-                success: false,
-                data: null,
-            });
-        }
+    const register = async ({ email, password, confirmPassword }) => {
+        return _authHandler({ email, password, confirmPassword }, async () => {
+            const data = await AuthService.register({ email, password });
 
-        return axios
-            .put(`/api/users/${ctx.userId}`, {
+            ctx.login(data.token);
+
+            return {
+                success: ctx.isAuthorized,
+                data,
+            };
+        });
+    };
+
+    const updateEmail = async ({ email }) => {
+        return _authHandler({ email }, async () => {
+            const data = await AuthService.updateEmail({
                 email,
-            })
-            .then((data) => ({
+                userId: ctx.userId,
+            });
+
+            return {
                 success: data.status === 200,
                 data,
-            }))
-            .catch(handleError);
+            };
+        });
     };
 
-    const updatePassword = ({ oldPassword, password, confirmPassword }) => {
-        if (!isValidForm({ password, confirmPassword })) {
-            return Promise.resolve({
-                success: false,
-                data: null,
-            });
-        }
-
-        return axios
-            .put(`/api/password_reset`, {
+    const updatePassword = async ({
+        oldPassword,
+        password,
+        confirmPassword,
+    }) => {
+        return _authHandler({ password, confirmPassword }, async () => {
+            const data = await AuthService.updatePassword({
                 oldPassword,
                 password,
-            })
-            .then((data) => ({
+            });
+
+            return {
                 success: data.status === 200,
                 data,
-            }))
-            .catch(handleError);
+            };
+        });
     };
 
-    const deleteAccount = ({ email, password }) => {
-        if (!isValidForm({ email, password })) {
-            return Promise.resolve({
-                success: false,
-                data: null,
+    const deleteAccount = async ({ email, password }) => {
+        return _authHandler({ email, password }, async () => {
+            const data = await AuthService.deleteAccount({
+                email,
+                password,
+                userId: ctx.userId,
             });
-        }
 
-        return login({ email, password })
-            .then(() => {
-                return axios
-                    .delete(`/api/users/${ctx.userId}`, {
-                        email,
-                        password,
-                    })
-                    .then((data) => ({
-                        success: data.status === 204,
-                        data,
-                    }));
-            })
-            .catch(handleError);
-    };
-
-    const handleError = (err) => {
-        if (err.response) {
-            setError(err.response.data.msg + '.');
-        } else {
-            setError('An error occurred. Try again later.');
-        }
-
-        return {
-            success: false,
-            data: null,
-        };
+            return {
+                success: data.status === 204,
+                data,
+            };
+        });
     };
 
     return {
