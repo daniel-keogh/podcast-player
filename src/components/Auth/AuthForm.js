@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
@@ -10,8 +10,8 @@ import Link from '@material-ui/core/Link';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import GitHubIcon from '@material-ui/icons/GitHub';
-import PasswordInput from '@/Auth/PasswordInput';
-import { useAuth } from '@hooks';
+import PasswordInput from '@/components/Auth/PasswordInput';
+import { useAuth, useForm } from '@/hooks';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -41,20 +41,11 @@ function AuthForm(props) {
 
     const { error, login, register } = useAuth();
 
-    const [form, setForm] = useState({
+    const [form, handleFormChanged] = useForm({
         email: '',
         password: '',
         confirmPassword: '',
     });
-
-    const handleFormChanged = (e) => {
-        e.persist();
-
-        setForm((state) => ({
-            ...state,
-            [e.target.name]: e.target.value,
-        }));
-    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -125,7 +116,7 @@ function AuthForm(props) {
                         {props.isLogin ? 'Login' : 'Register'}
                     </Button>
 
-                    <Grid container justify="flex-end">
+                    <Grid container justifyContent="flex-end">
                         {props.isLogin ? (
                             <Grid item>
                                 <Link

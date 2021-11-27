@@ -7,10 +7,10 @@ import * as serviceWorker from './serviceWorker';
 import { AuthContextProvider } from './store/authContext';
 import { NowPlayingContextProvider } from './store/nowPlayingContext';
 
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 import { deepPurple, orange } from '@material-ui/core/colors';
 
-const theme = createMuiTheme({
+const theme = createTheme({
     palette: {
         primary: deepPurple,
         secondary: orange,

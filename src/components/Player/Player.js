@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import PlayerControls from '@/Player/PlayerControls';
-import NowPlayingContext from '@store/nowPlayingContext';
+import PlayerControls from '@/components/Player/PlayerControls';
+import NowPlayingContext from '@/store/nowPlayingContext';
+
+const SKIP_TIME = 30;
 
 class Player extends Component {
     static contextType = NowPlayingContext;
@@ -9,13 +11,20 @@ class Player extends Component {
         super(props);
 
         this.state = {
-            skipTime: 30,
             currentTime: 0,
             duration: 0,
         };
 
         // Will allow the component to access properties of the HTML <audio> element.
         this.audioElement = new React.createRef();
+    }
+
+    componentDidMount() {
+        window.addEventListener('beforeunload', this.savePlaybackProgress);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('beforeunload', this.savePlaybackProgress);
     }
 
     render() {
@@ -39,8 +48,10 @@ class Player extends Component {
                     onSliderChange={this.handleSliderChange}
                 />
                 <audio
+                    preload="metadata"
                     autoPlay={this.context.autoplay}
                     src={this.context.src || ''}
+                    onLoadedMetadata={this.handleMetadataLoaded}
                     onTimeUpdate={this.handleTimeUpdate}
                     ref={this.audioElement}
                 ></audio>
@@ -63,21 +74,25 @@ class Player extends Component {
     handleReplay = () => {
         // If near the start of the file, set the current time to zero
         // (prevents currentTime being set to a negative number).
-        if (this.state.currentTime - this.state.skipTime <= 0) {
+        if (this.state.currentTime - SKIP_TIME <= 0) {
             this.audioElement.current.currentTime = 0;
         } else {
-            this.audioElement.current.currentTime -= this.state.skipTime;
+            this.audioElement.current.currentTime -= SKIP_TIME;
         }
     };
 
     handleForward = () => {
         // If near the end of the file, set the current time to the total duration
         // (prevents currentTime being set to a number greater than the duration).
-        if (this.state.currentTime + this.state.skipTime >= this.state.duration) {
+        if (this.state.currentTime + SKIP_TIME >= this.state.duration) {
             this.audioElement.current.currentTime = this.state.duration;
         } else {
-            this.audioElement.current.currentTime += this.state.skipTime;
+            this.audioElement.current.currentTime += SKIP_TIME;
         }
+    };
+
+    handleMetadataLoaded = (e) => {
+        this.audioElement.current.currentTime = this.context.progress;
     };
 
     handleTimeUpdate = (e) => {
@@ -90,11 +105,16 @@ class Player extends Component {
     // Syncs the slider with the current playback position.
     handleSliderChange = (e, value) => {
         // Convert the slider's new value property from a % to a time.
-        this.audioElement.current.currentTime = this.state.duration * value * 0.01;
+        this.audioElement.current.currentTime =
+            this.state.duration * value * 0.01;
 
         this.setState({
             currentTime: this.audioElement.current.currentTime,
         });
+    };
+
+    savePlaybackProgress = (e) => {
+        this.context.saveProgress(this.state.currentTime);
     };
 }
 

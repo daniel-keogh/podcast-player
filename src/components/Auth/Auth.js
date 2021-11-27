@@ -1,11 +1,11 @@
 import React from 'react';
 import { Redirect, Route, Switch, useHistory } from 'react-router-dom';
-import AuthForm from '@/Auth/AuthForm';
+import AuthForm from '@/components/Auth/AuthForm';
 
 function Auth() {
     const history = useHistory();
 
-    const onAuthorized = () => history.replace('/subscriptions');
+    const handleAuthorized = () => history.replace('/subscriptions');
 
     return (
         <Switch>
@@ -13,10 +13,10 @@ function Auth() {
                 <Redirect to="/auth/login" />
             </Route>
             <Route path="/auth/login">
-                <AuthForm onAuthorized={onAuthorized} isLogin />
+                <AuthForm onAuthorized={handleAuthorized} isLogin />
             </Route>
             <Route path="/auth/register">
-                <AuthForm onAuthorized={onAuthorized} />
+                <AuthForm onAuthorized={handleAuthorized} />
             </Route>
         </Switch>
     );

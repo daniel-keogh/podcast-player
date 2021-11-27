@@ -12,7 +12,7 @@ import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
 import Forward30Icon from '@material-ui/icons/Forward30';
 import Replay30Icon from '@material-ui/icons/Replay30';
 
-import PlayerArtwork from '@/Player/PlayerArtwork';
+import PlayerArtwork from '@/components/Player/PlayerArtwork';
 
 const useStyles = makeStyles((theme) => ({
     root: {

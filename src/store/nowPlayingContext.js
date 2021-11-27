@@ -6,9 +6,11 @@ const NowPlayingContext = React.createContext({
     podTitle: '',
     podId: '',
     podArtwork: '',
+    progress: 0,
     autoplay: false,
-    playEpisode: ({ src, epTitle, podTitle, podId, podArtwork }) => { },
-    stop: () => { },
+    playEpisode: ({ src, epTitle, podTitle, podId, podArtwork }) => {},
+    stop: () => {},
+    saveProgress: (progress) => {},
 });
 
 const NOW_PLAYING_KEY = 'now-playing';
@@ -16,7 +18,7 @@ const NOW_PLAYING_KEY = 'now-playing';
 export function NowPlayingContextProvider(props) {
     const local = JSON.parse(localStorage.getItem(NOW_PLAYING_KEY)) || {};
 
-    const { src, epTitle, podTitle, podId, podArtwork } = local;
+    const { src, epTitle, podTitle, podId, podArtwork, progress } = local;
 
     const [nowPlaying, setNowPlaying] = useState({
         src: src || '',
@@ -24,6 +26,7 @@ export function NowPlayingContextProvider(props) {
         podTitle: podTitle || '',
         podId: podId || '',
         podArtwork: podArtwork || '',
+        progress: progress || 0,
         autoplay: false,
     });
 
@@ -34,6 +37,7 @@ export function NowPlayingContextProvider(props) {
             podTitle,
             podId,
             podArtwork,
+            progress: 0,
             autoplay: true,
         });
 
@@ -45,6 +49,7 @@ export function NowPlayingContextProvider(props) {
                 podTitle,
                 podId,
                 podArtwork,
+                progress: 0,
             })
         );
     };
@@ -56,9 +61,22 @@ export function NowPlayingContextProvider(props) {
             podTitle: '',
             podId: '',
             podArtwork: '',
+            progress: 0,
             autoplay: true,
         });
         localStorage.removeItem(NOW_PLAYING_KEY);
+    };
+
+    const saveProgress = (progress) => {
+        const tmp = JSON.parse(localStorage.getItem(NOW_PLAYING_KEY));
+
+        localStorage.setItem(
+            NOW_PLAYING_KEY,
+            JSON.stringify({
+                ...tmp,
+                progress,
+            })
+        );
     };
 
     const context = {
@@ -67,9 +85,11 @@ export function NowPlayingContextProvider(props) {
         podTitle: nowPlaying.podTitle,
         podId: nowPlaying.podId,
         podArtwork: nowPlaying.podArtwork,
+        progress: nowPlaying.progress,
         autoplay: nowPlaying.autoplay,
         playEpisode,
         stop,
+        saveProgress,
     };
 
     return (

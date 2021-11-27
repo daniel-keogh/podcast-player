@@ -69,15 +69,9 @@ function App() {
                                     <Route path="/profile">
                                         <Profile />
                                     </Route>
-                                    <Route
-                                        path="/podcast/:id"
-                                        render={(props) => (
-                                            <Podcast
-                                                key={props.match.params.id}
-                                                {...props}
-                                            />
-                                        )}
-                                    ></Route>
+                                    <Route path="/podcast/:id">
+                                        <Podcast />
+                                    </Route>
                                     {rateLimit}
                                     <Route path="/">
                                         <Redirect to="/subscriptions" />

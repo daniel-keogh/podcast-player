@@ -6,10 +6,10 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import AddIcon from '@material-ui/icons/AddBox';
-import NavBar from '@/NavBar/NavBar';
-import SubscriptionItem from '@/Subscriptions/SubscriptionItem';
-import Welcome from '@/Subscriptions/Welcome';
-import axios from '@config/axios';
+import NavBar from '@/components/NavBar/NavBar';
+import SubscriptionItem from '@/components/Subscriptions/SubscriptionItem';
+import Welcome from '@/components/Subscriptions/Welcome';
+import axios from '@/config/axios';
 
 const useStyles = (theme) => ({
     menuButton: {

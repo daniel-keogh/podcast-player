@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import axios from '@config/axios';
-import SubscriptionItem from '@/Subscriptions/SubscriptionItem';
 import Typography from '@material-ui/core/Typography';
+import SubscriptionItem from '@/components/Subscriptions/SubscriptionItem';
+import axios from '@/config/axios';
 
 const useStyles = makeStyles((theme) => ({
     root: {
