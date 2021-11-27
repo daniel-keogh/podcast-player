@@ -1,7 +1,7 @@
 import axios from '@/config/axios';
 
 class DiscoverService {
-    async getPopular(limit = 14) {
+    async getPopular(limit = 7) {
         const response = await axios.get(`/api/popular?limit=${limit}`);
         return response.data.results;
     }

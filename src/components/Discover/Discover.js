@@ -14,6 +14,7 @@ import NavBar from '@/components/NavBar/NavBar';
 import NoResultsFound from '@/components/Discover/NoResultsFound';
 import SearchForm from '@/components/Discover/SearchForm';
 import Popular from '@/components/Discover/Popular';
+import TopicsGrid from '@/components/Discover/TopicsGrid';
 
 import discoverService from '@/services/discoverService';
 
@@ -29,6 +30,11 @@ class Discover extends Component {
         searchTerm: '',
         searchResults: [],
     };
+
+    constructor(props) {
+        super(props);
+        this.topRef = React.createRef();
+    }
 
     componentDidMount() {
         const params = new URLSearchParams(this.props.history.location.search);
@@ -54,6 +60,8 @@ class Discover extends Component {
     render() {
         return (
             <React.Fragment>
+                <div id="top" ref={this.topRef}></div>
+
                 <NavBar title="Discover">
                     <Tooltip title="Add an RSS Feed">
                         <IconButton
@@ -106,6 +114,8 @@ class Discover extends Component {
 
                     <Container component="section" maxWidth="lg">
                         <Popular />
+
+                        <TopicsGrid onTopicClicked={this.handleSearch} />
                     </Container>
 
                     <FeedFormDialog
@@ -126,14 +136,17 @@ class Discover extends Component {
         });
     };
 
-    handleSearch = (e, value) => {
+    handleSearch = async (e, value) => {
+        e.preventDefault();
+
         // Search for the query entered into the search box.
         if (value) {
             this.state.searchTerm = value;
         }
 
-        this.search();
-        e.preventDefault();
+        await this.search();
+
+        this.topRef.current.scrollIntoView();
     };
 
     // Post the RSS feed entered in the dialog box to the server.

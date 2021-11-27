@@ -6,7 +6,7 @@ import SearchIcon from '@material-ui/icons/Search';
 
 function SearchForm(props) {
     return (
-        <form onSubmit={props.onSubmit} style={{ padding: "32px" }}>
+        <form onSubmit={props.onSubmit} style={{ padding: '32px' }}>
             <TextField
                 autoFocus
                 fullWidth
@@ -20,12 +20,15 @@ function SearchForm(props) {
                 // Put a search button at end of the TextField.
                 InputProps={{
                     endAdornment: (
-                        <InputAdornment>
-                            <IconButton color="primary" onClick={props.onSubmit}>
+                        <InputAdornment position="end">
+                            <IconButton
+                                color="primary"
+                                onClick={props.onSubmit}
+                            >
                                 <SearchIcon />
                             </IconButton>
                         </InputAdornment>
-                    )
+                    ),
                 }}
             />
         </form>
