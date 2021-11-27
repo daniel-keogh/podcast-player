@@ -8,7 +8,7 @@ import DangerCard from '@/components/Profile/DangerCard';
 import ProfileCard from '@/components/Profile/ProfileCard';
 import AuthContext from '@/store/authContext';
 import NowPlayingContext from '@/store/nowPlayingContext';
-import axios from '@/config/axios';
+import authService from '@/services/authService';
 
 const useStyles = makeStyles((theme) => ({
     section: {
@@ -36,8 +36,8 @@ function Profile() {
     useEffect(() => {
         if (!authContext.userId) return;
 
-        axios.get(`/api/users/${authContext.userId}`).then((res) => {
-            const { email, registeredSince } = res.data;
+        authService.getProfile(authContext.userId).then((user) => {
+            const { email, registeredSince } = user;
 
             setProfileInfo({
                 email,

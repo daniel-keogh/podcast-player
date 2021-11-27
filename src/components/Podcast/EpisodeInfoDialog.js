@@ -15,8 +15,8 @@ import CalendarIcon from '@material-ui/icons/CalendarTodayTwoTone';
 import CloseIcon from '@material-ui/icons/Close';
 
 import SubscriptionItem from '@/components/Subscriptions/SubscriptionItem';
+import subscriptionsService from '@/services/subscriptionsService';
 
-import axios from '@/config/axios';
 import sanitize from 'sanitize-html';
 
 const styles = (theme) => ({
@@ -143,9 +143,9 @@ function EpisodeInfoDialog(props) {
             const id = props.id;
             const guid = encodeURIComponent(props.episode.guid);
 
-            axios
-                .get(`/api/subscriptions/${id}/episodes/${guid}`)
-                .then((res) => setEpisodeInfo({ ...res.data.episode }))
+            subscriptionsService
+                .getEpisodeByGuid(id, guid)
+                .then((data) => setEpisodeInfo({ ...data.episode }))
                 .catch(console.error);
         }
     }, [props.open, props.id, props.episode.guid]);

@@ -7,7 +7,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import NavBar from '@/components/NavBar/NavBar';
 import EpisodeListItem from '@/components/Podcast/EpisodeListItem';
 import PodcastInfo from '@/components/Podcast/PodcastInfo';
-import axios from '@/config/axios';
+import subscriptionsService from '@/services/subscriptionsService';
 
 class Podcast extends Component {
     state = {
@@ -28,13 +28,11 @@ class Podcast extends Component {
             limit = this.state.numEpisodes;
         }
 
-        axios
-            .get(
-                `/api/subscriptions/${this.props.match.params.id}?limit=${limit}`
-            )
-            .then((res) => {
+        subscriptionsService
+            .getSubscriptionById(this.props.match.params.id, limit)
+            .then((podcast) => {
                 this.setState({
-                    podcast: res.data,
+                    podcast,
                     numEpisodes: limit,
                 });
             })
@@ -143,8 +141,8 @@ class Podcast extends Component {
 
     handleSubscribe = () => {
         if (this.state.podcast.isSubscribed) {
-            axios
-                .delete(`/api/subscriptions/${this.state.podcast._id}`)
+            subscriptionsService
+                .removeSubscription(this.state.podcast._id)
                 .then(() => {
                     this.setState((state) => ({
                         podcast: {
@@ -157,15 +155,13 @@ class Podcast extends Component {
                 .catch(this.onHttpError);
         } else {
             // Re-subscribe
-            axios
-                .post(`/api/subscriptions`, {
-                    feedUrl: this.state.podcast.feedUrl,
-                })
-                .then((res) => {
+            subscriptionsService
+                .addSubscription(this.state.podcast.feedUrl)
+                .then((result) => {
                     this.setState((state) => ({
                         podcast: {
                             ...state.podcast,
-                            ...res.data.result,
+                            ...result,
                             isSubscribed: true,
                         },
                     }));
@@ -184,15 +180,13 @@ class Podcast extends Component {
     };
 
     fetchMore = (limit) => {
-        axios
-            .get(
-                `/api/subscriptions/${this.props.match.params.id}?limit=${limit}`
-            )
-            .then((res) => {
+        subscriptionsService
+            .getSubscriptionById(this.props.match.params.id, limit)
+            .then((episodes) => {
                 this.setState((state) => ({
                     podcast: {
                         ...state.podcast,
-                        episodes: res.data.episodes,
+                        episodes,
                     },
                     numEpisodes: limit,
                 }));
@@ -207,13 +201,7 @@ class Podcast extends Component {
             });
     };
 
-    onHttpError = (err) => {
-        let message = err.response?.data?.msg;
-
-        if (!message) {
-            message = 'There was a problem with the network';
-        }
-
+    onHttpError = (message) => {
         this.setState({
             snackbar: {
                 open: true,

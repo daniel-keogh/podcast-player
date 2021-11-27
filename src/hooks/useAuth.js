@@ -1,7 +1,7 @@
 import { useState, useContext } from 'react';
 
 import AuthContext from '../store/authContext';
-import AuthService from '../services/AuthService';
+import authService from '../services/authService';
 
 function useAuth() {
     const [error, setError] = useState('');
@@ -54,7 +54,7 @@ function useAuth() {
 
     const login = async ({ email, password }) => {
         return _authHandler({ email, password }, async () => {
-            const data = await AuthService.login({ email, password });
+            const data = await authService.login({ email, password });
 
             ctx.login(data.token);
 
@@ -67,7 +67,7 @@ function useAuth() {
 
     const register = async ({ email, password, confirmPassword }) => {
         return _authHandler({ email, password, confirmPassword }, async () => {
-            const data = await AuthService.register({ email, password });
+            const data = await authService.register({ email, password });
 
             ctx.login(data.token);
 
@@ -80,7 +80,7 @@ function useAuth() {
 
     const updateEmail = async ({ email }) => {
         return _authHandler({ email }, async () => {
-            const data = await AuthService.updateEmail({
+            const data = await authService.updateEmail({
                 email,
                 userId: ctx.userId,
             });
@@ -98,7 +98,7 @@ function useAuth() {
         confirmPassword,
     }) => {
         return _authHandler({ password, confirmPassword }, async () => {
-            const data = await AuthService.updatePassword({
+            const data = await authService.updatePassword({
                 oldPassword,
                 password,
             });
@@ -112,7 +112,7 @@ function useAuth() {
 
     const deleteAccount = async ({ email, password }) => {
         return _authHandler({ email, password }, async () => {
-            const data = await AuthService.deleteAccount({
+            const data = await authService.deleteAccount({
                 email,
                 password,
                 userId: ctx.userId,

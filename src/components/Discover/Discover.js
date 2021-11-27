@@ -14,7 +14,8 @@ import NavBar from '@/components/NavBar/NavBar';
 import NoResultsFound from '@/components/Discover/NoResultsFound';
 import SearchForm from '@/components/Discover/SearchForm';
 import Popular from '@/components/Discover/Popular';
-import axios from '@/config/axios';
+
+import discoverService from '@/services/discoverService';
 
 class Discover extends Component {
     state = {
@@ -125,36 +126,29 @@ class Discover extends Component {
         });
     };
 
-    handleSearch = (e) => {
+    handleSearch = (e, value) => {
         // Search for the query entered into the search box.
+        if (value) {
+            this.state.searchTerm = value;
+        }
+
         this.search();
         e.preventDefault();
     };
 
     // Post the RSS feed entered in the dialog box to the server.
-    handleSubscribeFromFeed = () => {
-        const showDialogError = (errorMessage) => {
+    handleSubscribeFromFeed = async () => {
+        try {
+            await discoverService.subscribeFromFeed(this.state.newFeed);
+            this.handleDialogClose();
+        } catch (err) {
             this.setState({
                 dialog: {
                     open: true,
                     error: true,
-                    errorMessage,
+                    errorMessage: err,
                 },
             });
-        };
-
-        // Show an error if an invalid URL is given.
-        if (!this.isURL(this.state.newFeed)) {
-            showDialogError('Please enter a valid URL');
-        } else {
-            axios
-                .post(`/api/subscriptions`, {
-                    feedUrl: this.state.newFeed,
-                })
-                .then(this.handleDialogClose)
-                .catch((err) => {
-                    showDialogError(err.response?.data?.msg);
-                });
         }
     };
 
@@ -178,48 +172,30 @@ class Discover extends Component {
         });
     };
 
-    search = () => {
-        const term = this.state.searchTerm.trim();
+    search = async () => {
+        if (!this.state.searchTerm) return;
 
-        if (!term) {
-            return;
-        }
-
-        axios
-            .get(`/api/search/?term=${encodeURIComponent(term)}`)
-            .then((data) => {
-                if (!data.data.results.length) {
-                    throw new Error('No search results found.');
-                } else {
-                    this.setState({
-                        searchResults: data.data.results,
-                        noResultsFound: false,
-                    });
-                }
-            })
-            .catch(() => {
-                this.setState({
-                    noResultsFound: true,
-                });
-            })
-            .finally(() => {
-                if (window.location.hash !== '#/rate_limit') {
-                    this.props.history.replace(
-                        `/discover?term=${encodeURIComponent(term)}`
-                    );
-                }
-            });
-    };
-
-    isURL(str) {
         try {
-            new URL(str);
-        } catch (_) {
-            return false;
-        }
+            const results = await discoverService.search(this.state.searchTerm);
 
-        return true;
-    }
+            this.setState({
+                searchResults: results,
+                noResultsFound: false,
+            });
+        } catch (err) {
+            this.setState({
+                noResultsFound: true,
+            });
+        } finally {
+            if (window.location.hash !== '#/rate_limit') {
+                this.props.history.replace(
+                    `/discover?term=${encodeURIComponent(
+                        this.state.searchTerm
+                    )}`
+                );
+            }
+        }
+    };
 }
 
 export default withRouter(Discover);

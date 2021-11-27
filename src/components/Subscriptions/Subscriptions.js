@@ -9,7 +9,7 @@ import AddIcon from '@material-ui/icons/AddBox';
 import NavBar from '@/components/NavBar/NavBar';
 import SubscriptionItem from '@/components/Subscriptions/SubscriptionItem';
 import Welcome from '@/components/Subscriptions/Welcome';
-import axios from '@/config/axios';
+import subscriptionsService from '@/services/subscriptionsService';
 
 const useStyles = (theme) => ({
     menuButton: {
@@ -42,19 +42,15 @@ class Subscriptions extends Component {
     };
 
     componentDidMount() {
-        axios
-            .get(`/api/subscriptions`)
-            .then((res) => {
-                if (res.status !== 200 || res.data.subscriptions.length === 0) {
-                    throw new Error('No subscriptions');
-                } else {
-                    this.setState({
-                        subscriptions: res.data.subscriptions.sort(this.compare),
-                        noSubscriptions: false,
-                    });
-                }
+        subscriptionsService
+            .getSubscriptions()
+            .then((subscriptions) => {
+                this.setState({
+                    subscriptions,
+                    noSubscriptions: false,
+                });
             })
-            .catch(() => {
+            .catch((err) => {
                 this.setState({
                     noSubscriptions: true,
                 });
@@ -114,16 +110,6 @@ class Subscriptions extends Component {
                 </Container>
             </React.Fragment>
         );
-    }
-
-    compare(a, b) {
-        if (a.title < b.title) {
-            return -1;
-        } else if (a.title > b.title) {
-            return 1;
-        } else {
-            return 0;
-        }
     }
 }
 
