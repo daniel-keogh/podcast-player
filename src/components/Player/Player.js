@@ -31,10 +31,6 @@ class Player extends Component {
         return (
             <React.Fragment>
                 <PlayerControls
-                    epTitle={this.context.epTitle}
-                    podTitle={this.context.podTitle}
-                    podId={this.context.podId}
-                    podArtwork={this.context.podArtwork}
                     currentTime={this.state.currentTime}
                     duration={this.state.duration}
                     isPaused={
@@ -105,8 +101,7 @@ class Player extends Component {
     // Syncs the slider with the current playback position.
     handleSliderChange = (e, value) => {
         // Convert the slider's new value property from a % to a time.
-        this.audioElement.current.currentTime =
-            this.state.duration * value * 0.01;
+        this.audioElement.current.currentTime = this.state.duration * value * 0.01;
 
         this.setState({
             currentTime: this.audioElement.current.currentTime,

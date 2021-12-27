@@ -182,7 +182,7 @@ class Podcast extends Component {
     fetchMore = (limit) => {
         subscriptionsService
             .getSubscriptionById(this.props.match.params.id, limit)
-            .then((episodes) => {
+            .then(({ episodes }) => {
                 this.setState((state) => ({
                     podcast: {
                         ...state.podcast,

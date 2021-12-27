@@ -18,7 +18,7 @@
 }
 
 .player {
-    min-height: 145px;
+    min-height: 140px;
     z-index: 100;
     position: relative;
 }
