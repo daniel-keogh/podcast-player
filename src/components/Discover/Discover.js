@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
+import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
@@ -11,7 +12,6 @@ import RssFeedIcon from '@material-ui/icons/RssFeed';
 import DiscoverListItem from '@/components/Discover/DiscoverListItem';
 import FeedFormDialog from '@/components/Discover/FeedFormDialog';
 import NavBar from '@/components/NavBar/NavBar';
-import NoResultsFound from '@/components/Discover/NoResultsFound';
 import SearchForm from '@/components/Discover/SearchForm';
 import Popular from '@/components/Discover/Popular';
 import TopicsGrid from '@/components/Discover/TopicsGrid';
@@ -74,16 +74,8 @@ class Discover extends Component {
                     </Tooltip>
                 </NavBar>
 
-                <Container
-                    component="main"
-                    maxWidth="lg"
-                    style={{ paddingBottom: '32px' }}
-                >
-                    <Container
-                        component="section"
-                        maxWidth="lg"
-                        style={{ marginTop: '42px' }}
-                    >
+                <Container component="main" maxWidth="lg">
+                    <Box component="section" my={6}>
                         <Typography variant="h5" component="h5">
                             Search for Podcasts
                         </Typography>
@@ -108,15 +100,24 @@ class Discover extends Component {
                                 ))}
                             </List>
                         ) : (
-                            <NoResultsFound />
+                            <Box textAlign={'center'} p={7}>
+                                <Typography variant="h6">
+                                    No Results Found...
+                                </Typography>
+                                <Typography variant="body2">
+                                    Please Try Again.
+                                </Typography>
+                            </Box>
                         )}
-                    </Container>
+                    </Box>
 
-                    <Container component="section" maxWidth="lg">
+                    <Box component="section" my={6}>
                         <Popular />
+                    </Box>
 
+                    <Box component="section" my={6} pb={2}>
                         <TopicsGrid onTopicClicked={this.handleSearch} />
-                    </Container>
+                    </Box>
 
                     <FeedFormDialog
                         {...this.state.dialog}

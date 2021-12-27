@@ -6,7 +6,7 @@ import discoverService from '@/services/discoverService';
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        marginTop: theme.spacing(3),
+        margin: theme.spacing(5, 0),
     },
     subscriptionsGrid: {
         margin: theme.spacing(1, 0),
@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
         gap: '1em',
         justifyContent: 'center',
         flexWrap: 'wrap',
-        padding: '28px 14px',
+        padding: theme.spacing(4, 2),
     },
 }));
 
