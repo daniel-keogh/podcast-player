@@ -1,75 +1,69 @@
-import React, { useState } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 import PasswordInput from '@/components/Auth/PasswordInput';
-import { useAuth } from '@/hooks';
+import { useAuth, useForm } from '@/hooks';
 
-function AuthDialog(props) {
-    const changeEmail = props.type === 'CHANGE_EMAIL';
-    const changePassword = props.type === 'CHANGE_PASSWORD';
-    const closeAccount = props.type === 'CLOSE_ACCOUNT';
+export const dialogTypes = {
+    CHANGE_EMAIL: 'CHANGE_EMAIL',
+    CHANGE_PASSWORD: 'CHANGE_PASSWORD',
+    CLOSE_ACCOUNT: 'CLOSE_ACCOUNT',
+};
 
-    const { error, resetError, updateEmail, updatePassword, deleteAccount } = useAuth();
+function AuthDialog({
+    type,
+    title,
+    message,
+    open,
+    onSubmit,
+    onCancel,
+    ...props
+}) {
+    const changeEmail = type === dialogTypes.CHANGE_EMAIL;
+    const changePassword = type === dialogTypes.CHANGE_PASSWORD;
+    const closeAccount = type === dialogTypes.CLOSE_ACCOUNT;
 
-    const [form, setForm] = useState({
+    const { error, resetError, ...auth } = useAuth();
+
+    const [form, handleFormChanged, handleFormReset] = useForm({
         email: '',
         password: '',
         confirmPassword: '',
         oldPassword: '',
     });
 
-    const handleFormChanged = (e) => {
-        e.persist();
-
-        setForm((state) => ({
-            ...state,
-            [e.target.name]: e.target.value,
-        }));
-    };
-
     const handleSubmit = async () => {
-        let response = {};
+        const fn = changeEmail ? auth.updateEmail
+                : changePassword ? auth.updatePassword
+                : auth.deleteAccount;
 
-        if (changeEmail) {
-            response = await updateEmail(form);
-        } else if (changePassword) {
-            response = await updatePassword(form);
-        } else if (closeAccount) {
-            response = await deleteAccount(form);
-        }
+        const response = await fn(form);
 
         if (response.success) {
             resetError();
-            props.onSubmit(response.data);
+            onSubmit(response.data);
         }
     };
 
     const handleCancel = () => {
-        setForm({
-            email: '',
-            password: '',
-            confirmPassword: '',
-            oldPassword: '',
-        });
-
+        handleFormReset();
         resetError();
-        props.onCancel();
+        onCancel();
     };
 
     return (
-        <Dialog
-            open={props.open}
-            onClose={props.onCancel}
-            fullWidth
-            keepMounted
-        >
-            <DialogTitle>{props.title}</DialogTitle>
+        <Dialog open={open} onClose={onCancel} fullWidth keepMounted>
+            <DialogTitle>{title}</DialogTitle>
             <DialogContent>
+                <DialogContentText>{message}</DialogContentText>
+
                 {changeEmail || closeAccount ? (
                     <TextField
                         autoFocus
@@ -128,5 +122,14 @@ function AuthDialog(props) {
         </Dialog>
     );
 }
+
+AuthDialog.propTypes = {
+    type: PropTypes.oneOf([...Object.values(dialogTypes)]),
+    title: PropTypes.string.isRequired,
+    message: PropTypes.string.isRequired,
+    open: PropTypes.bool.isRequired,
+    onSubmit: PropTypes.func.isRequired,
+    onCancel: PropTypes.func.isRequired,
+};
 
 export default AuthDialog;

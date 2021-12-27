@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -12,14 +12,10 @@ import MailOutlineIcon from '@material-ui/icons/MailOutline';
 import WarningOutlinedIcon from '@material-ui/icons/WarningOutlined';
 
 import AuthDialog from '@/components/Profile/AuthDialog';
+import { useDialog } from '@/hooks';
+import { dialogTypes } from './AuthDialog';
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-        width: '100%',
-    },
-    inline: {
-        display: 'inline',
-    },
     dangerButton: {
         color: theme.palette.warning.main,
     },
@@ -28,67 +24,55 @@ const useStyles = makeStyles((theme) => ({
 function DangerCard(props) {
     const classes = useStyles();
 
-    const [dialog, setDialog] = useState({
-        text: '',
+    const [dialog, onDialogOpen, onDialogClose] = useDialog({
+        title: '',
         type: '',
-        show: false,
+        message: '',
     });
 
-    const handleItemClicked = (item) => {
-        setDialog({
-            show: true,
-            text: item.text,
-            type: item.type,
-        });
-    };
-
-    const handleDialogClose = () => {
-        setDialog((state) => ({
-            ...state,
-            show: false,
-        }));
-    };
-
     const handleDialogSubmit = () => {
-        if (dialog.type === 'CLOSE_ACCOUNT') {
+        if (dialog.type === dialogTypes.CLOSE_ACCOUNT) {
             props.onProfileDeleted();
         } else {
             props.onProfileUpdated();
-            handleDialogClose();
+            onDialogClose();
         }
     };
 
     const listItems = [
         {
             icon: <MailOutlineIcon />,
-            text: 'Change Email',
-            type: 'CHANGE_EMAIL',
+            title: 'Change Email',
+            type: dialogTypes.CHANGE_EMAIL,
+            message: 'Please enter your new email.',
         },
         {
             icon: <LockOutlinedIcon />,
-            text: 'Change Password',
-            type: 'CHANGE_PASSWORD',
+            title: 'Change Password',
+            type: dialogTypes.CHANGE_PASSWORD,
+            message: 'Please complete the form to change your password.',
         },
         {
             icon: <WarningOutlinedIcon className={classes.dangerButton} />,
-            text: 'Delete Your Account',
-            type: 'CLOSE_ACCOUNT',
+            title: 'Delete Your Account',
+            type: dialogTypes.CLOSE_ACCOUNT,
+            message: 'Please sign in to confirm.',
         },
     ];
 
     return (
         <React.Fragment>
-            <Card className={classes.root} variant="outlined">
+            <Card variant="outlined">
                 <CardContent>
-                    <List className={classes.root}>
+                    <List>
                         {listItems.map((item, index) => (
                             <React.Fragment key={index}>
                                 <ListItem
                                     button
-                                    onClick={() => handleItemClicked(item)}
+                                    onClick={() => onDialogOpen(item)}
                                 >
                                     <ListItemIcon>{item.icon}</ListItemIcon>
-                                    <ListItemText primary={item.text} />
+                                    <ListItemText primary={item.title} />
                                 </ListItem>
                                 {listItems.length - 1 !== index ? (
                                     <Divider variant="inset" component="li" />
@@ -98,13 +82,13 @@ function DangerCard(props) {
                     </List>
                 </CardContent>
             </Card>
-            <AuthDialog
-                open={dialog.show}
-                title={dialog.text}
-                type={dialog.type}
-                onCancel={handleDialogClose}
-                onSubmit={handleDialogSubmit}
-            />
+            {dialog.type !== '' && (
+                <AuthDialog
+                    {...dialog}
+                    onCancel={onDialogClose}
+                    onSubmit={handleDialogSubmit}
+                />
+            )}
         </React.Fragment>
     );
 }

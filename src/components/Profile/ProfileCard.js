@@ -1,6 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
+import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -11,11 +12,7 @@ import moment from 'moment';
 
 const useStyles = makeStyles((theme) => ({
     userSince: {
-        marginTop: theme.spacing(1),
-        marginBottom: theme.spacing(2),
-    },
-    buttonWrapper: {
-        marginTop: '32px',
+        margin: theme.spacing(2, 0),
     },
     content: {
         display: 'flex',
@@ -45,15 +42,21 @@ function ProfileCard(props) {
                 <Avatar className={classes.avatar}>
                     <AccountCircleIcon className={classes.avatarIcon} />
                 </Avatar>
-                <Typography variant="h5" component="h2">
+                <Typography variant="h5" component="h2" noWrap>
                     {props.email}
                 </Typography>
-                {props.registeredSince &&
-                    <Typography className={classes.userSince} color="textSecondary">
-                        Listening since {moment(props.registeredSince).fromNow()}
+                {props.registeredSince && (
+                    <Typography
+                        className={classes.userSince}
+                        color="textSecondary"
+                        variant="body2"
+                        noWrap
+                    >
+                        Listening since:{' '}
+                        {moment(props.registeredSince).fromNow()}.
                     </Typography>
-                }
-                <div className={classes.buttonWrapper}>
+                )}
+                <Box mt={4}>
                     <Button
                         variant="outlined"
                         size="medium"
@@ -63,7 +66,7 @@ function ProfileCard(props) {
                     >
                         Logout
                     </Button>
-                </div>
+                </Box>
             </CardContent>
         </Card>
     );

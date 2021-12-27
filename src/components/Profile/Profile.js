@@ -1,22 +1,19 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
+import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import NavBar from '@/components/NavBar/NavBar';
-import DangerCard from '@/components/Profile/DangerCard';
-import ProfileCard from '@/components/Profile/ProfileCard';
 import AuthContext from '@/store/authContext';
 import NowPlayingContext from '@/store/nowPlayingContext';
 import authService from '@/services/authService';
+import DangerCard from './DangerCard';
+import ProfileCard from './ProfileCard';
 
 const useStyles = makeStyles((theme) => ({
-    section: {
-        marginTop: theme.spacing(3),
-        marginBottom: theme.spacing(4),
-    },
     sectionTitle: {
-        marginBottom: theme.spacing(1),
+        marginBottom: theme.spacing(2),
     },
 }));
 
@@ -30,7 +27,6 @@ function Profile() {
     const [profileInfo, setProfileInfo] = useState({
         email: '',
         registeredSince: null,
-        subscriptions: 0,
     });
 
     useEffect(() => {
@@ -48,8 +44,6 @@ function Profile() {
         });
     }, [authContext.userId, profileUpdated]);
 
-    const handleProfileUpdated = () => setProfileUpdated(true);
-
     const handleLogout = () => {
         nowPlayingContext.stop();
         authContext.logout();
@@ -60,7 +54,7 @@ function Profile() {
         <React.Fragment>
             <NavBar title="Profile" />
             <Container maxWidth="md">
-                <section className={classes.section}>
+                <Box my={5}>
                     <Typography
                         variant="h5"
                         component="h5"
@@ -73,20 +67,20 @@ function Profile() {
                         registeredSince={profileInfo.registeredSince}
                         onLogout={handleLogout}
                     />
-                </section>
-                <section className={classes.section}>
+                </Box>
+                <Box my={5}>
                     <Typography
                         variant="h5"
                         component="h5"
                         className={classes.sectionTitle}
                     >
-                        Danger Area
+                        Security
                     </Typography>
                     <DangerCard
-                        onProfileUpdated={handleProfileUpdated}
+                        onProfileUpdated={() => setProfileUpdated(true)}
                         onProfileDeleted={handleLogout}
                     />
-                </section>
+                </Box>
             </Container>
         </React.Fragment>
     );
