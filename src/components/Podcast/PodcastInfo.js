@@ -1,5 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import Box from '@material-ui/core/Box';
 import Chip from '@material-ui/core/Chip';
 import Divider from '@material-ui/core/Divider';
 import Link from '@material-ui/core/Link';
@@ -10,23 +11,20 @@ import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import RemoveOutlinedIcon from '@material-ui/icons/RemoveOutlined';
 import SubscriptionItem from '@/components/Subscriptions/SubscriptionItem';
 
-const useStyles = makeStyles(() => ({
-    root: {
-        padding: '32px 16px',
-        margin: '32px auto auto 0',
-    },
-
+const useStyles = makeStyles((theme) => ({
     podcastInfo: {
         display: 'flex',
         overflowX: 'clip',
-        '@media (max-width:500px)': {
+
+        [theme.breakpoints.down('xs')]: {
             display: 'block',
         },
     },
 
     artworkContainer: {
         alignSelf: 'flex-start',
-        '@media (max-width:500px)': {
+
+        [theme.breakpoints.down('xs')]: {
             display: 'flex',
             justifyContent: 'center',
         },
@@ -34,11 +32,12 @@ const useStyles = makeStyles(() => ({
 
     titleContainer: {
         flex: '1',
-        marginLeft: '25px',
+        marginLeft: theme.spacing(3),
         alignItems: 'center',
-        '@media (max-width:500px)': {
+
+        [theme.breakpoints.down('xs')]: {
             marginLeft: 0,
-            marginTop: '32px',
+            marginTop: theme.spacing(4),
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -48,33 +47,42 @@ const useStyles = makeStyles(() => ({
     },
 
     title: {
-        marginBottom: '6px',
+        marginBottom: theme.spacing(1),
     },
+
     author: {
         display: 'inline-block',
     },
-    chips: {
-        margin: '18px 0',
-    },
+
     chip: {
         padding: '3px',
-    },
+        margin: theme.spacing(1, 0.75),
 
-    description: {
-        marginTop: '48px',
-        marginBottom: '16px',
+        '&:first-child': {
+            marginLeft: 0,
+        },
     },
 }));
 
-function PodcastInfo(props) {
+function PodcastInfo({
+    artwork,
+    title,
+    link,
+    author,
+    isSubscribed,
+    subscriberCount,
+    description,
+    onSubscribe,
+    ...props
+}) {
     const classes = useStyles();
 
     return (
         <React.Fragment>
-            <div className={classes.root}>
+            <Box px={2} py={4} mx={'auto'} my={4}>
                 <div className={classes.podcastInfo}>
                     <div className={classes.artworkContainer}>
-                        <SubscriptionItem artwork={props.artwork} />
+                        <SubscriptionItem artwork={artwork} />
                     </div>
                     <div className={classes.titleContainer}>
                         <Typography
@@ -82,29 +90,25 @@ function PodcastInfo(props) {
                             component="h4"
                             className={classes.title}
                         >
-                            {props.title}
+                            {title}
                         </Typography>
                         <Link
-                            href={props.link}
+                            href={link}
                             target="_blank"
                             rel="noreferrer"
                             className={classes.author}
                             variant="subtitle1"
                         >
-                            {props.author}
+                            {author}
                         </Link>
-                        <div className={classes.chips}>
+                        <Box my={2}>
                             <Chip
                                 label={
-                                    props.isSubscribed
-                                        ? 'Unsubscribe'
-                                        : 'Subscribe'
+                                    isSubscribed ? 'Unsubscribe' : 'Subscribe'
                                 }
-                                variant={
-                                    props.isSubscribed ? 'default' : 'outlined'
-                                }
+                                variant={isSubscribed ? 'default' : 'outlined'}
                                 icon={
-                                    props.isSubscribed ? (
+                                    isSubscribed ? (
                                         <RemoveOutlinedIcon />
                                     ) : (
                                         <AddOutlinedIcon />
@@ -113,12 +117,11 @@ function PodcastInfo(props) {
                                 color="primary"
                                 className={classes.chip}
                                 size="medium"
-                                style={{ marginRight: '12px' }}
-                                onClick={props.onSubscribe}
+                                onClick={onSubscribe}
                             />
                             <Tooltip title="Subscribers">
                                 <Chip
-                                    label={props.subscriberCount}
+                                    label={subscriberCount}
                                     color="default"
                                     className={classes.chip}
                                     icon={<Headset />}
@@ -126,19 +129,19 @@ function PodcastInfo(props) {
                                     variant="outlined"
                                 />
                             </Tooltip>
-                        </div>
+                        </Box>
                     </div>
                 </div>
-                <div className={classes.description}>
+                <Box mt={6} mb={2}>
                     <Typography
                         variant="body1"
                         color="textPrimary"
                         component="p"
                     >
-                        {props.description}
+                        {description}
                     </Typography>
-                </div>
-            </div>
+                </Box>
+            </Box>
             <Divider />
         </React.Fragment>
     );

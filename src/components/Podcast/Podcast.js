@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
-import List from '@material-ui/core/List';
 import Snackbar from '@material-ui/core/Snackbar';
 import NavBar from '@/components/NavBar/NavBar';
-import EpisodeListItem from '@/components/Podcast/EpisodeListItem';
-import PodcastInfo from '@/components/Podcast/PodcastInfo';
+import EpisodeList from './EpisodeList';
+import EpisodeListItem from './EpisodeListItem';
+import PodcastInfo from './PodcastInfo';
+
 import subscriptionsService from '@/services/subscriptionsService';
 
 class Podcast extends Component {
@@ -36,7 +37,7 @@ class Podcast extends Component {
                     numEpisodes: limit,
                 });
             })
-            .catch(this.onHttpError)
+            .catch(this.handleSnackbarOpen)
             .finally(() => {
                 this.setState({
                     isLoading: false,
@@ -57,28 +58,8 @@ class Podcast extends Component {
     }
 
     render() {
-        const episodes = [];
-        if (this.state.podcast.episodes) {
-            for (let i = 0; i < this.state.podcast.episodes.length; i++) {
-                if (i < this.state.numEpisodes) {
-                    episodes.push(
-                        <EpisodeListItem
-                            key={i}
-                            id={this.state.podcast._id}
-                            podcastTitle={this.state.podcast.title}
-                            artwork={this.state.podcast.artwork}
-                            episode={this.state.podcast.episodes[i]}
-                        />
-                    );
-                } else {
-                    break;
-                }
-            }
-        }
-
         // If the title was passed as a prop use that, otherwise wait until `componentDidMount()` updates the state.
-        const navTitle =
-            this.props.location.state?.title || this.state.podcast.title;
+        const navTitle = this.props.location.state?.title || this.state.podcast.title;
 
         return (
             <React.Fragment>
@@ -93,24 +74,20 @@ class Podcast extends Component {
                         />
                     ) : null}
 
-                    <List>{episodes}</List>
-
-                    {/* Only display the "Show More" button if there are episodes that aren't yet visible in the List. */}
-                    {this.state.podcast.episodes?.length >=
-                    this.state.numEpisodes ? (
-                        <Button
-                            style={{
-                                display: 'block',
-                                margin: '32px auto',
-                            }}
-                            variant="outlined"
-                            color="primary"
-                            size="large"
-                            onClick={this.handleShowMoreClicked}
-                        >
-                            Show More
-                        </Button>
-                    ) : null}
+                    <EpisodeList
+                        numEpisodes={this.state.numEpisodes}
+                        onShowMore={this.handleShowMoreClicked}
+                    >
+                        {this.state.podcast?.episodes?.map((episode, i) => (
+                            <EpisodeListItem
+                                key={i}
+                                episode={episode}
+                                id={this.state.podcast._id}
+                                podcastTitle={this.state.podcast.title}
+                                artwork={this.state.podcast.artwork}
+                            />
+                        ))}
+                    </EpisodeList>
                 </Container>
 
                 <Snackbar
@@ -132,6 +109,31 @@ class Podcast extends Component {
         );
     }
 
+    fetchMore = async (limit) => {
+        try {
+            const { episodes } = await subscriptionsService.getSubscriptionById(
+                this.props.match.params.id,
+                limit
+            );
+
+            this.setState((state) => ({
+                podcast: {
+                    ...state.podcast,
+                    episodes,
+                },
+                numEpisodes: limit,
+            }));
+        } catch (err) {
+            this.handleSnackbarOpen(err);
+        } finally {
+            if (window.location.hash !== '#/rate_limit') {
+                this.props.history.replace(
+                    `/podcast/${this.state.podcast._id}?limit=${limit}`
+                );
+            }
+        }
+    };
+
     // Display another 100 episodes whenever the "Show More" button is clicked
     handleShowMoreClicked = () => {
         const params = new URLSearchParams(this.props.history.location.search);
@@ -139,35 +141,46 @@ class Podcast extends Component {
         this.fetchMore(limit);
     };
 
-    handleSubscribe = () => {
-        if (this.state.podcast.isSubscribed) {
-            subscriptionsService
-                .removeSubscription(this.state.podcast._id)
-                .then(() => {
-                    this.setState((state) => ({
-                        podcast: {
-                            ...state.podcast,
-                            isSubscribed: false,
-                            subscriberCount: state.podcast.subscriberCount - 1,
-                        },
-                    }));
-                })
-                .catch(this.onHttpError);
-        } else {
-            // Re-subscribe
-            subscriptionsService
-                .addSubscription(this.state.podcast.feedUrl)
-                .then((result) => {
-                    this.setState((state) => ({
-                        podcast: {
-                            ...state.podcast,
-                            ...result,
-                            isSubscribed: true,
-                        },
-                    }));
-                })
-                .catch(this.onHttpError);
+    handleSubscribe = async () => {
+        try {
+            if (this.state.podcast.isSubscribed) {
+                await subscriptionsService.removeSubscription(
+                    this.state.podcast._id
+                );
+
+                this.setState((state) => ({
+                    podcast: {
+                        ...state.podcast,
+                        isSubscribed: false,
+                        subscriberCount: state.podcast.subscriberCount - 1,
+                    },
+                }));
+            } else {
+                // Re-subscribe
+                const result = await subscriptionsService.addSubscription(
+                    this.state.podcast.feedUrl
+                );
+
+                this.setState((state) => ({
+                    podcast: {
+                        ...state.podcast,
+                        ...result,
+                        isSubscribed: true,
+                    },
+                }));
+            }
+        } catch (err) {
+            this.handleSnackbarOpen(err);
         }
+    };
+
+    handleSnackbarOpen = (message) => {
+        this.setState({
+            snackbar: {
+                open: true,
+                message: `Error: ${message}.`,
+            },
+        });
     };
 
     handleSnackbarClose = () => {
@@ -175,37 +188,6 @@ class Podcast extends Component {
             snackbar: {
                 open: false,
                 message: '',
-            },
-        });
-    };
-
-    fetchMore = (limit) => {
-        subscriptionsService
-            .getSubscriptionById(this.props.match.params.id, limit)
-            .then(({ episodes }) => {
-                this.setState((state) => ({
-                    podcast: {
-                        ...state.podcast,
-                        episodes,
-                    },
-                    numEpisodes: limit,
-                }));
-            })
-            .catch(this.onHttpError)
-            .finally(() => {
-                if (window.location.hash !== '#/rate_limit') {
-                    this.props.history.replace(
-                        `/podcast/${this.state.podcast._id}?limit=${limit}`
-                    );
-                }
-            });
-    };
-
-    onHttpError = (message) => {
-        this.setState({
-            snackbar: {
-                open: true,
-                message: `Error: ${message}.`,
             },
         });
     };

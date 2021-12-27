@@ -39,7 +39,7 @@ class SubscriptionsService {
     async getEpisodeByGuid(subscriptionId, guid) {
         try {
             const response = await axios.get(
-                `/api/subscriptions/${subscriptionId}/episodes/${guid}`
+                `/api/subscriptions/${subscriptionId}/episodes/${encodeURIComponent(guid)}`
             );
             return response.data;
         } catch (err) {

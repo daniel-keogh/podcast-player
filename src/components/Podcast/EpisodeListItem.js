@@ -4,7 +4,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
-import EpisodeInfoDialog from '@/components/Podcast/EpisodeInfoDialog';
+import EpisodeDialog from '@/components/EpisodeDialog/EpisodeDialog';
 import NowPlayingContext from '@/store/nowPlayingContext';
 
 function EpisodeListItem(props) {
@@ -39,17 +39,20 @@ function EpisodeListItem(props) {
                     </IconButton>
                 </ListItemSecondaryAction>
             </ListItem>
-            <EpisodeInfoDialog
-                open={dialogOpen}
-                id={props.id}
-                title={props.podcastTitle}
-                artwork={props.artwork}
-                episode={props.episode}
-                onPlay={handlePlay}
-                onClose={() => setDialogOpen(false)}
-            />
+            {dialogOpen && (
+                <EpisodeDialog
+                    open={dialogOpen}
+                    id={props.id}
+                    podcastTitle={props.podcastTitle}
+                    episodeTitle={props.episode?.title}
+                    episodeGuid={props.episode?.guid}
+                    artwork={props.artwork}
+                    onPlay={handlePlay}
+                    onClose={() => setDialogOpen(false)}
+                />
+            )}
         </React.Fragment>
     );
 }
 
-export default EpisodeListItem;
+export default React.memo(EpisodeListItem);
