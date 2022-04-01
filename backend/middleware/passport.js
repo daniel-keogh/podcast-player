@@ -1,10 +1,10 @@
-const { ExtractJwt, Strategy: JwtStrategy } = require('passport-jwt');
-const passport = require('passport');
-const User = require('../models/User');
+const { ExtractJwt, Strategy: JwtStrategy } = require("passport-jwt");
+const passport = require("passport");
+const User = require("../models/User");
 
 const options = {
-    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey: process.env.JWT_SECRET,
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: process.env.JWT_SECRET,
 };
 
 /*
@@ -14,33 +14,29 @@ const options = {
  * Ref: http://www.passportjs.org/packages/passport-jwt/
  */
 exports.jwtStrategy = new JwtStrategy(options, (jwt_payload, done) => {
-    User.findById(jwt_payload._id, (err, user) => {
-        if (err) {
-            return done(err, false);
-        }
+  User.findById(jwt_payload._id, (err, user) => {
+    if (err) {
+      return done(err, false);
+    }
 
-        return done(null, user || false);
-    });
+    return done(null, user || false);
+  });
 });
 
 exports.authenticate = (req, res, next) => {
-    return passport.authenticate(
-        'jwt',
-        { session: false },
-        (err, user, info) => {
-            if (err) {
-                return next(err);
-            }
+  return passport.authenticate("jwt", { session: false }, (err, user, info) => {
+    if (err) {
+      return next(err);
+    }
 
-            if (!user) {
-                const error = new Error('Unauthorized');
-                error.status = 401;
-                return next(error);
-            }
+    if (!user) {
+      const error = new Error("Unauthorized");
+      error.status = 401;
+      return next(error);
+    }
 
-            // Attach user to request for next middleware to use
-            req.user = user;
-            next();
-        }
-    )(req, res, next);
+    // Attach user to request for next middleware to use
+    req.user = user;
+    next();
+  })(req, res, next);
 };

@@ -1,28 +1,28 @@
 version: "3"
 
 services:
-    app:
-        build: 
-            context: .
-            args:
-                NODE_ENV: production
-        ports:
-            - "4000:4000"
-        env_file: ./backend/.env
-        depends_on: 
-            - mongo
-            - redis
+  app:
+    build:
+      context: .
+      args:
+        NODE_ENV: production
+    ports:
+      - "4000:4000"
+    env_file: ./backend/.env
+    depends_on:
+      - mongo
+      - redis
 
-    mongo:
-        image: "mongo:4.4.6"
-        environment: 
-            - MONGO_INITDB_ROOT_USERNAME=
-            - MONGO_INITDB_ROOT_PASSWORD=
-        volumes: 
-            - mongo-db:/data/db
-        
-    redis:
-        image: "redis:6.2.4-alpine"
+  mongo:
+    image: "mongo:4.4.6"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=
+      - MONGO_INITDB_ROOT_PASSWORD=
+    volumes:
+      - mongo-db:/data/db
 
-volumes: 
-    mongo-db:
+  redis:
+    image: "redis:6.2.4-alpine"
+
+volumes:
+  mongo-db:
