@@ -1,5 +1,8 @@
 # Podcast Player
 
+[![Node.js CI](https://github.com/daniel-keogh/podcast-player/actions/workflows/node.js.yml/badge.svg)](https://github.com/daniel-keogh/podcast-player/actions/workflows/node.js.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+
 A podcast player application built with the "MERN" stack, i.e. React.js, Express MongoDB, and Node.
 
 ## Installation
