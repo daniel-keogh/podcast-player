@@ -19,13 +19,15 @@ const theme = createTheme({
 
 const root = createRoot(document.getElementById("root"));
 root.render(
-  <ThemeProvider theme={theme}>
-    <AuthContextProvider>
-      <NowPlayingContextProvider>
-        <App />
-      </NowPlayingContextProvider>
-    </AuthContextProvider>
-  </ThemeProvider>
+  <React.StrictMode>
+    <ThemeProvider theme={theme}>
+      <AuthContextProvider>
+        <NowPlayingContextProvider>
+          <App />
+        </NowPlayingContextProvider>
+      </AuthContextProvider>
+    </ThemeProvider>
+  </React.StrictMode>
 );
 
 // If you want your app to work offline and load faster, you can change
