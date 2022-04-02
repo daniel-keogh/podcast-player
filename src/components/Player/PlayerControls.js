@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { makeStyles } from "@material-ui/core/styles";
-import Box from "@material-ui/core/Box";
-import Card from "@material-ui/core/Card";
+import makeStyles from "@mui/styles/makeStyles";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
 
 import NowPlayingArtwork from "@/components/Player/NowPlayingArtwork";
 import PlaybackButtonGroup from "@/components/Player/PlaybackButtonGroup";

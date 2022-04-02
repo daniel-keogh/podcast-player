@@ -1,15 +1,15 @@
 import React from "react";
 import { Link as RouterLink } from "react-router-dom";
-import { makeStyles } from "@material-ui/core/styles";
-import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
-import IconButton from "@material-ui/core/IconButton";
-import Container from "@material-ui/core/Container";
-import Grid from "@material-ui/core/Grid";
-import Link from "@material-ui/core/Link";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
-import GitHubIcon from "@material-ui/icons/GitHub";
+import makeStyles from "@mui/styles/makeStyles";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
+import Link from "@mui/material/Link";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import GitHubIcon from "@mui/icons-material/GitHub";
 import PasswordInput from "@/components/Auth/PasswordInput";
 import { useAuth, useForm } from "@/hooks";
 
@@ -113,13 +113,13 @@ function AuthForm(props) {
           <Grid container justifyContent="flex-end">
             {props.isLogin ? (
               <Grid item>
-                <Link component={RouterLink} to="/auth/register" variant="body2">
+                <Link component={RouterLink} to="/auth/register" variant="body2" underline="hover">
                   Don't have an account? Register...
                 </Link>
               </Grid>
             ) : (
               <Grid item>
-                <Link component={RouterLink} to="/auth/login" variant="body2">
+                <Link component={RouterLink} to="/auth/login" variant="body2" underline="hover">
                   Already have an account? Login...
                 </Link>
               </Grid>
@@ -128,7 +128,11 @@ function AuthForm(props) {
         </form>
       </div>
       <div className={classes.footer}>
-        <IconButton href="https://github.com/daniel-keogh/podcast-player" target="_blank">
+        <IconButton
+          href="https://github.com/daniel-keogh/podcast-player"
+          target="_blank"
+          size="large"
+        >
           <GitHubIcon />
         </IconButton>
       </div>

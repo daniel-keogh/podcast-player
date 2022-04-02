@@ -1,14 +1,14 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Box from "@material-ui/core/Box";
-import Chip from "@material-ui/core/Chip";
-import Divider from "@material-ui/core/Divider";
-import Link from "@material-ui/core/Link";
-import Tooltip from "@material-ui/core/Tooltip";
-import Typography from "@material-ui/core/Typography";
-import Headset from "@material-ui/icons/Headset";
-import AddOutlinedIcon from "@material-ui/icons/AddOutlined";
-import RemoveOutlinedIcon from "@material-ui/icons/RemoveOutlined";
+import makeStyles from "@mui/styles/makeStyles";
+import Box from "@mui/material/Box";
+import Chip from "@mui/material/Chip";
+import Divider from "@mui/material/Divider";
+import Link from "@mui/material/Link";
+import Tooltip from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
+import Headset from "@mui/icons-material/Headset";
+import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+import RemoveOutlinedIcon from "@mui/icons-material/RemoveOutlined";
 import SubscriptionItem from "@/components/Subscriptions/SubscriptionItem";
 
 const useStyles = makeStyles((theme) => ({
@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     overflowX: "clip",
 
-    [theme.breakpoints.down("xs")]: {
+    [theme.breakpoints.down("sm")]: {
       display: "block",
     },
   },
@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   artworkContainer: {
     alignSelf: "flex-start",
 
-    [theme.breakpoints.down("xs")]: {
+    [theme.breakpoints.down("sm")]: {
       display: "flex",
       justifyContent: "center",
     },
@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(3),
     alignItems: "center",
 
-    [theme.breakpoints.down("xs")]: {
+    [theme.breakpoints.down("sm")]: {
       marginLeft: 0,
       marginTop: theme.spacing(4),
       display: "flex",
@@ -94,6 +94,7 @@ function PodcastInfo({
               rel="noreferrer"
               className={classes.author}
               variant="subtitle1"
+              underline="hover"
             >
               {author}
             </Link>

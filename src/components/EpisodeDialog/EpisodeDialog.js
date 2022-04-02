@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { withStyles } from "@material-ui/core";
-import Dialog from "@material-ui/core/Dialog";
-import Typography from "@material-ui/core/Typography";
-import MuiDialogContent from "@material-ui/core/DialogContent";
-import Skeleton from "@material-ui/lab/Skeleton";
+import withStyles from "@mui/styles/withStyles";
+import Dialog from "@mui/material/Dialog";
+import Typography from "@mui/material/Typography";
+import MuiDialogContent from "@mui/material/DialogContent";
+import Skeleton from "@mui/material/Skeleton";
 
 import subscriptionsService from "@/services/subscriptionsService";
 import EpisodeDialogTitle from "./EpisodeDialogTitle";

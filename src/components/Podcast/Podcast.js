@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
-import Button from "@material-ui/core/Button";
-import Container from "@material-ui/core/Container";
-import Snackbar from "@material-ui/core/Snackbar";
+import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
+import Snackbar from "@mui/material/Snackbar";
 import NavBar from "@/components/NavBar/NavBar";
 import EpisodeList from "./EpisodeList";
 import EpisodeListItem from "./EpisodeListItem";

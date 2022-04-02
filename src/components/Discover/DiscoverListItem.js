@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Avatar from "@material-ui/core/Avatar";
-import IconButton from "@material-ui/core/IconButton";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
-import ListItemText from "@material-ui/core/ListItemText";
-import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
-import CheckCircleOutline from "@material-ui/icons/CheckCircleOutline";
+import makeStyles from "@mui/styles/makeStyles";
+import Avatar from "@mui/material/Avatar";
+import IconButton from "@mui/material/IconButton";
+import ListItem from "@mui/material/ListItem";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
+import ListItemText from "@mui/material/ListItemText";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import CheckCircleOutline from "@mui/icons-material/CheckCircleOutline";
 import axios from "@/config/axios";
 
 const useStyles = makeStyles((theme) => ({
@@ -42,7 +42,7 @@ function DiscoverListItem(props) {
       </ListItemAvatar>
       <ListItemText primary={props.title} secondary={props.author} />
       <ListItemSecondaryAction>
-        <IconButton edge="end" color="secondary" onClick={handleSubscribe}>
+        <IconButton edge="end" color="secondary" onClick={handleSubscribe} size="large">
           {isSubscribed ? (
             <CheckCircleOutline className={classes.isSubscribedIcon} />
           ) : (

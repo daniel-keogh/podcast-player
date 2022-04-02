@@ -1,9 +1,9 @@
 import React, { useContext, useState } from "react";
-import IconButton from "@material-ui/core/IconButton";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
-import ListItemText from "@material-ui/core/ListItemText";
-import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
+import IconButton from "@mui/material/IconButton";
+import ListItem from "@mui/material/ListItem";
+import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
+import ListItemText from "@mui/material/ListItemText";
+import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import EpisodeDialog from "@/components/EpisodeDialog/EpisodeDialog";
 import NowPlayingContext from "@/store/nowPlayingContext";
 
@@ -30,7 +30,7 @@ function EpisodeListItem(props) {
           secondary={new Date(props.episode.date).toDateString()}
         />
         <ListItemSecondaryAction>
-          <IconButton edge="end" color="secondary" onClick={handlePlay}>
+          <IconButton edge="end" color="secondary" onClick={handlePlay} size="large">
             <PlayCircleOutlineIcon />
           </IconButton>
         </ListItemSecondaryAction>

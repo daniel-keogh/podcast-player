@@ -1,15 +1,15 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Button from "@material-ui/core/Button";
-import Chip from "@material-ui/core/Chip";
-import Divider from "@material-ui/core/Divider";
-import IconButton from "@material-ui/core/IconButton";
-import Typography from "@material-ui/core/Typography";
-import MuiDialogTitle from "@material-ui/core/DialogTitle";
+import makeStyles from "@mui/styles/makeStyles";
+import Button from "@mui/material/Button";
+import Chip from "@mui/material/Chip";
+import Divider from "@mui/material/Divider";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import MuiDialogTitle from "@mui/material/DialogTitle";
 
-import PlayIcon from "@material-ui/icons/PlayCircleOutline";
-import TimerIcon from "@material-ui/icons/Timer";
-import CloseIcon from "@material-ui/icons/Close";
+import PlayIcon from "@mui/icons-material/PlayCircleOutline";
+import TimerIcon from "@mui/icons-material/Timer";
+import CloseIcon from "@mui/icons-material/Close";
 
 import SubscriptionItem from "@/components/Subscriptions/SubscriptionItem";
 
@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     marginBottom: theme.spacing(2),
 
-    [theme.breakpoints.down("xs")]: {
+    [theme.breakpoints.down("sm")]: {
       textAlign: "center",
       marginTop: theme.spacing(2),
     },
@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
   },
 
   headerArtwork: {
-    [theme.breakpoints.down("xs")]: {
+    [theme.breakpoints.down("sm")]: {
       display: "none",
     },
   },
@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
     "& > button": {
       marginLeft: "auto",
     },
-    [theme.breakpoints.down("xs")]: {
+    [theme.breakpoints.down("sm")]: {
       "& > *": {
         margin: 0,
       },
@@ -77,7 +77,7 @@ function EpisodeDialogTitle({
   const classes = useStyles();
 
   return (
-    <MuiDialogTitle disableTypography className={classes.root} {...props}>
+    <MuiDialogTitle className={classes.root} {...props}>
       <div className={classes.headerContainer}>
         <div className={classes.headerArtwork}>
           <SubscriptionItem id={id} title={podcastTitle} artwork={artwork} />
@@ -108,7 +108,7 @@ function EpisodeDialogTitle({
       </div>
 
       {onClose ? (
-        <IconButton className={classes.closeButton} onClick={onClose}>
+        <IconButton className={classes.closeButton} onClick={onClose} size="large">
           <CloseIcon />
         </IconButton>
       ) : null}

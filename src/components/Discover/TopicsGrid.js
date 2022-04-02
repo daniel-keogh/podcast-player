@@ -1,21 +1,21 @@
 import React from "react";
 
-import Box from "@material-ui/core/Box";
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
 
-import BooksIcon from "@material-ui/icons/BookOutlined";
-import BusinessIcon from "@material-ui/icons/Business";
-import TechnologyIcon from "@material-ui/icons/Devices";
-import HealthIcon from "@material-ui/icons/HealingOutlined";
-import HistoryIcon from "@material-ui/icons/History";
-import MoviesIcon from "@material-ui/icons/MovieCreation";
-import MusicIcon from "@material-ui/icons/MusicNoteOutlined";
-import NewsIcon from "@material-ui/icons/Public";
-import EducationIcon from "@material-ui/icons/SchoolOutlined";
-import ComedyIcon from "@material-ui/icons/SentimentVerySatisfied";
-import GamingIcon from "@material-ui/icons/SportsEsportsOutlined";
-import SportsIcon from "@material-ui/icons/SportsSoccer";
+import BooksIcon from "@mui/icons-material/BookOutlined";
+import BusinessIcon from "@mui/icons-material/Business";
+import TechnologyIcon from "@mui/icons-material/Devices";
+import HealthIcon from "@mui/icons-material/HealingOutlined";
+import HistoryIcon from "@mui/icons-material/History";
+import MoviesIcon from "@mui/icons-material/MovieCreation";
+import MusicIcon from "@mui/icons-material/MusicNoteOutlined";
+import NewsIcon from "@mui/icons-material/Public";
+import EducationIcon from "@mui/icons-material/SchoolOutlined";
+import ComedyIcon from "@mui/icons-material/SentimentVerySatisfied";
+import GamingIcon from "@mui/icons-material/SportsEsportsOutlined";
+import SportsIcon from "@mui/icons-material/SportsSoccer";
 
 import TopicCard from "./TopicCard";
 

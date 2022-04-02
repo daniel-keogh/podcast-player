@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
-import Box from "@material-ui/core/Box";
-import Container from "@material-ui/core/Container";
-import Divider from "@material-ui/core/Divider";
-import IconButton from "@material-ui/core/IconButton";
-import List from "@material-ui/core/List";
-import Tooltip from "@material-ui/core/Tooltip";
-import Typography from "@material-ui/core/Typography";
-import RssFeedIcon from "@material-ui/icons/RssFeed";
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
+import Divider from "@mui/material/Divider";
+import IconButton from "@mui/material/IconButton";
+import List from "@mui/material/List";
+import Tooltip from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
+import RssFeedIcon from "@mui/icons-material/RssFeed";
 
 import DiscoverListItem from "@/components/Discover/DiscoverListItem";
 import FeedFormDialog from "@/components/Discover/FeedFormDialog";
@@ -64,7 +64,7 @@ class Discover extends Component {
 
         <NavBar title="Discover">
           <Tooltip title="Add an RSS Feed">
-            <IconButton edge="end" color="inherit" onClick={this.handleDialogOpen}>
+            <IconButton edge="end" color="inherit" onClick={this.handleDialogOpen} size="large">
               <RssFeedIcon />
             </IconButton>
           </Tooltip>
@@ -149,7 +149,7 @@ class Discover extends Component {
         dialog: {
           open: true,
           error: true,
-          errorMessage: err,
+          errorMessage: err.message,
         },
       });
     }

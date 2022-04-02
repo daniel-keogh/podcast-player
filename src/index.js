@@ -1,5 +1,5 @@
 import React from "react";
-import { createRoot } from "react-dom/client";
+import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
@@ -7,8 +7,8 @@ import * as serviceWorker from "./serviceWorker";
 import { AuthContextProvider } from "./store/authContext";
 import { NowPlayingContextProvider } from "./store/nowPlayingContext";
 
-import { createTheme, ThemeProvider } from "@material-ui/core/styles";
-import { deepPurple, orange } from "@material-ui/core/colors";
+import { createTheme, ThemeProvider, StyledEngineProvider } from "@mui/material/styles";
+import { deepPurple, orange } from "@mui/material/colors";
 
 const theme = createTheme({
   palette: {
@@ -17,17 +17,19 @@ const theme = createTheme({
   },
 });
 
-const root = createRoot(document.getElementById("root"));
-root.render(
+ReactDOM.render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <AuthContextProvider>
-        <NowPlayingContextProvider>
-          <App />
-        </NowPlayingContextProvider>
-      </AuthContextProvider>
-    </ThemeProvider>
-  </React.StrictMode>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={theme}>
+        <AuthContextProvider>
+          <NowPlayingContextProvider>
+            <App />
+          </NowPlayingContextProvider>
+        </AuthContextProvider>
+      </ThemeProvider>
+    </StyledEngineProvider>
+  </React.StrictMode>,
+  document.getElementById("root")
 );
 
 // If you want your app to work offline and load faster, you can change
