@@ -69,11 +69,7 @@ app.get("*", (req, res) => {
 app.use(errorHandler);
 
 mongoose
-  .connect(process.env.MONGO_URI, {
-    useCreateIndex: true,
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(process.env.MONGO_URI)
   .then((db) => {
     console.log(`[info]: Connected to MongoDB at "${db.connection.host}:${db.connection.port}"`);
   })
