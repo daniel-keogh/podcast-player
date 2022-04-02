@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 

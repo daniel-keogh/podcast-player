@@ -149,7 +149,7 @@ class Discover extends Component {
         dialog: {
           open: true,
           error: true,
-          errorMessage: err,
+          errorMessage: err.message,
         },
       });
     }

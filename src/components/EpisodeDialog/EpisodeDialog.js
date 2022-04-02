@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import withStyles from '@mui/styles/withStyles';
+import withStyles from "@mui/styles/withStyles";
 import Dialog from "@mui/material/Dialog";
 import Typography from "@mui/material/Typography";
 import MuiDialogContent from "@mui/material/DialogContent";
-import Skeleton from '@mui/material/Skeleton';
+import Skeleton from "@mui/material/Skeleton";
 
 import subscriptionsService from "@/services/subscriptionsService";
 import EpisodeDialogTitle from "./EpisodeDialogTitle";

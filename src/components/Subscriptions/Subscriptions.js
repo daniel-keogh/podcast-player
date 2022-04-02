@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import IconButton from "@mui/material/IconButton";
@@ -65,7 +65,8 @@ function Subscriptions() {
             color="inherit"
             component={Link}
             to="/profile"
-            size="large">
+            size="large"
+          >
             <AccountCircleIcon />
           </IconButton>
         </Tooltip>

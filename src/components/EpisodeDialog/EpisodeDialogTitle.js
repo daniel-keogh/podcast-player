@@ -1,5 +1,5 @@
 import React from "react";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
 import Divider from "@mui/material/Divider";
@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     marginBottom: theme.spacing(2),
 
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down("sm")]: {
       textAlign: "center",
       marginTop: theme.spacing(2),
     },
@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
   },
 
   headerArtwork: {
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down("sm")]: {
       display: "none",
     },
   },
@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
     "& > button": {
       marginLeft: "auto",
     },
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down("sm")]: {
       "& > *": {
         margin: 0,
       },
@@ -77,7 +77,7 @@ function EpisodeDialogTitle({
   const classes = useStyles();
 
   return (
-    <MuiDialogTitle disableTypography className={classes.root} {...props}>
+    <MuiDialogTitle className={classes.root} {...props}>
       <div className={classes.headerContainer}>
         <div className={classes.headerArtwork}>
           <SubscriptionItem id={id} title={podcastTitle} artwork={artwork} />

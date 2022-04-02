@@ -1,5 +1,5 @@
 import React from "react";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import NavBar from "@/components/NavBar/NavBar";

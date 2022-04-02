@@ -1,5 +1,5 @@
 import React from "react";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 

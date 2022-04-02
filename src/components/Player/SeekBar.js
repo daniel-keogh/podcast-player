@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import PropTypes from "prop-types";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
 import Typography from "@mui/material/Typography";
@@ -33,7 +33,7 @@ function SeekBar({ currentTime, duration, onSliderChange, ...props }) {
       <Slider
         className={classes.progressSlider}
         defaultValue={0}
-        value={(currentTime / duration) * 100}
+        value={(currentTime / duration) * 100 || 0}
         marks={[
           {
             value: 0,

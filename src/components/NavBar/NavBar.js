@@ -1,6 +1,6 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import AppBar from "@mui/material/AppBar";
 import LinearProgress from "@mui/material/LinearProgress";
 import IconButton from "@mui/material/IconButton";
@@ -32,7 +32,8 @@ function NavBar(props) {
             edge="start"
             color="inherit"
             onClick={history.goBack}
-            size="large">
+            size="large"
+          >
             <ArrowBackIcon />
           </IconButton>
         ) : null}

@@ -1,6 +1,6 @@
 import React from "react";
 import { Link as RouterLink } from "react-router-dom";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
@@ -113,13 +113,13 @@ function AuthForm(props) {
           <Grid container justifyContent="flex-end">
             {props.isLogin ? (
               <Grid item>
-                <Link component={RouterLink} to="/auth/register" variant="body2">
+                <Link component={RouterLink} to="/auth/register" variant="body2" underline="hover">
                   Don't have an account? Register...
                 </Link>
               </Grid>
             ) : (
               <Grid item>
-                <Link component={RouterLink} to="/auth/login" variant="body2">
+                <Link component={RouterLink} to="/auth/login" variant="body2" underline="hover">
                   Already have an account? Login...
                 </Link>
               </Grid>
@@ -131,7 +131,8 @@ function AuthForm(props) {
         <IconButton
           href="https://github.com/daniel-keogh/podcast-player"
           target="_blank"
-          size="large">
+          size="large"
+        >
           <GitHubIcon />
         </IconButton>
       </div>

@@ -1,5 +1,5 @@
 import React from "react";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
 import Divider from "@mui/material/Divider";
@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     overflowX: "clip",
 
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down("sm")]: {
       display: "block",
     },
   },
@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   artworkContainer: {
     alignSelf: "flex-start",
 
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down("sm")]: {
       display: "flex",
       justifyContent: "center",
     },
@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(3),
     alignItems: "center",
 
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down("sm")]: {
       marginLeft: 0,
       marginTop: theme.spacing(4),
       display: "flex",
@@ -94,6 +94,7 @@ function PodcastInfo({
               rel="noreferrer"
               className={classes.author}
               variant="subtitle1"
+              underline="hover"
             >
               {author}
             </Link>
