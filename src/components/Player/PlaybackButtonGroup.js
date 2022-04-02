@@ -1,13 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { makeStyles } from "@material-ui/core";
-import Button from "@material-ui/core/Button";
-import ButtonGroup from "@material-ui/core/ButtonGroup";
+import makeStyles from '@mui/styles/makeStyles';
+import Button from "@mui/material/Button";
+import ButtonGroup from "@mui/material/ButtonGroup";
 
-import PauseCircleFilledIcon from "@material-ui/icons/PauseCircleFilled";
-import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
-import Forward30Icon from "@material-ui/icons/Forward30";
-import Replay30Icon from "@material-ui/icons/Replay30";
+import PauseCircleFilledIcon from "@mui/icons-material/PauseCircleFilled";
+import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
+import Forward30Icon from "@mui/icons-material/Forward30";
+import Replay30Icon from "@mui/icons-material/Replay30";
 
 const useStyles = makeStyles((theme) => ({
   playIcon: {

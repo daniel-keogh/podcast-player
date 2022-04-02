@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
 import PropTypes from "prop-types";
-import { makeStyles } from "@material-ui/core";
-import Box from "@material-ui/core/Box";
-import Slider from "@material-ui/core/Slider";
-import Typography from "@material-ui/core/Typography";
+import makeStyles from '@mui/styles/makeStyles';
+import Box from "@mui/material/Box";
+import Slider from "@mui/material/Slider";
+import Typography from "@mui/material/Typography";
 
 import NowPlayingContext from "@/store/nowPlayingContext";
 

@@ -1,6 +1,6 @@
 import React, { Suspense, useContext, useEffect } from "react";
 import { HashRouter, Route, Switch, Redirect } from "react-router-dom";
-import CssBaseline from "@material-ui/core/CssBaseline";
+import CssBaseline from "@mui/material/CssBaseline";
 import AuthContext from "./store/authContext";
 import NowPlayingContext from "./store/nowPlayingContext";
 import NavBar from "./components/NavBar/NavBar";

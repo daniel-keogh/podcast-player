@@ -1,11 +1,11 @@
 import React from "react";
 
-import Card from "@material-ui/core/Card";
-import CardActionArea from "@material-ui/core/CardActionArea";
-import CardContent from "@material-ui/core/CardContent";
-import Icon from "@material-ui/core/Icon";
-import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core";
+import Card from "@mui/material/Card";
+import CardActionArea from "@mui/material/CardActionArea";
+import CardContent from "@mui/material/CardContent";
+import Icon from "@mui/material/Icon";
+import Typography from "@mui/material/Typography";
+import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles((theme) => ({
   topicContainer: {

@@ -1,9 +1,9 @@
 import React from "react";
-import IconButton from "@material-ui/core/IconButton";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import TextField from "@material-ui/core/TextField";
-import VisibilityIcon from "@material-ui/icons/Visibility";
-import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
+import IconButton from "@mui/material/IconButton";
+import InputAdornment from "@mui/material/InputAdornment";
+import TextField from "@mui/material/TextField";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useToggle } from "@/hooks";
 
 function PasswordInput(props) {
@@ -26,7 +26,7 @@ function PasswordInput(props) {
       InputProps={{
         endAdornment: (
           <InputAdornment position="start">
-            <IconButton onClick={toggleShowPassword}>
+            <IconButton onClick={toggleShowPassword} size="large">
               {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
             </IconButton>
           </InputAdornment>

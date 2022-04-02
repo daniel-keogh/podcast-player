@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { makeStyles } from "@material-ui/core/styles";
-import Box from "@material-ui/core/Box";
-import Container from "@material-ui/core/Container";
-import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
-import AccountCircleIcon from "@material-ui/icons/AccountCircle";
-import AddIcon from "@material-ui/icons/AddBox";
+import makeStyles from '@mui/styles/makeStyles';
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import AddIcon from "@mui/icons-material/AddBox";
 import NavBar from "@/components/NavBar/NavBar";
 import SubscriptionItem from "@/components/Subscriptions/SubscriptionItem";
 import Welcome from "@/components/Subscriptions/Welcome";
@@ -53,7 +53,7 @@ function Subscriptions() {
     <React.Fragment>
       <NavBar title="Subscriptions" hideBackButton>
         <Tooltip title="Add Podcasts">
-          <IconButton edge="end" color="inherit" component={Link} to="/discover">
+          <IconButton edge="end" color="inherit" component={Link} to="/discover" size="large">
             <AddIcon />
           </IconButton>
         </Tooltip>
@@ -65,7 +65,7 @@ function Subscriptions() {
             color="inherit"
             component={Link}
             to="/profile"
-          >
+            size="large">
             <AccountCircleIcon />
           </IconButton>
         </Tooltip>

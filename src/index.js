@@ -7,26 +7,28 @@ import * as serviceWorker from "./serviceWorker";
 import { AuthContextProvider } from "./store/authContext";
 import { NowPlayingContextProvider } from "./store/nowPlayingContext";
 
-import { createTheme, ThemeProvider } from "@material-ui/core/styles";
-import { deepPurple, orange } from "@material-ui/core/colors";
+import { createTheme, ThemeProvider, StyledEngineProvider, adaptV4Theme } from "@mui/material/styles";
+import { deepPurple, orange } from "@mui/material/colors";
 
-const theme = createTheme({
+const theme = createTheme(adaptV4Theme({
   palette: {
     primary: deepPurple,
     secondary: orange,
   },
-});
+}));
 
 const root = createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <AuthContextProvider>
-        <NowPlayingContextProvider>
-          <App />
-        </NowPlayingContextProvider>
-      </AuthContextProvider>
-    </ThemeProvider>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={theme}>
+        <AuthContextProvider>
+          <NowPlayingContextProvider>
+            <App />
+          </NowPlayingContextProvider>
+        </AuthContextProvider>
+      </ThemeProvider>
+    </StyledEngineProvider>
   </React.StrictMode>
 );
 
