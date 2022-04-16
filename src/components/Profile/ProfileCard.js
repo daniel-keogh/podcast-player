@@ -1,4 +1,6 @@
 import React from "react";
+import PropTypes from "prop-types";
+
 import makeStyles from "@mui/styles/makeStyles";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
@@ -8,6 +10,7 @@ import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+
 import moment from "moment";
 
 const useStyles = makeStyles((theme) => ({
@@ -33,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ProfileCard(props) {
+function ProfileCard({ email, registeredSince, onLogout }) {
   const classes = useStyles();
 
   return (
@@ -43,11 +46,11 @@ function ProfileCard(props) {
           <AccountCircleIcon className={classes.avatarIcon} />
         </Avatar>
         <Typography variant="h5" component="h2" noWrap>
-          {props.email}
+          {email}
         </Typography>
-        {props.registeredSince && (
+        {registeredSince && (
           <Typography className={classes.userSince} color="textSecondary" variant="body2" noWrap>
-            Listening since: {moment(props.registeredSince).fromNow()}.
+            Listening since: {moment(registeredSince).fromNow()}.
           </Typography>
         )}
         <Box mt={4}>
@@ -56,7 +59,7 @@ function ProfileCard(props) {
             size="medium"
             className={classes.logoutButton}
             endIcon={<ExitToAppIcon />}
-            onClick={props.onLogout}
+            onClick={onLogout}
           >
             Logout
           </Button>
@@ -65,5 +68,11 @@ function ProfileCard(props) {
     </Card>
   );
 }
+
+ProfileCard.propTypes = {
+  email: PropTypes.string.isRequired,
+  registeredSince: PropTypes.string,
+  onLogout: PropTypes.func.isRequired,
+};
 
 export default ProfileCard;

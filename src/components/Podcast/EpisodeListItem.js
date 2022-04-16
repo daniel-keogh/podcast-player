@@ -1,14 +1,17 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
+
 import IconButton from "@mui/material/IconButton";
 import ListItem from "@mui/material/ListItem";
 import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
 import ListItemText from "@mui/material/ListItemText";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
+
 import EpisodeDialog from "@/components/EpisodeDialog/EpisodeDialog";
 import NowPlayingContext from "@/store/nowPlayingContext";
+import { useDialog } from "@/hooks";
 
 function EpisodeListItem(props) {
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialog, handleOpen, handleClose] = useDialog({});
   const nowPlaying = useContext(NowPlayingContext);
 
   // Play the episode when the play button is clicked, by calling the `playEpisode` function passed as a prop.
@@ -24,7 +27,7 @@ function EpisodeListItem(props) {
 
   return (
     <React.Fragment>
-      <ListItem divider button onClick={() => setDialogOpen(true)}>
+      <ListItem divider button onClick={handleOpen}>
         <ListItemText
           primary={props.episode.title}
           secondary={new Date(props.episode.date).toDateString()}
@@ -35,16 +38,16 @@ function EpisodeListItem(props) {
           </IconButton>
         </ListItemSecondaryAction>
       </ListItem>
-      {dialogOpen && (
+      {dialog.open && (
         <EpisodeDialog
-          open={dialogOpen}
+          open={dialog.open}
           id={props.id}
           podcastTitle={props.podcastTitle}
           episodeTitle={props.episode?.title}
           episodeGuid={props.episode?.guid}
           artwork={props.artwork}
           onPlay={handlePlay}
-          onClose={() => setDialogOpen(false)}
+          onClose={handleClose}
         />
       )}
     </React.Fragment>

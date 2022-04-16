@@ -1,42 +1,33 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Link as RouterLink } from "react-router-dom";
+
 import makeStyles from "@mui/styles/makeStyles";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
+import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import GitHubIcon from "@mui/icons-material/GitHub";
+
 import PasswordInput from "@/components/Auth/PasswordInput";
 import { useAuth, useForm } from "@/hooks";
+import Routes from "@/utils/routes";
 
 const useStyles = makeStyles((theme) => ({
-  paper: {
-    marginTop: theme.spacing(12),
-    marginBottom: theme.spacing(4),
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
   avatar: {
     margin: theme.spacing(2),
-  },
-  form: {
-    marginTop: theme.spacing(4),
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
-  footer: {
-    display: "flex",
-    justifyContent: "center",
-  },
 }));
 
-function AuthForm(props) {
+function AuthForm({ isLogin = false, onAuthorized }) {
   const classes = useStyles();
 
   const { error, login, register } = useAuth();
@@ -50,84 +41,84 @@ function AuthForm(props) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { success } = props.isLogin ? await login(form) : await register(form);
+    const { success } = isLogin ? await login(form) : await register(form);
 
     if (success) {
-      props.onAuthorized();
+      onAuthorized();
     }
   };
 
+  const link = isLogin
+    ? { text: "Don't have an account? Register...", to: Routes.register }
+    : { text: "Already have an account? Login...", to: Routes.login };
+
   return (
     <Container component="main" maxWidth="xs">
-      <div className={classes.paper}>
+      <Box display="flex" flexDirection="column" alignItems="center" mt={12} mb={4}>
         <Avatar className={classes.avatar} src="/logo512.png" alt="Podcast Player" />
         <Typography component="h1" variant="h5">
-          {props.isLogin ? "Welcome Back." : "Create Your Account."}
+          {isLogin ? "Welcome Back." : "Create Your Account."}
         </Typography>
-        <form className={classes.form} onSubmit={handleSubmit}>
-          <TextField
-            autoFocus
-            fullWidth
-            variant="outlined"
-            margin="normal"
-            id="email"
-            name="email"
-            type="email"
-            label="Email Address"
-            onChange={handleFormChanged}
-            value={form.email}
-            error={error.length > 0}
-          />
 
-          <PasswordInput
-            id="password"
-            label="Password"
-            value={form.password}
-            onChange={handleFormChanged}
-            error={error.length > 0}
-            helperText={props.isLogin ? error : ""}
-          />
+        <Box mt={4}>
+          <form className={classes.form} onSubmit={handleSubmit}>
+            <TextField
+              autoFocus
+              fullWidth
+              variant="outlined"
+              margin="normal"
+              id="email"
+              name="email"
+              type="email"
+              label="Email Address"
+              onChange={handleFormChanged}
+              value={form.email}
+              error={error.length > 0}
+            />
 
-          {!props.isLogin ? (
             <PasswordInput
-              id="confirmPassword"
-              label="Confirm Password"
-              value={form.confirmPassword}
+              id="password"
+              label="Password"
+              value={form.password}
               onChange={handleFormChanged}
               error={error.length > 0}
-              helperText={error}
+              helperText={isLogin ? error : ""}
             />
-          ) : null}
 
-          <Button
-            fullWidth
-            disableElevation
-            type="submit"
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
-            {props.isLogin ? "Login" : "Register"}
-          </Button>
+            {!isLogin ? (
+              <PasswordInput
+                id="confirmPassword"
+                label="Confirm Password"
+                value={form.confirmPassword}
+                onChange={handleFormChanged}
+                error={error.length > 0}
+                helperText={error}
+              />
+            ) : null}
 
-          <Grid container justifyContent="flex-end">
-            {props.isLogin ? (
+            <Button
+              fullWidth
+              disableElevation
+              type="submit"
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+            >
+              {isLogin ? "Login" : "Register"}
+            </Button>
+
+            <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link component={RouterLink} to="/auth/register" variant="body2" underline="hover">
-                  Don't have an account? Register...
+                <Link component={RouterLink} to={link.to} variant="body2" underline="hover">
+                  {link.text}
                 </Link>
               </Grid>
-            ) : (
-              <Grid item>
-                <Link component={RouterLink} to="/auth/login" variant="body2" underline="hover">
-                  Already have an account? Login...
-                </Link>
-              </Grid>
-            )}
-          </Grid>
-        </form>
-      </div>
-      <div className={classes.footer}>
+            </Grid>
+          </form>
+        </Box>
+      </Box>
+
+      <Box display="flex" justifyContent="center">
         <IconButton
           href="https://github.com/daniel-keogh/podcast-player"
           target="_blank"
@@ -135,9 +126,14 @@ function AuthForm(props) {
         >
           <GitHubIcon />
         </IconButton>
-      </div>
+      </Box>
     </Container>
   );
 }
+
+AuthForm.propTypes = {
+  isLogin: PropTypes.bool,
+  onAuthorized: PropTypes.func.isRequired,
+};
 
 export default AuthForm;

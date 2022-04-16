@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 import Card from "@mui/material/Card";
 import CardActionArea from "@mui/material/CardActionArea";
@@ -51,5 +52,11 @@ function TopicCard({ title, icon, onClick }) {
     </Card>
   );
 }
+
+TopicCard.propTypes = {
+  title: PropTypes.string.isRequired,
+  icon: PropTypes.node.isRequired,
+  onClick: PropTypes.func.isRequired,
+};
 
 export default TopicCard;

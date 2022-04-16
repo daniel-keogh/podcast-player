@@ -1,5 +1,6 @@
 import React from "react";
-import makeStyles from "@mui/styles/makeStyles";
+import PropTypes from "prop-types";
+
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Divider from "@mui/material/Divider";
@@ -15,15 +16,7 @@ import AuthDialog from "@/components/Profile/AuthDialog";
 import { useDialog } from "@/hooks";
 import { dialogTypes } from "./AuthDialog";
 
-const useStyles = makeStyles((theme) => ({
-  dangerButton: {
-    color: theme.palette.warning.main,
-  },
-}));
-
-function DangerCard(props) {
-  const classes = useStyles();
-
+function AccountCard({ onProfileDeleted, onProfileUpdated }) {
   const [dialog, onDialogOpen, onDialogClose] = useDialog({
     title: "",
     type: "",
@@ -32,9 +25,9 @@ function DangerCard(props) {
 
   const handleDialogSubmit = () => {
     if (dialog.type === dialogTypes.CLOSE_ACCOUNT) {
-      props.onProfileDeleted();
+      onProfileDeleted();
     } else {
-      props.onProfileUpdated();
+      onProfileUpdated();
       onDialogClose();
     }
   };
@@ -53,7 +46,7 @@ function DangerCard(props) {
       message: "Please complete the form to change your password.",
     },
     {
-      icon: <WarningOutlinedIcon className={classes.dangerButton} />,
+      icon: <WarningOutlinedIcon color="warning" />,
       title: "Delete Your Account",
       type: dialogTypes.CLOSE_ACCOUNT,
       message: "Please sign in to confirm.",
@@ -84,4 +77,9 @@ function DangerCard(props) {
   );
 }
 
-export default DangerCard;
+AccountCard.propTypes = {
+  onProfileDeleted: PropTypes.func.isRequired,
+  onProfileUpdated: PropTypes.func.isRequired,
+};
+
+export default AccountCard;

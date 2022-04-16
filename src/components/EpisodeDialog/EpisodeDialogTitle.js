@@ -1,14 +1,16 @@
 import React from "react";
+
 import makeStyles from "@mui/styles/makeStyles";
 import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
 import MuiDialogTitle from "@mui/material/DialogTitle";
+import Skeleton from "@mui/material/Skeleton";
+import Typography from "@mui/material/Typography";
 
 import PlayIcon from "@mui/icons-material/PlayCircleOutline";
-import TimerIcon from "@mui/icons-material/Timer";
+import TimerIcon from "@mui/icons-material/TimerOutlined";
 import CloseIcon from "@mui/icons-material/Close";
 
 import SubscriptionItem from "@/components/Subscriptions/SubscriptionItem";
@@ -91,8 +93,10 @@ function EpisodeDialogTitle({
       <Divider variant="fullWidth" />
 
       <div className={classes.metaContainer}>
-        {date && (
+        {date ? (
           <Chip icon={<TimerIcon />} label={new Date(date).toDateString()} variant="outlined" />
+        ) : (
+          <Skeleton variant="text" width={"135px"} />
         )}
 
         <Button

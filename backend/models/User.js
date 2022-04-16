@@ -33,7 +33,10 @@ const UserSchema = new Schema({
 /** Returns an array of all the feeds the user is subscribed to. */
 UserSchema.statics.findFeedsByUserId = async function (id) {
   const user = await this.findById(id).populate("subscriptions", "feedUrl");
-  return user.subscriptions.map((n) => n.feedUrl);
+  return user.subscriptions.reduce((prev, current) => {
+    prev[current.feedUrl] = current._id;
+    return prev;
+  }, {});
 };
 
 UserSchema.pre("save", async function (next) {

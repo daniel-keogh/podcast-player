@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
@@ -19,7 +20,7 @@ import SportsIcon from "@mui/icons-material/SportsSoccer";
 
 import TopicCard from "./TopicCard";
 
-function TopicsGrid({ onTopicClicked = (e, topic) => {}, ...props }) {
+function TopicsGrid({ onTopicClicked = (e, topic) => {} }) {
   const suggestions = [
     { title: "Books", icon: BooksIcon, color: "#00b0ff" },
     { title: "Business", icon: BusinessIcon, color: "#880e4f" },
@@ -68,5 +69,9 @@ function TopicsGrid({ onTopicClicked = (e, topic) => {}, ...props }) {
     </React.Fragment>
   );
 }
+
+TopicsGrid.propTypes = {
+  onTopicClicked: PropTypes.func.isRequired,
+};
 
 export default TopicsGrid;

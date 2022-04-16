@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+
 import makeStyles from "@mui/styles/makeStyles";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
@@ -7,10 +8,12 @@ import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import AddIcon from "@mui/icons-material/AddBox";
+
 import NavBar from "@/components/NavBar/NavBar";
 import SubscriptionItem from "@/components/Subscriptions/SubscriptionItem";
 import Welcome from "@/components/Subscriptions/Welcome";
 import subscriptionsService from "@/services/subscriptionsService";
+import Routes from "@/utils/routes";
 
 const useStyles = makeStyles((theme) => ({
   menuButton: {
@@ -53,7 +56,7 @@ function Subscriptions() {
     <React.Fragment>
       <NavBar title="Subscriptions" hideBackButton>
         <Tooltip title="Add Podcasts">
-          <IconButton edge="end" color="inherit" component={Link} to="/discover" size="large">
+          <IconButton edge="end" color="inherit" component={Link} to={Routes.discover} size="large">
             <AddIcon />
           </IconButton>
         </Tooltip>
@@ -64,7 +67,7 @@ function Subscriptions() {
             edge="end"
             color="inherit"
             component={Link}
-            to="/profile"
+            to={Routes.profile}
             size="large"
           >
             <AccountCircleIcon />
@@ -72,9 +75,9 @@ function Subscriptions() {
         </Tooltip>
       </NavBar>
 
-      <Container maxWidth="lg">
+      <Container maxWidth="xl">
         {noSubscriptions ? (
-          <Box display={"flex"} justifyContent={"center"} alignItems={"center"}>
+          <Box display="flex" justifyContent="center" alignItems="center">
             <Welcome className={classes.welcome} />
           </Box>
         ) : (

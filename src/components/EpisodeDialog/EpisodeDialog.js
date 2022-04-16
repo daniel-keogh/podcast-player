@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
+import sanitize from "sanitize-html";
+
 import withStyles from "@mui/styles/withStyles";
 import Dialog from "@mui/material/Dialog";
-import Typography from "@mui/material/Typography";
 import MuiDialogContent from "@mui/material/DialogContent";
 import Skeleton from "@mui/material/Skeleton";
+import Typography from "@mui/material/Typography";
 
 import subscriptionsService from "@/services/subscriptionsService";
 import EpisodeDialogTitle from "./EpisodeDialogTitle";
-
-import sanitize from "sanitize-html";
 
 const EpisodeDialogContent = withStyles((theme) => ({
   root: {
@@ -16,6 +16,12 @@ const EpisodeDialogContent = withStyles((theme) => ({
     height: "450px",
   },
 }))(MuiDialogContent);
+
+function SkeletonText({ numLines = 12, linesPerGroup = 4 }) {
+  return Array.from(Array(numLines).keys()).map((i) =>
+    i % (linesPerGroup + 1) === 0 ? <br key={i} /> : <Skeleton variant="text" key={i} />
+  );
+}
 
 function EpisodeDialog({
   open,
@@ -26,7 +32,6 @@ function EpisodeDialog({
   artwork,
   onPlay,
   onClose,
-  ...props
 }) {
   const [episodeInfo, setEpisodeInfo] = useState({
     description: "",
@@ -66,9 +71,7 @@ function EpisodeDialog({
       />
       <EpisodeDialogContent dividers>
         {!episodeInfo.description ? (
-          Array.from(Array(12).keys()).map((i) =>
-            i % 5 === 0 ? <br key={i} /> : <Skeleton variant="text" key={i} />
-          )
+          <SkeletonText />
         ) : (
           <Typography
             gutterBottom

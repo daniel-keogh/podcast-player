@@ -1,30 +1,24 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
+
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
-import List from "@mui/material/List";
 import Tooltip from "@mui/material/Tooltip";
-import Typography from "@mui/material/Typography";
 import RssFeedIcon from "@mui/icons-material/RssFeed";
 
-import DiscoverListItem from "@/components/Discover/DiscoverListItem";
 import FeedFormDialog from "@/components/Discover/FeedFormDialog";
 import NavBar from "@/components/NavBar/NavBar";
-import SearchForm from "@/components/Discover/SearchForm";
 import Popular from "@/components/Discover/Popular";
+import SearchContainer from "@/components/Discover/SearchContainer";
 import TopicsGrid from "@/components/Discover/TopicsGrid";
 
+import withDialog from "@/hoc/withDialog";
 import discoverService from "@/services/discoverService";
+import Routes from "@/utils/routes";
 
 class Discover extends Component {
   state = {
-    dialog: {
-      open: false,
-      error: false,
-      errorMessage: "",
-    },
     newFeed: "",
     noResultsFound: false,
     searchTerm: "",
@@ -64,7 +58,7 @@ class Discover extends Component {
 
         <NavBar title="Discover">
           <Tooltip title="Add an RSS Feed">
-            <IconButton edge="end" color="inherit" onClick={this.handleDialogOpen} size="large">
+            <IconButton edge="end" color="inherit" size="large" onClick={this.props.onDialogOpen}>
               <RssFeedIcon />
             </IconButton>
           </Tooltip>
@@ -72,32 +66,13 @@ class Discover extends Component {
 
         <Container component="main" maxWidth="lg">
           <Box component="section" my={6}>
-            <Typography variant="h5" component="h5">
-              Search for Podcasts
-            </Typography>
-
-            <SearchForm
-              searchLabel="Search Podcasts..."
+            <SearchContainer
               searchTerm={this.state.searchTerm}
-              onFormChange={this.handleFormChange}
-              onSubmit={this.handleSearch}
+              searchResults={this.state.searchResults.filter((item) => !!item.feedUrl)}
+              noResultsFound={this.state.noResultsFound}
+              onChange={this.handleFormChange}
+              onSearch={this.handleSearch}
             />
-
-            <Divider />
-
-            {/* Show the search results list, or the NoResultsFound component if there were no results. */}
-            {!this.state.noResultsFound ? (
-              <List>
-                {this.state.searchResults.map((item) => (
-                  <DiscoverListItem {...item} key={item.feedUrl} />
-                ))}
-              </List>
-            ) : (
-              <Box textAlign={"center"} p={7}>
-                <Typography variant="h6">No Results Found...</Typography>
-                <Typography variant="body2">Please Try Again.</Typography>
-              </Box>
-            )}
           </Box>
 
           <Box component="section" my={6}>
@@ -109,9 +84,9 @@ class Discover extends Component {
           </Box>
 
           <FeedFormDialog
-            {...this.state.dialog}
-            onDialogOpen={this.handleDialogOpen}
-            onDialogClose={this.handleDialogClose}
+            {...this.props.dialog}
+            onDialogOpen={this.props.onDialogOpen}
+            onDialogClose={this.props.onDialogClose}
             onFormChange={this.handleFormChange}
             onSubscribe={this.handleSubscribeFromFeed}
           />
@@ -129,50 +104,25 @@ class Discover extends Component {
   handleSearch = async (e, value) => {
     e.preventDefault();
 
-    // Search for the query entered into the search box.
     if (value) {
-      this.state.searchTerm = value;
+      this.setState({ searchTerm: value }, this.search);
+    } else {
+      this.search();
     }
 
-    await this.search();
-
-    this.topRef.current.scrollIntoView();
+    this.topRef.current.scrollIntoView({
+      behavior: "smooth",
+    });
   };
 
   // Post the RSS feed entered in the dialog box to the server.
   handleSubscribeFromFeed = async () => {
     try {
       await discoverService.subscribeFromFeed(this.state.newFeed);
-      this.handleDialogClose();
+      this.props.onDialogClose();
     } catch (err) {
-      this.setState({
-        dialog: {
-          open: true,
-          error: true,
-          errorMessage: err.message,
-        },
-      });
+      this.props.onDialogError(err);
     }
-  };
-
-  handleDialogOpen = () => {
-    this.setState({
-      dialog: {
-        error: false,
-        open: true,
-        errorMessage: "",
-      },
-    });
-  };
-
-  handleDialogClose = () => {
-    this.setState({
-      dialog: {
-        error: false,
-        open: false,
-        errorMessage: "",
-      },
-    });
   };
 
   search = async () => {
@@ -190,11 +140,13 @@ class Discover extends Component {
         noResultsFound: true,
       });
     } finally {
-      if (window.location.hash !== "#/rate_limit") {
-        this.props.history.replace(`/discover?term=${encodeURIComponent(this.state.searchTerm)}`);
+      if (window.location.hash !== `#${Routes.rateLimit}`) {
+        this.props.history.replace(
+          `${Routes.discover}?term=${encodeURIComponent(this.state.searchTerm)}`
+        );
       }
     }
   };
 }
 
-export default withRouter(Discover);
+export default withRouter(withDialog(Discover));

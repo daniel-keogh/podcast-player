@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import PropTypes from "prop-types";
+
 import makeStyles from "@mui/styles/makeStyles";
 import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
@@ -15,7 +16,7 @@ const useStyles = makeStyles({
   },
 });
 
-function SeekBar({ currentTime, duration, onSliderChange, ...props }) {
+function SeekBar({ currentTime, duration, onSliderChange }) {
   const classes = useStyles();
   const { epTitle, podTitle } = useContext(NowPlayingContext);
 
@@ -44,6 +45,7 @@ function SeekBar({ currentTime, duration, onSliderChange, ...props }) {
             label: formatSeconds(duration),
           },
         ]}
+        size="small"
         onChange={onSliderChange}
       />
     </Box>

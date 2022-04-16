@@ -1,5 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
+
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
@@ -17,7 +19,7 @@ export const dialogTypes = {
   CLOSE_ACCOUNT: "CLOSE_ACCOUNT",
 };
 
-function AuthDialog({ type, title, message, open, onSubmit, onCancel, ...props }) {
+function AuthDialog({ type, title, message, open, onSubmit, onCancel }) {
   const changeEmail = type === dialogTypes.CHANGE_EMAIL;
   const changePassword = type === dialogTypes.CHANGE_PASSWORD;
   const closeAccount = type === dialogTypes.CLOSE_ACCOUNT;
@@ -57,53 +59,54 @@ function AuthDialog({ type, title, message, open, onSubmit, onCancel, ...props }
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         <DialogContentText>{message}</DialogContentText>
-
-        {changeEmail || closeAccount ? (
-          <TextField
-            autoFocus
-            fullWidth
-            margin="normal"
-            variant="outlined"
-            id="email"
-            name="email"
-            type="email"
-            label="Email Address"
-            onChange={handleFormChanged}
-            value={form.email}
-            error={error.length > 0}
-            helperText={changeEmail ? error : ""}
-          />
-        ) : null}
-        {changePassword ? (
-          <PasswordInput
-            autoFocus
-            id="oldPassword"
-            label="Old Password"
-            value={form.oldPassword}
-            onChange={handleFormChanged}
-            error={error.length > 0}
-          />
-        ) : null}
-        {changePassword || closeAccount ? (
-          <PasswordInput
-            id="password"
-            label={`${changePassword ? "New " : ""}Password`}
-            value={form.password}
-            onChange={handleFormChanged}
-            error={error.length > 0}
-            helperText={closeAccount ? error : ""}
-          />
-        ) : null}
-        {changePassword ? (
-          <PasswordInput
-            id="confirmPassword"
-            label="Confirm Password"
-            value={form.confirmPassword}
-            onChange={handleFormChanged}
-            error={error.length > 0}
-            helperText={error}
-          />
-        ) : null}
+        <Box mt={2}>
+          {changeEmail || closeAccount ? (
+            <TextField
+              autoFocus
+              fullWidth
+              margin="normal"
+              variant="outlined"
+              id="email"
+              name="email"
+              type="email"
+              label="Email Address"
+              onChange={handleFormChanged}
+              value={form.email}
+              error={error.length > 0}
+              helperText={changeEmail ? error : ""}
+            />
+          ) : null}
+          {changePassword ? (
+            <PasswordInput
+              autoFocus
+              id="oldPassword"
+              label="Old Password"
+              value={form.oldPassword}
+              onChange={handleFormChanged}
+              error={error.length > 0}
+            />
+          ) : null}
+          {changePassword || closeAccount ? (
+            <PasswordInput
+              id="password"
+              label={`${changePassword ? "New " : ""}Password`}
+              value={form.password}
+              onChange={handleFormChanged}
+              error={error.length > 0}
+              helperText={closeAccount ? error : ""}
+            />
+          ) : null}
+          {changePassword ? (
+            <PasswordInput
+              id="confirmPassword"
+              label="Confirm Password"
+              value={form.confirmPassword}
+              onChange={handleFormChanged}
+              error={error.length > 0}
+              helperText={error}
+            />
+          ) : null}
+        </Box>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleCancel} color="primary">

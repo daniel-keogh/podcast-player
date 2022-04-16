@@ -1,56 +1,59 @@
 import React from "react";
-import makeStyles from "@mui/styles/makeStyles";
+import PropTypes from "prop-types";
+
+import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
+import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    marginTop: theme.spacing(3),
-  },
-}));
+import DiscoverListItem from "@/components/Discover/DiscoverListItem";
+import SearchForm from "@/components/Discover/SearchForm";
 
-function SearchContainer(props) {
-  const classes = useStyles();
-
-  const handleFormChange = (event) => {
-    this.setState({
-      [event.target.name]: event.target.value,
-    });
-  };
-
-  const handleSearch = (e) => {
-    // Search for the query entered into the search box.
-    this.search();
-    e.preventDefault();
-  };
-
+function SearchContainer({
+  searchTerm,
+  searchResults,
+  noResultsFound = false,
+  onChange,
+  onSearch,
+}) {
   return (
-    <div className={classes.root}>
+    <React.Fragment>
       <Typography variant="h5" component="h5">
         Search
       </Typography>
 
       <SearchForm
         searchLabel="Search Podcasts..."
-        searchTerm={props.searchTerm}
-        onFormChange={handleFormChange}
-        onSubmit={handleSearch}
+        searchTerm={searchTerm}
+        onFormChange={onChange}
+        onSubmit={onSearch}
       />
 
-      <Divider />
+      <Divider variant="middle" />
 
       {/* Show the search results list, or the NoResultsFound component if there were no results. */}
-      {!this.state.noResultsFound ? (
+      {!noResultsFound ? (
         <List>
-          {this.state.searchResults.map((item) => (
+          {searchResults.map((item) => (
             <DiscoverListItem {...item} key={item.feedUrl} />
           ))}
         </List>
       ) : (
-        <NoResultsFound />
+        <Box textAlign={"center"} p={7}>
+          <Typography variant="h6">No Results Found...</Typography>
+          <Typography variant="body2">Please Try Again.</Typography>
+        </Box>
       )}
-    </div>
+    </React.Fragment>
   );
 }
+
+SearchContainer.propTypes = {
+  searchTerm: PropTypes.string.isRequired,
+  searchResults: PropTypes.array.isRequired,
+  noResultsFound: PropTypes.bool,
+  onChange: PropTypes.func.isRequired,
+  onSearch: PropTypes.func.isRequired,
+};
 
 export default SearchContainer;

@@ -11,13 +11,22 @@ exports.search = (req, res, next) => {
       fetch(`https://itunes.apple.com/search?${term}&${limit}&entity=podcast`)
         .then((data) => data.json())
         .then((data) => {
-          const results = data.results.map((result) => ({
-            title: result.collectionName,
-            author: result.artistName,
-            artwork: result.artworkUrl100,
-            feedUrl: result.feedUrl,
-            isSubscribed: feeds.indexOf(result.feedUrl) !== -1,
-          }));
+          const results = [];
+          const set = new Set();
+
+          for (const result of data.results) {
+            if (!set.has(result.feedUrl)) {
+              set.add(result.feedUrl);
+
+              results.push({
+                title: result.collectionName,
+                author: result.artistName,
+                artwork: result.artworkUrl100,
+                feedUrl: result.feedUrl,
+                subscriptionId: feeds[result.feedUrl],
+              });
+            }
+          }
 
           res.status(200).json({ results });
         });

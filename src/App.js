@@ -1,34 +1,26 @@
-import React, { Suspense, useContext, useEffect } from "react";
+import React, { Suspense, useContext } from "react";
 import { HashRouter, Route, Switch, Redirect } from "react-router-dom";
+
 import CssBaseline from "@mui/material/CssBaseline";
-import AuthContext from "./store/authContext";
-import NowPlayingContext from "./store/nowPlayingContext";
-import NavBar from "./components/NavBar/NavBar";
-import Player from "./components/Player/Player";
 import "./App.css";
 
+import AuthContext from "./store/authContext";
+import NavBar from "./components/NavBar/NavBar";
+import PlayerContainer from "./components/Player/PlayerContainer";
+import Routes from "./utils/routes";
+
 const Auth = React.lazy(() => import("./components/Auth/Auth"));
-const Error = React.lazy(() => import("./components/Error/Error"));
 const Discover = React.lazy(() => import("./components/Discover/Discover"));
+const Error = React.lazy(() => import("./components/Error/Error"));
 const Podcast = React.lazy(() => import("./components/Podcast/Podcast"));
 const Profile = React.lazy(() => import("./components/Profile/Profile"));
 const Subscriptions = React.lazy(() => import("./components/Subscriptions/Subscriptions"));
 
 function App() {
-  const nowPlaying = useContext(NowPlayingContext);
   const auth = useContext(AuthContext);
 
-  useEffect(() => {
-    // Set the page title based on what's playing
-    if (auth.isAuthorized && nowPlaying.epTitle && nowPlaying.podTitle) {
-      document.title = `${nowPlaying.epTitle} | ${nowPlaying.podTitle} \u00b7 Podcast Player`;
-    } else {
-      document.title = "Podcast Player";
-    }
-  }, [auth.isAuthorized, nowPlaying.epTitle, nowPlaying.podTitle]);
-
   const rateLimit = (
-    <Route path="/rate_limit">
+    <Route path={Routes.rateLimit}>
       <Error heading="Too Many Requests!" message={"Please wait a while & try that again later."} />
     </Route>
   );
@@ -42,51 +34,46 @@ function App() {
             {!auth.isAuthorized ? (
               <Suspense fallback={<></>}>
                 <Switch>
-                  <Route path="/auth">
+                  <Route path={Routes.auth}>
                     <Auth />
                   </Route>
                   {rateLimit}
                   <Route path="/">
-                    <Redirect to="/auth" />
+                    <Redirect to={Routes.auth} />
                   </Route>
                   <Route path="*">
-                    <Redirect to="/auth" />
+                    <Redirect to={Routes.auth} />
                   </Route>
                 </Switch>
               </Suspense>
             ) : (
               <Suspense fallback={<NavBar />}>
                 <Switch>
-                  <Route path="/subscriptions">
+                  <Route path={Routes.subscriptions}>
                     <Subscriptions />
                   </Route>
-                  <Route path="/discover">
+                  <Route path={Routes.discover}>
                     <Discover />
                   </Route>
-                  <Route path="/profile">
+                  <Route path={Routes.profile}>
                     <Profile />
                   </Route>
-                  <Route path="/podcast/:id">
+                  <Route path={`${Routes.podcast}/:id`}>
                     <Podcast />
                   </Route>
                   {rateLimit}
                   <Route path="/">
-                    <Redirect to="/subscriptions" />
+                    <Redirect to={Routes.subscriptions} />
                   </Route>
                   <Route path="*">
-                    <Redirect to="/subscriptions" />
+                    <Redirect to={Routes.subscriptions} />
                   </Route>
                 </Switch>
               </Suspense>
             )}
           </div>
         </div>
-        <div
-          className="player"
-          style={!auth.isAuthorized || nowPlaying.src === "" ? { display: "none" } : null}
-        >
-          <Player />
-        </div>
+        <PlayerContainer className="player" />
       </div>
     </HashRouter>
   );

@@ -1,7 +1,7 @@
 import axios from "@/config/axios";
 
 class DiscoverService {
-  async getPopular(limit = 7) {
+  async getPopular(limit = 14) {
     const response = await axios.get(`/api/popular?limit=${limit}`);
     return response.data.results;
   }
@@ -20,6 +20,12 @@ class DiscoverService {
     } else {
       return response.data.results;
     }
+  }
+
+  async subscribe(feedUrl) {
+    return axios.post(`/api/subscriptions`, {
+      feedUrl,
+    });
   }
 
   async subscribeFromFeed(feedUrl) {

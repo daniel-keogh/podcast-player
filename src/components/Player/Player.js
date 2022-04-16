@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+
 import PlayerControls from "@/components/Player/PlayerControls";
 import NowPlayingContext from "@/store/nowPlayingContext";
 
@@ -27,6 +28,12 @@ class Player extends Component {
     window.removeEventListener("beforeunload", this.savePlaybackProgress);
   }
 
+  componentDidUpdate() {
+    if (this.audioElement.current && !this.audioElement.current.paused && !this.context.src) {
+      this.audioElement.current.pause();
+    }
+  }
+
   render() {
     return (
       <React.Fragment>
@@ -42,7 +49,7 @@ class Player extends Component {
         <audio
           preload="metadata"
           autoPlay={this.context.autoplay}
-          src={this.context.src || ""}
+          src={this.context.src || null}
           onLoadedMetadata={this.handleMetadataLoaded}
           onTimeUpdate={this.handleTimeUpdate}
           ref={this.audioElement}
@@ -53,9 +60,7 @@ class Player extends Component {
 
   handlePlayPauseClicked = () => {
     if (this.audioElement.current.paused) {
-      this.audioElement.current.play().catch((e) => {
-        console.error(e.message);
-      });
+      this.audioElement.current.play().catch(console.error);
     } else {
       if (!Number.isNaN(this.state.duration)) {
         this.audioElement.current.pause();

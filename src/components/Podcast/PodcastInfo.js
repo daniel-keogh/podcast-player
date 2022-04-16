@@ -1,4 +1,6 @@
 import React from "react";
+import PropTypes from "prop-types";
+
 import makeStyles from "@mui/styles/makeStyles";
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
@@ -73,13 +75,12 @@ function PodcastInfo({
   subscriberCount,
   description,
   onSubscribe,
-  ...props
 }) {
   const classes = useStyles();
 
   return (
     <React.Fragment>
-      <Box px={2} py={4} mx={"auto"} my={4}>
+      <Box px={2} py={4} mx="auto" my={4}>
         <div className={classes.podcastInfo}>
           <div className={classes.artworkContainer}>
             <SubscriptionItem artwork={artwork} />
@@ -121,7 +122,7 @@ function PodcastInfo({
             </Box>
           </div>
         </div>
-        <Box mt={6} mb={2}>
+        <Box mt={6}>
           <Typography variant="body1" color="textPrimary" component="p">
             {description}
           </Typography>
@@ -131,5 +132,16 @@ function PodcastInfo({
     </React.Fragment>
   );
 }
+
+PodcastInfo.propTypes = {
+  artwork: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  link: PropTypes.string.isRequired,
+  author: PropTypes.string.isRequired,
+  isSubscribed: PropTypes.bool.isRequired,
+  subscriberCount: PropTypes.number.isRequired,
+  description: PropTypes.string.isRequired,
+  onSubscribe: PropTypes.func.isRequired,
+};
 
 export default PodcastInfo;

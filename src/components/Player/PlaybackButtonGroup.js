@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function PlaybackButtonGroup({ isPaused, onForward, onReplay, onPlayPauseClicked, ...props }) {
+function PlaybackButtonGroup({ isPaused, onForward, onReplay, onPlayPauseClicked }) {
   const classes = useStyles();
 
   const PIcon = isPaused ? PlayCircleFilledIcon : PauseCircleFilledIcon;

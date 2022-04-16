@@ -1,5 +1,7 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { useHistory } from "react-router-dom";
+
 import makeStyles from "@mui/styles/makeStyles";
 import AppBar from "@mui/material/AppBar";
 import LinearProgress from "@mui/material/LinearProgress";
@@ -18,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function NavBar(props) {
+function NavBar({ title, hideBackButton = false, isLoading = false, ...props }) {
   const classes = useStyles();
   const history = useHistory();
 
@@ -26,26 +28,34 @@ function NavBar(props) {
     <AppBar position="sticky">
       <Toolbar>
         {/* Only show the back button if the history prop was passed to this component. */}
-        {!props.hideBackButton && history ? (
+        {!hideBackButton && history ? (
           <IconButton
             className={classes.backButton}
             edge="start"
             color="inherit"
-            onClick={history.goBack}
             size="large"
+            onClick={history.goBack}
           >
             <ArrowBackIcon />
           </IconButton>
         ) : null}
+
         <Typography variant="h6" className={classes.title} noWrap>
-          {props.title}
+          {title}
         </Typography>
+
         {/* Any buttons that go at the end of the NavBar should be passed as children. */}
         {props.children}
       </Toolbar>
-      {props.isLoading && <LinearProgress color="secondary" />}
+      {isLoading && <LinearProgress color="secondary" />}
     </AppBar>
   );
 }
+
+NavBar.propTypes = {
+  title: PropTypes.string,
+  hideBackButton: PropTypes.bool,
+  isLoading: PropTypes.bool,
+};
 
 export default NavBar;

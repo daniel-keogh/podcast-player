@@ -1,15 +1,18 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
+
 import makeStyles from "@mui/styles/makeStyles";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
+
 import NavBar from "@/components/NavBar/NavBar";
 import AuthContext from "@/store/authContext";
 import NowPlayingContext from "@/store/nowPlayingContext";
 import authService from "@/services/authService";
-import DangerCard from "./DangerCard";
+import AccountCard from "./AccountCard";
 import ProfileCard from "./ProfileCard";
+import Routes from "@/utils/routes";
 
 const useStyles = makeStyles((theme) => ({
   sectionTitle: {
@@ -32,22 +35,19 @@ function Profile() {
   useEffect(() => {
     if (!authContext.userId) return;
 
-    authService.getProfile(authContext.userId).then((user) => {
+    (async () => {
+      const user = await authService.getProfile(authContext.userId);
       const { email, registeredSince } = user;
 
-      setProfileInfo({
-        email,
-        registeredSince,
-      });
-
+      setProfileInfo({ email, registeredSince });
       setProfileUpdated(false);
-    });
+    })();
   }, [authContext.userId, profileUpdated]);
 
   const handleLogout = () => {
     nowPlayingContext.stop();
     authContext.logout();
-    history.replace("/auth");
+    history.replace(Routes.auth);
   };
 
   return (
@@ -66,9 +66,9 @@ function Profile() {
         </Box>
         <Box my={5}>
           <Typography variant="h5" component="h5" className={classes.sectionTitle}>
-            Security
+            Account
           </Typography>
-          <DangerCard
+          <AccountCard
             onProfileUpdated={() => setProfileUpdated(true)}
             onProfileDeleted={handleLogout}
           />
