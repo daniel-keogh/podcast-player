@@ -6,8 +6,8 @@ const Routes = {
   discover: "/discover",
   profile: "/profile",
   history: "/history",
+  favourites: "/favourites",
   podcast: "/podcast",
-  rateLimit: "/rate_limit",
 };
 
 export default Routes;

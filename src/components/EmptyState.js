@@ -85,8 +85,8 @@ function EmptyState({ title, subtitle, cta, to, emptyState, onClick, fullPage = 
 }
 
 EmptyState.propTypes = {
-  cta: PropTypes.string.isRequired,
-  emptyState: PropTypes.string.isRequired,
+  cta: PropTypes.string,
+  emptyState: PropTypes.oneOf(Object.values(EmptyStates)).isRequired,
   fullPage: PropTypes.bool,
   subtitle: PropTypes.string,
   title: PropTypes.string.isRequired,

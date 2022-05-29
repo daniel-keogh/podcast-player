@@ -1,23 +1,25 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
+import Avatar from "@mui/material/Avatar";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
 import IconButton from "@mui/material/IconButton";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
 import ListItemText from "@mui/material/ListItemText";
-import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
-import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
+import FadeTransition from "@mui/material/Fade";
 
 import GraphicEqIcon from "@mui/icons-material/GraphicEq";
 import StarIcon from "@mui/icons-material/Star";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
+import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
+import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
 
 import EpisodeDialog from "@/components/EpisodeDialog/EpisodeDialog";
 import NowPlayingContext from "@/store/nowPlayingContext";
 import { useDialog } from "@/hooks";
 import historyService from "@/services/historyService";
-import { Avatar, ListItemAvatar } from "@mui/material";
 
 function EpisodeListItem({
   podcastId,
@@ -64,9 +66,9 @@ function EpisodeListItem({
     podcastTitle,
   ]);
 
-  const handlePause = () => {
-    // nowPlaying.togglePause(true);
-  };
+  const handlePause = useCallback(() => {
+    nowPlaying.togglePause(true);
+  }, []);
 
   const handleFavourite = useCallback(async () => {
     await historyService.addEpisodeToHistory({
@@ -79,12 +81,12 @@ function EpisodeListItem({
     setIsFavourited((state) => !state);
   }, [episode.audioUrl, episode.audio, episode.title, episode.guid, podcastId, isFavourited]);
 
-  const handleItemClicked = () => {
+  const handleItemClicked = useCallback(() => {
     if (starVisibility) {
       setStarVisibility(false);
     }
     handleOpen();
-  };
+  }, [starVisibility]);
 
   return (
     <div onMouseEnter={() => setStarVisibility(true)} onMouseLeave={() => setStarVisibility(false)}>
@@ -94,9 +96,11 @@ function EpisodeListItem({
             <Avatar src={artwork} variant="square" />
           </ListItemAvatar>
         ) : isPlaying ? (
-          <ListItemIcon>
-            <GraphicEqIcon color="primary" />
-          </ListItemIcon>
+          <FadeTransition in={isPlaying}>
+            <ListItemIcon>
+              <GraphicEqIcon color="primary" />
+            </ListItemIcon>
+          </FadeTransition>
         ) : null}
 
         <ListItemText
@@ -110,11 +114,11 @@ function EpisodeListItem({
           }}
         />
         <ListItemSecondaryAction>
-          {(starVisibility || isFavourited) && (
+          <FadeTransition in={starVisibility || isFavourited}>
             <IconButton edge="start" color="secondary" onClick={handleFavourite} size="large">
               {isFavourited ? <StarIcon /> : <StarBorderIcon />}
             </IconButton>
-          )}
+          </FadeTransition>
           {isPlaying && !nowPlaying.isPaused ? (
             <IconButton edge="end" color="primary" onClick={handlePause} size="large">
               <PauseCircleOutlineIcon />

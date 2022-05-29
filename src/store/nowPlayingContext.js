@@ -9,7 +9,7 @@ const NowPlayingContext = React.createContext({
   podcastArtwork: "",
   progress: 0,
   autoplay: false,
-  isPaused: false,
+  isPaused: true,
   playEpisode: ({
     audioUrl,
     episodeTitle,
@@ -40,7 +40,7 @@ export function NowPlayingContextProvider(props) {
     podcastArtwork: podcastArtwork || "",
     progress: progress || 0,
     autoplay: false,
-    isPaused: false,
+    isPaused: true,
   });
 
   const playEpisode = ({
@@ -51,7 +51,7 @@ export function NowPlayingContextProvider(props) {
     podcastId,
     podcastArtwork,
   }) => {
-    setNowPlaying({
+    const common = {
       audioUrl,
       episodeTitle,
       episodeGuid,
@@ -59,22 +59,15 @@ export function NowPlayingContextProvider(props) {
       podcastId,
       podcastArtwork,
       progress: 0,
+    };
+
+    setNowPlaying({
+      ...common,
       autoplay: true,
       isPaused: false,
     });
 
-    localStorage.setItem(
-      NOW_PLAYING_KEY,
-      JSON.stringify({
-        audioUrl,
-        episodeTitle,
-        episodeGuid,
-        podcastTitle,
-        podcastId,
-        podcastArtwork,
-        progress: 0,
-      })
-    );
+    localStorage.setItem(NOW_PLAYING_KEY, JSON.stringify(common));
   };
 
   const stop = () => {

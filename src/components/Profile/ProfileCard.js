@@ -7,7 +7,9 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
+import Skeleton from "@mui/material/Skeleton";
 import Typography from "@mui/material/Typography";
+
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
@@ -31,10 +33,13 @@ const useStyles = makeStyles((theme) => ({
     width: theme.spacing(10),
     height: theme.spacing(10),
   },
-  logoutButton: {
-    color: theme.palette.warning.main,
-  },
 }));
+
+const SkeletonText = ({ width = 250 }) => (
+  <Box sx={{ width }}>
+    <Skeleton />
+  </Box>
+);
 
 function ProfileCard({ email, registeredSince, onLogout }) {
   const classes = useStyles();
@@ -45,22 +50,22 @@ function ProfileCard({ email, registeredSince, onLogout }) {
         <Avatar className={classes.avatar}>
           <AccountCircleIcon className={classes.avatarIcon} />
         </Avatar>
-        <Typography variant="h5" component="h2" noWrap>
-          {email}
-        </Typography>
-        {registeredSince && (
+        {email ? (
+          <Typography variant="h5" component="h2" noWrap>
+            {email}
+          </Typography>
+        ) : (
+          <SkeletonText />
+        )}
+        {registeredSince ? (
           <Typography className={classes.userSince} color="textSecondary" variant="body2" noWrap>
             Listening since: {moment(registeredSince).fromNow()}.
           </Typography>
+        ) : (
+          <SkeletonText />
         )}
-        <Box mt={4}>
-          <Button
-            variant="outlined"
-            size="medium"
-            className={classes.logoutButton}
-            endIcon={<ExitToAppIcon />}
-            onClick={onLogout}
-          >
+        <Box mt={3}>
+          <Button variant="outlined" size="medium" endIcon={<ExitToAppIcon />} onClick={onLogout}>
             Logout
           </Button>
         </Box>

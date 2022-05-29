@@ -42,19 +42,17 @@ class Player extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.audioElement.current && !this.audioElement.current.paused && !this.context.audioUrl) {
+    if (!this.isAudioElementPaused() && !this.context.audioUrl) {
       this.audioElement.current.pause();
     }
 
     if (this.props.isPaused !== prevProps.isPaused) {
-      if (this.audioElement.current && this.audioElement.current.paused) {
-        if (this.props.isPaused) {
-          if (!Number.isNaN(this.state.duration)) {
-            this.audioElement.current.pause();
-          }
-        } else {
-          this.audioElement.current.play().catch(console.error);
+      if (this.props.isPaused) {
+        if (!Number.isNaN(this.state.duration)) {
+          this.audioElement.current.pause();
         }
+      } else {
+        this.audioElement.current.play().catch(console.error);
       }
     }
   }
@@ -65,7 +63,7 @@ class Player extends Component {
         <PlayerControls
           currentTime={this.state.currentTime}
           duration={this.state.duration}
-          isPaused={this.audioElement.current ? this.audioElement.current.paused : true}
+          isPaused={this.isAudioElementPaused()}
           onReplay={this.handleReplay}
           onForward={this.handleForward}
           onPlayPauseClicked={this.handlePlayPauseClicked}
@@ -84,13 +82,13 @@ class Player extends Component {
   }
 
   handlePlayPauseClicked = () => {
-    if (this.audioElement.current.paused) {
+    if (this.isAudioElementPaused()) {
       this.audioElement.current.play().catch(console.error);
-      // this.context.togglePause(false);
+      this.context.togglePause(false);
     } else {
       if (!Number.isNaN(this.state.duration)) {
         this.audioElement.current.pause();
-        // this.context.togglePause(true);
+        this.context.togglePause(true);
       }
     }
   };
@@ -141,9 +139,13 @@ class Player extends Component {
   };
 
   updateHistory = () => {
-    if (this.audioElement.current && !this.audioElement.current.paused) {
+    if (!this.isAudioElementPaused()) {
       this.props.onUpdateHistory(this.state.currentTime, this.state.duration);
     }
+  };
+
+  isAudioElementPaused = () => {
+    return this.audioElement.current ? this.audioElement.current.paused : true;
   };
 }
 
