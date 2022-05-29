@@ -68,7 +68,8 @@ function Subscriptions() {
           <EmptyState
             emptyState={EmptyStates.NOT_FOUND}
             title="There's nothing here..."
-            cta="Add some podcasts"
+            subtitle="Click below to add some podcasts."
+            cta="Discover"
             to={Routes.discover}
           />
         ) : (
