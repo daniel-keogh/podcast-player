@@ -46,10 +46,6 @@ instance.interceptors.response.use(
       }
     }
 
-    if (err?.response?.status === 429) {
-      window.location.href = `/#${Routes.rateLimit}`;
-    }
-
     return Promise.reject(err);
   }
 );

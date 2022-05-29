@@ -40,21 +40,18 @@ function EpisodeDialog({
 
   useEffect(() => {
     if (open) {
-      subscriptionsService
-        .getEpisodeByGuid(id, episodeGuid)
-        .then((data) => {
-          let description = sanitize(data.episode.description);
+      subscriptionsService.getEpisodeByGuid(id, episodeGuid).then((data) => {
+        let description = sanitize(data.episode.description);
 
-          if (description === "undefined") {
-            description = "Failed to load episode description.";
-          }
+        if (description === "undefined") {
+          description = "Failed to load episode description.";
+        }
 
-          setEpisodeInfo({
-            date: data.episode.date,
-            description,
-          });
-        })
-        .catch(console.error);
+        setEpisodeInfo({
+          date: data.episode.date,
+          description,
+        });
+      });
     }
   }, [open, id, episodeGuid]);
 

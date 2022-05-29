@@ -5,6 +5,7 @@ const Routes = {
   subscriptions: "/subscriptions",
   discover: "/discover",
   profile: "/profile",
+  history: "/history",
   podcast: "/podcast",
   rateLimit: "/rate_limit",
 };

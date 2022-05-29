@@ -82,7 +82,7 @@ function EpisodeDialogTitle({
     <MuiDialogTitle className={classes.root} {...props}>
       <div className={classes.headerContainer}>
         <div className={classes.headerArtwork}>
-          <SubscriptionItem id={id} title={podcastTitle} artwork={artwork} />
+          <SubscriptionItem id={id} title={podcastTitle} artwork={artwork} clickable />
         </div>
         <div className={classes.headerTitle}>
           <Typography variant="h6">{episodeTitle}</Typography>

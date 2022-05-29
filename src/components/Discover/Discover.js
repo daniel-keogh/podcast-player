@@ -20,9 +20,9 @@ import Routes from "@/utils/routes";
 class Discover extends Component {
   state = {
     newFeed: "",
-    noResultsFound: false,
     searchTerm: "",
     searchResults: [],
+    noResultsFound: false,
   };
 
   constructor(props) {
@@ -56,9 +56,9 @@ class Discover extends Component {
       <React.Fragment>
         <div id="top" ref={this.topRef}></div>
 
-        <NavBar title="Discover">
+        <NavBar title="Discover" showMoreMenu>
           <Tooltip title="Add an RSS Feed">
-            <IconButton edge="end" color="inherit" size="large" onClick={this.props.onDialogOpen}>
+            <IconButton edge="start" color="inherit" size="large" onClick={this.props.onDialogOpen}>
               <RssFeedIcon />
             </IconButton>
           </Tooltip>
@@ -68,7 +68,7 @@ class Discover extends Component {
           <Box component="section" my={6}>
             <SearchContainer
               searchTerm={this.state.searchTerm}
-              searchResults={this.state.searchResults.filter((item) => !!item.feedUrl)}
+              searchResults={this.state.searchResults}
               noResultsFound={this.state.noResultsFound}
               onChange={this.handleFormChange}
               onSearch={this.handleSearch}
@@ -85,7 +85,6 @@ class Discover extends Component {
 
           <FeedFormDialog
             {...this.props.dialog}
-            onDialogOpen={this.props.onDialogOpen}
             onDialogClose={this.props.onDialogClose}
             onFormChange={this.handleFormChange}
             onSubscribe={this.handleSubscribeFromFeed}
@@ -117,11 +116,13 @@ class Discover extends Component {
 
   // Post the RSS feed entered in the dialog box to the server.
   handleSubscribeFromFeed = async () => {
+    const { onDialogClose, onDialogError } = this.props;
+
     try {
       await discoverService.subscribeFromFeed(this.state.newFeed);
-      this.props.onDialogClose();
+      onDialogClose();
     } catch (err) {
-      this.props.onDialogError(err);
+      onDialogError(err);
     }
   };
 
@@ -132,7 +133,7 @@ class Discover extends Component {
       const results = await discoverService.search(this.state.searchTerm);
 
       this.setState({
-        searchResults: results,
+        searchResults: results.filter((item) => !!item.feedUrl),
         noResultsFound: false,
       });
     } catch (err) {
@@ -140,11 +141,9 @@ class Discover extends Component {
         noResultsFound: true,
       });
     } finally {
-      if (window.location.hash !== `#${Routes.rateLimit}`) {
-        this.props.history.replace(
-          `${Routes.discover}?term=${encodeURIComponent(this.state.searchTerm)}`
-        );
-      }
+      this.props.history.replace(
+        `${Routes.discover}?term=${encodeURIComponent(this.state.searchTerm)}`
+      );
     }
   };
 }

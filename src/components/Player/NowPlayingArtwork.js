@@ -22,18 +22,18 @@ const useStyles = makeStyles({
 
 function NowPlayingArtwork() {
   const classes = useStyles();
-  const { podId, podTitle, podArtwork } = useContext(NowPlayingContext);
+  const { podcastId, podcastTitle, podcastArtwork } = useContext(NowPlayingContext);
 
-  return podId && podTitle && podArtwork ? (
+  return podcastId && podcastTitle && podcastArtwork ? (
     <Card className={classes.card} elevation={0}>
       <CardActionArea
         component={Link}
         to={{
-          pathname: `/podcast/${podId}`,
-          state: { title: podTitle },
+          pathname: `/podcast/${podcastId}`,
+          state: { title: podcastTitle },
         }}
       >
-        <CardMedia className={classes.media} title={podTitle} image={podArtwork} />
+        <CardMedia className={classes.media} title={podcastTitle} image={podcastArtwork} />
       </CardActionArea>
     </Card>
   ) : null;

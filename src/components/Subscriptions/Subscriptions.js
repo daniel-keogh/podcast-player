@@ -2,23 +2,18 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import makeStyles from "@mui/styles/makeStyles";
-import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import AddIcon from "@mui/icons-material/AddBox";
 
 import NavBar from "@/components/NavBar/NavBar";
 import SubscriptionItem from "@/components/Subscriptions/SubscriptionItem";
-import Welcome from "@/components/Subscriptions/Welcome";
 import subscriptionsService from "@/services/subscriptionsService";
 import Routes from "@/utils/routes";
+import EmptyState, { EmptyStates } from "../EmptyState";
 
 const useStyles = makeStyles((theme) => ({
-  menuButton: {
-    marginLeft: theme.spacing(2),
-  },
   welcome: {
     position: "absolute",
     top: "50%",
@@ -54,36 +49,38 @@ function Subscriptions() {
 
   return (
     <React.Fragment>
-      <NavBar title="Subscriptions" hideBackButton>
+      <NavBar title="Subscriptions" hideBackButton showMoreMenu>
         <Tooltip title="Add Podcasts">
-          <IconButton edge="end" color="inherit" component={Link} to={Routes.discover} size="large">
-            <AddIcon />
-          </IconButton>
-        </Tooltip>
-
-        <Tooltip title="Profile">
           <IconButton
-            className={classes.menuButton}
-            edge="end"
+            edge="start"
             color="inherit"
             component={Link}
-            to={Routes.profile}
+            to={Routes.discover}
             size="large"
           >
-            <AccountCircleIcon />
+            <AddIcon />
           </IconButton>
         </Tooltip>
       </NavBar>
 
       <Container maxWidth="xl">
         {noSubscriptions ? (
-          <Box display="flex" justifyContent="center" alignItems="center">
-            <Welcome className={classes.welcome} />
-          </Box>
+          <EmptyState
+            emptyState={EmptyStates.NOT_FOUND}
+            title="There's nothing here..."
+            cta="Add some podcasts"
+            to={Routes.discover}
+          />
         ) : (
           <div className={classes.subscriptionsGrid}>
             {subscriptions.map(({ _id, title, artwork }) => (
-              <SubscriptionItem clickable key={_id} id={_id} title={title} artwork={artwork} />
+              <SubscriptionItem
+                clickable={true}
+                key={_id}
+                id={_id}
+                title={title}
+                artwork={artwork}
+              />
             ))}
           </div>
         )}

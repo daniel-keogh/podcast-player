@@ -1,57 +1,161 @@
-import React, { useContext } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
+import PropTypes from "prop-types";
 
 import IconButton from "@mui/material/IconButton";
 import ListItem from "@mui/material/ListItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
 import ListItemText from "@mui/material/ListItemText";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
+import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
+
+import GraphicEqIcon from "@mui/icons-material/GraphicEq";
+import StarIcon from "@mui/icons-material/Star";
+import StarBorderIcon from "@mui/icons-material/StarBorder";
 
 import EpisodeDialog from "@/components/EpisodeDialog/EpisodeDialog";
 import NowPlayingContext from "@/store/nowPlayingContext";
 import { useDialog } from "@/hooks";
+import historyService from "@/services/historyService";
+import { Avatar, ListItemAvatar } from "@mui/material";
 
-function EpisodeListItem(props) {
+function EpisodeListItem({
+  podcastId,
+  podcastTitle,
+  artwork,
+  episode,
+  date,
+  isPlaylistItem = false,
+  ...props
+}) {
+  const [isFavourited, setIsFavourited] = useState(props.isFavourited);
+  const [isCompleted, setIsCompleted] = useState(props.isCompleted);
+
   const [dialog, handleOpen, handleClose] = useDialog({});
+  const [starVisibility, setStarVisibility] = useState(isFavourited);
+
   const nowPlaying = useContext(NowPlayingContext);
 
+  const isPlaying = nowPlaying.episodeGuid === episode.guid;
+
+  useEffect(() => {
+    setIsCompleted(props.isCompleted);
+    setIsFavourited(props.isFavourited);
+  }, [props.isCompleted, props.isFavourited]);
+
   // Play the episode when the play button is clicked, by calling the `playEpisode` function passed as a prop.
-  const handlePlay = () => {
+  const handlePlay = useCallback(() => {
     nowPlaying.playEpisode({
-      src: props.episode.audio.url,
-      epTitle: props.episode.title,
-      podTitle: props.podcastTitle,
-      podId: props.id,
-      podArtwork: props.artwork,
+      audioUrl: episode.audioUrl || episode.audio.url,
+      episodeTitle: episode.title,
+      episodeGuid: episode.guid,
+      podcastTitle,
+      podcastId,
+      podcastArtwork: artwork,
     });
+  }, [
+    episode.audioUrl,
+    episode.audio,
+    episode.title,
+    episode.guid,
+    artwork,
+    nowPlaying,
+    podcastId,
+    podcastTitle,
+  ]);
+
+  const handlePause = () => {
+    // nowPlaying.togglePause(true);
+  };
+
+  const handleFavourite = useCallback(async () => {
+    await historyService.addEpisodeToHistory({
+      podcastId,
+      title: episode.title,
+      guid: episode.guid,
+      audioUrl: episode.audioUrl || episode.audio.url,
+      isFavourited: !isFavourited,
+    });
+    setIsFavourited((state) => !state);
+  }, [episode.audioUrl, episode.audio, episode.title, episode.guid, podcastId, isFavourited]);
+
+  const handleItemClicked = () => {
+    if (starVisibility) {
+      setStarVisibility(false);
+    }
+    handleOpen();
   };
 
   return (
-    <React.Fragment>
-      <ListItem divider button onClick={handleOpen}>
+    <div onMouseEnter={() => setStarVisibility(true)} onMouseLeave={() => setStarVisibility(false)}>
+      <ListItem divider button onClick={handleItemClicked} color="success">
+        {isPlaylistItem ? (
+          <ListItemAvatar>
+            <Avatar src={artwork} variant="square" />
+          </ListItemAvatar>
+        ) : isPlaying ? (
+          <ListItemIcon>
+            <GraphicEqIcon color="primary" />
+          </ListItemIcon>
+        ) : null}
+
         <ListItemText
-          primary={props.episode.title}
-          secondary={new Date(props.episode.date).toDateString()}
+          primary={episode.title}
+          primaryTypographyProps={{
+            color: isCompleted ? "lightgray" : "",
+          }}
+          secondary={new Date(date).toDateString()}
+          secondaryTypographyProps={{
+            color: isCompleted ? "lightgray" : "GrayText",
+          }}
         />
         <ListItemSecondaryAction>
-          <IconButton edge="end" color="secondary" onClick={handlePlay} size="large">
-            <PlayCircleOutlineIcon />
-          </IconButton>
+          {(starVisibility || isFavourited) && (
+            <IconButton edge="start" color="secondary" onClick={handleFavourite} size="large">
+              {isFavourited ? <StarIcon /> : <StarBorderIcon />}
+            </IconButton>
+          )}
+          {isPlaying && !nowPlaying.isPaused ? (
+            <IconButton edge="end" color="primary" onClick={handlePause} size="large">
+              <PauseCircleOutlineIcon />
+            </IconButton>
+          ) : (
+            <IconButton edge="end" color="primary" onClick={handlePlay} size="large">
+              <PlayCircleOutlineIcon />
+            </IconButton>
+          )}
         </ListItemSecondaryAction>
       </ListItem>
+
       {dialog.open && (
         <EpisodeDialog
           open={dialog.open}
-          id={props.id}
-          podcastTitle={props.podcastTitle}
-          episodeTitle={props.episode?.title}
-          episodeGuid={props.episode?.guid}
-          artwork={props.artwork}
+          id={podcastId}
+          podcastTitle={podcastTitle}
+          episodeTitle={episode.title}
+          episodeGuid={episode.guid}
+          artwork={artwork}
           onPlay={handlePlay}
           onClose={handleClose}
         />
       )}
-    </React.Fragment>
+    </div>
   );
 }
+
+EpisodeListItem.propTypes = {
+  podcastId: PropTypes.string.isRequired,
+  podcastTitle: PropTypes.string.isRequired,
+  episode: PropTypes.shape({
+    title: PropTypes.string,
+    audioUrl: PropTypes.string,
+    guid: PropTypes.string,
+  }).isRequired,
+  artwork: PropTypes.string.isRequired,
+  date: PropTypes.string.isRequired,
+  isCompleted: PropTypes.bool,
+  isFavourited: PropTypes.bool,
+  isPlaylistItem: PropTypes.bool,
+};
 
 export default React.memo(EpisodeListItem);

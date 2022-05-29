@@ -8,6 +8,7 @@ import EpisodeListItem from "./EpisodeListItem";
 import PodcastInfo from "./PodcastInfo";
 
 import withSnackbar from "@/hoc/withSnackbar";
+import historyService from "@/services/historyService";
 import subscriptionsService from "@/services/subscriptionsService";
 import { isEmpty } from "@/utils";
 import Routes from "@/utils/routes";
@@ -18,6 +19,7 @@ const ITEMS_PER_PAGE = 100;
 class Podcast extends Component {
   state = {
     podcast: {},
+    history: [],
     numEpisodes: STARTING_ITEMS_PER_PAGE,
     isLoading: true,
   };
@@ -30,11 +32,22 @@ class Podcast extends Component {
       limit = this.state.numEpisodes;
     }
 
-    subscriptionsService
-      .getSubscriptionById(this.props.match.params.id, limit)
-      .then((podcast) => {
+    const id = this.props.match.params.id;
+
+    Promise.all([
+      subscriptionsService.getSubscriptionById(id, limit),
+      historyService.getHistoryByPodcastId(id),
+    ])
+      .then(([podcast, history]) => {
+        const historyMap = history.reduce((prev, current) => {
+          prev[current.episode.guid] = current;
+          delete current.episode;
+          return prev;
+        }, {});
+
         this.setState({
           podcast,
+          history: historyMap,
           numEpisodes: limit,
         });
       })
@@ -59,30 +72,34 @@ class Podcast extends Component {
   }
 
   render() {
-    const { podcast, isLoading, numEpisodes } = this.state;
+    const { history, podcast, isLoading, numEpisodes } = this.state;
 
     // If the title was passed as a prop use that, otherwise wait until `componentDidMount()` updates the state.
     const navTitle = this.props.location.state?.title || podcast.title;
 
     return (
       <React.Fragment>
-        <NavBar title={navTitle} isLoading={isLoading} />
+        <NavBar title={navTitle} isLoading={isLoading} showMoreMenu />
 
-        {/* Only display the PodcastInfo if `
-        podcast` is not an empty object. */}
+        {/* Only display the PodcastInfo if `podcast` is not an empty object. */}
         {!isEmpty(podcast) ? (
           <Container maxWidth="lg">
             <PodcastInfo {...podcast} onSubscribe={this.handleSubscribe} />
             <PaginatedList numItems={numEpisodes} onShowMore={this.handleShowMoreClicked}>
-              {podcast.episodes?.map((episode, i) => (
-                <EpisodeListItem
-                  key={i}
-                  episode={episode}
-                  id={podcast._id}
-                  podcastTitle={podcast.title}
-                  artwork={podcast.artwork}
-                />
-              ))}
+              {podcast.episodes?.map((episode, i) => {
+                return (
+                  <EpisodeListItem
+                    key={i}
+                    podcastId={podcast._id}
+                    podcastTitle={podcast.title}
+                    artwork={podcast.artwork}
+                    episode={episode}
+                    date={episode.date}
+                    isCompleted={history[episode.guid]?.isCompleted}
+                    isFavourited={history[episode.guid]?.isFavourited}
+                  />
+                );
+              })}
             </PaginatedList>
           </Container>
         ) : null}

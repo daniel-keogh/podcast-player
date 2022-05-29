@@ -18,16 +18,16 @@ const useStyles = makeStyles({
 
 function SeekBar({ currentTime, duration, onSliderChange }) {
   const classes = useStyles();
-  const { epTitle, podTitle } = useContext(NowPlayingContext);
+  const { episodeTitle, podcastTitle } = useContext(NowPlayingContext);
 
   return (
     <Box flexGrow={1} paddingX={5} paddingTop={2} paddingBottom={3}>
       <Box marginBottom={1}>
         <Typography component="h6" variant="h6" noWrap>
-          {epTitle}
+          {episodeTitle}
         </Typography>
         <Typography color="textSecondary" variant="subtitle2" noWrap>
-          {podTitle}
+          {podcastTitle}
         </Typography>
       </Box>
 

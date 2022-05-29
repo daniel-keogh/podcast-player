@@ -10,6 +10,8 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
+import MoreMenu from "./MoreMenu";
+
 const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
@@ -20,7 +22,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function NavBar({ title, hideBackButton = false, isLoading = false, ...props }) {
+function NavBar({
+  title,
+  hideBackButton = false,
+  isLoading = false,
+  showMoreMenu = false,
+  ...props
+}) {
   const classes = useStyles();
   const history = useHistory();
 
@@ -46,6 +54,7 @@ function NavBar({ title, hideBackButton = false, isLoading = false, ...props }) 
 
         {/* Any buttons that go at the end of the NavBar should be passed as children. */}
         {props.children}
+        {showMoreMenu && <MoreMenu />}
       </Toolbar>
       {isLoading && <LinearProgress color="secondary" />}
     </AppBar>
@@ -56,6 +65,7 @@ NavBar.propTypes = {
   title: PropTypes.string,
   hideBackButton: PropTypes.bool,
   isLoading: PropTypes.bool,
+  showMoreMenu: PropTypes.bool,
 };
 
 export default NavBar;

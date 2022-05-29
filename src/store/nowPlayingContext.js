@@ -1,16 +1,26 @@
 import React, { useState } from "react";
 
 const NowPlayingContext = React.createContext({
-  src: "",
-  epTitle: "",
-  podTitle: "",
-  podId: "",
-  podArtwork: "",
+  audioUrl: "",
+  episodeTitle: "",
+  episodeGuid: "",
+  podcastTitle: "",
+  podcastId: "",
+  podcastArtwork: "",
   progress: 0,
   autoplay: false,
-  playEpisode: ({ src, epTitle, podTitle, podId, podArtwork }) => {},
+  isPaused: false,
+  playEpisode: ({
+    audioUrl,
+    episodeTitle,
+    episodeGuid,
+    podcastTitle,
+    podcastId,
+    podcastArtwork,
+  }) => {},
   stop: () => {},
   saveProgress: (progress) => {},
+  togglePause: (value) => {},
 });
 
 const NOW_PLAYING_KEY = "now-playing";
@@ -18,37 +28,50 @@ const NOW_PLAYING_KEY = "now-playing";
 export function NowPlayingContextProvider(props) {
   const local = JSON.parse(localStorage.getItem(NOW_PLAYING_KEY)) || {};
 
-  const { src, epTitle, podTitle, podId, podArtwork, progress } = local;
+  const { audioUrl, episodeTitle, episodeGuid, podcastTitle, podcastId, podcastArtwork, progress } =
+    local;
 
   const [nowPlaying, setNowPlaying] = useState({
-    src: src || "",
-    epTitle: epTitle || "",
-    podTitle: podTitle || "",
-    podId: podId || "",
-    podArtwork: podArtwork || "",
+    audioUrl: audioUrl || "",
+    episodeTitle: episodeTitle || "",
+    episodeGuid: episodeGuid || "",
+    podcastTitle: podcastTitle || "",
+    podcastId: podcastId || "",
+    podcastArtwork: podcastArtwork || "",
     progress: progress || 0,
     autoplay: false,
+    isPaused: false,
   });
 
-  const playEpisode = ({ src, epTitle, podTitle, podId, podArtwork }) => {
+  const playEpisode = ({
+    audioUrl,
+    episodeTitle,
+    episodeGuid,
+    podcastTitle,
+    podcastId,
+    podcastArtwork,
+  }) => {
     setNowPlaying({
-      src,
-      epTitle,
-      podTitle,
-      podId,
-      podArtwork,
+      audioUrl,
+      episodeTitle,
+      episodeGuid,
+      podcastTitle,
+      podcastId,
+      podcastArtwork,
       progress: 0,
       autoplay: true,
+      isPaused: false,
     });
 
     localStorage.setItem(
       NOW_PLAYING_KEY,
       JSON.stringify({
-        src,
-        epTitle,
-        podTitle,
-        podId,
-        podArtwork,
+        audioUrl,
+        episodeTitle,
+        episodeGuid,
+        podcastTitle,
+        podcastId,
+        podcastArtwork,
         progress: 0,
       })
     );
@@ -56,15 +79,24 @@ export function NowPlayingContextProvider(props) {
 
   const stop = () => {
     setNowPlaying({
-      src: "",
-      epTitle: "",
-      podTitle: "",
-      podId: "",
-      podArtwork: "",
+      audioUrl: "",
+      episodeTitle: "",
+      episodeGuid: "",
+      podcastTitle: "",
+      podcastId: "",
+      podcastArtwork: "",
       progress: 0,
       autoplay: true,
+      isPaused: false,
     });
     localStorage.removeItem(NOW_PLAYING_KEY);
+  };
+
+  const togglePause = (value) => {
+    setNowPlaying((state) => ({
+      ...state,
+      isPaused: value ?? !state.isPaused,
+    }));
   };
 
   const saveProgress = (progress) => {
@@ -80,16 +112,19 @@ export function NowPlayingContextProvider(props) {
   };
 
   const context = {
-    src: nowPlaying.src,
-    epTitle: nowPlaying.epTitle,
-    podTitle: nowPlaying.podTitle,
-    podId: nowPlaying.podId,
-    podArtwork: nowPlaying.podArtwork,
+    audioUrl: nowPlaying.audioUrl,
+    episodeTitle: nowPlaying.episodeTitle,
+    episodeGuid: nowPlaying.episodeGuid,
+    podcastTitle: nowPlaying.podcastTitle,
+    podcastId: nowPlaying.podcastId,
+    podcastArtwork: nowPlaying.podcastArtwork,
     progress: nowPlaying.progress,
     autoplay: nowPlaying.autoplay,
+    isPaused: nowPlaying.isPaused,
     playEpisode,
     stop,
     saveProgress,
+    togglePause,
   };
 
   return (

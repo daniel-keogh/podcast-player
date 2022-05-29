@@ -1,9 +1,11 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 import PlayerControls from "@/components/Player/PlayerControls";
 import NowPlayingContext from "@/store/nowPlayingContext";
 
 const SKIP_TIME = 30;
+const UPDATE_HISTORY_INTERVAL = 1 * 60 * 1000;
 
 class Player extends Component {
   static contextType = NowPlayingContext;
@@ -14,23 +16,46 @@ class Player extends Component {
     this.state = {
       currentTime: 0,
       duration: 0,
+      updateHistoryIntervalId: null,
     };
 
     // Will allow the component to access properties of the HTML <audio> element.
     this.audioElement = new React.createRef();
   }
 
+  static propTypes = {
+    isPaused: PropTypes.bool.isRequired,
+    onUpdateHistory: PropTypes.func.isRequired,
+  };
+
   componentDidMount() {
     window.addEventListener("beforeunload", this.savePlaybackProgress);
+
+    this.setState({
+      updateHistoryIntervalId: setInterval(this.updateHistory, UPDATE_HISTORY_INTERVAL),
+    });
   }
 
   componentWillUnmount() {
     window.removeEventListener("beforeunload", this.savePlaybackProgress);
+    clearInterval(this.state.updateHistoryIntervalId);
   }
 
-  componentDidUpdate() {
-    if (this.audioElement.current && !this.audioElement.current.paused && !this.context.src) {
+  componentDidUpdate(prevProps) {
+    if (this.audioElement.current && !this.audioElement.current.paused && !this.context.audioUrl) {
       this.audioElement.current.pause();
+    }
+
+    if (this.props.isPaused !== prevProps.isPaused) {
+      if (this.audioElement.current && this.audioElement.current.paused) {
+        if (this.props.isPaused) {
+          if (!Number.isNaN(this.state.duration)) {
+            this.audioElement.current.pause();
+          }
+        } else {
+          this.audioElement.current.play().catch(console.error);
+        }
+      }
     }
   }
 
@@ -49,7 +74,7 @@ class Player extends Component {
         <audio
           preload="metadata"
           autoPlay={this.context.autoplay}
-          src={this.context.src || null}
+          src={this.context.audioUrl || null}
           onLoadedMetadata={this.handleMetadataLoaded}
           onTimeUpdate={this.handleTimeUpdate}
           ref={this.audioElement}
@@ -61,9 +86,11 @@ class Player extends Component {
   handlePlayPauseClicked = () => {
     if (this.audioElement.current.paused) {
       this.audioElement.current.play().catch(console.error);
+      // this.context.togglePause(false);
     } else {
       if (!Number.isNaN(this.state.duration)) {
         this.audioElement.current.pause();
+        // this.context.togglePause(true);
       }
     }
   };
@@ -111,6 +138,12 @@ class Player extends Component {
 
   savePlaybackProgress = (e) => {
     this.context.saveProgress(this.state.currentTime);
+  };
+
+  updateHistory = () => {
+    if (this.audioElement.current && !this.audioElement.current.paused) {
+      this.props.onUpdateHistory(this.state.currentTime, this.state.duration);
+    }
   };
 }
 
