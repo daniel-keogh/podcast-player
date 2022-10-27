@@ -32,7 +32,8 @@
   "devDependencies": {
     "@types/react-router-dom": "^5.3.3",
     "concurrently": "^7.0.0",
-    "prettier": "^2.6.1"
+    "prettier": "^2.6.1",
+    "ts-migrate": "^0.1.34"
   },
   "scripts": {
     "start": "craco start",
