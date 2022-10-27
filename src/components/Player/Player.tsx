@@ -1,14 +1,18 @@
 import React, { Component } from "react";
 
+// @ts-expect-error TS(2307): Cannot find module '@/components/Player/PlayerCont... Remove this comment to see the full error message
 import PlayerControls from "@/components/Player/PlayerControls";
+// @ts-expect-error TS(2307): Cannot find module '@/store/nowPlayingContext' or ... Remove this comment to see the full error message
 import NowPlayingContext from "@/store/nowPlayingContext";
 
 const SKIP_TIME = 30;
 
-class Player extends Component {
+type State = any;
+
+class Player extends Component<{}, State> {
   static contextType = NowPlayingContext;
 
-  constructor(props) {
+  constructor(props: {}) {
     super(props);
 
     this.state = {
@@ -17,7 +21,8 @@ class Player extends Component {
     };
 
     // Will allow the component to access properties of the HTML <audio> element.
-    this.audioElement = new React.createRef();
+// @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
+(this as any).audioElement = new React.createRef();
   }
 
   componentDidMount() {
@@ -29,41 +34,27 @@ class Player extends Component {
   }
 
   componentDidUpdate() {
-    if (this.audioElement.current && !this.audioElement.current.paused && !this.context.src) {
-      this.audioElement.current.pause();
+    if ((this as any).audioElement.current && !(this as any).audioElement.current.paused && !this.context.src) {
+      (this as any).audioElement.current.pause();
     }
   }
 
   render() {
-    return (
-      <React.Fragment>
-        <PlayerControls
-          currentTime={this.state.currentTime}
-          duration={this.state.duration}
-          isPaused={this.audioElement.current ? this.audioElement.current.paused : true}
-          onReplay={this.handleReplay}
-          onForward={this.handleForward}
-          onPlayPauseClicked={this.handlePlayPauseClicked}
-          onSliderChange={this.handleSliderChange}
-        />
-        <audio
-          preload="metadata"
-          autoPlay={this.context.autoplay}
-          src={this.context.src || null}
-          onLoadedMetadata={this.handleMetadataLoaded}
-          onTimeUpdate={this.handleTimeUpdate}
-          ref={this.audioElement}
-        ></audio>
-      </React.Fragment>
-    );
+    // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
+    return (<React.Fragment>
+        {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
+        <PlayerControls currentTime={this.state.currentTime} duration={this.state.duration} isPaused={(this as any).audioElement.current ? (this as any).audioElement.current.paused : true} onReplay={this.handleReplay} onForward={this.handleForward} onPlayPauseClicked={this.handlePlayPauseClicked} onSliderChange={this.handleSliderChange}/>
+        {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
+        <audio preload="metadata" autoPlay={this.context.autoplay} src={this.context.src || null} onLoadedMetadata={this.handleMetadataLoaded} onTimeUpdate={this.handleTimeUpdate} ref={(this as any).audioElement}></audio>
+      </React.Fragment>);
   }
 
   handlePlayPauseClicked = () => {
-    if (this.audioElement.current.paused) {
-      this.audioElement.current.play().catch(console.error);
+    if ((this as any).audioElement.current.paused) {
+      (this as any).audioElement.current.play().catch(console.error);
     } else {
       if (!Number.isNaN(this.state.duration)) {
-        this.audioElement.current.pause();
+        (this as any).audioElement.current.pause();
       }
     }
   };
@@ -72,9 +63,9 @@ class Player extends Component {
     // If near the start of the file, set the current time to zero
     // (prevents currentTime being set to a negative number).
     if (this.state.currentTime - SKIP_TIME <= 0) {
-      this.audioElement.current.currentTime = 0;
+      (this as any).audioElement.current.currentTime = 0;
     } else {
-      this.audioElement.current.currentTime -= SKIP_TIME;
+      (this as any).audioElement.current.currentTime -= SKIP_TIME;
     }
   };
 
@@ -82,34 +73,34 @@ class Player extends Component {
     // If near the end of the file, set the current time to the total duration
     // (prevents currentTime being set to a number greater than the duration).
     if (this.state.currentTime + SKIP_TIME >= this.state.duration) {
-      this.audioElement.current.currentTime = this.state.duration;
+      (this as any).audioElement.current.currentTime = this.state.duration;
     } else {
-      this.audioElement.current.currentTime += SKIP_TIME;
+      (this as any).audioElement.current.currentTime += SKIP_TIME;
     }
   };
 
-  handleMetadataLoaded = (e) => {
-    this.audioElement.current.currentTime = this.context.progress;
+  handleMetadataLoaded = (e: any) => {
+    (this as any).audioElement.current.currentTime = this.context.progress;
   };
 
-  handleTimeUpdate = (e) => {
+  handleTimeUpdate = (e: any) => {
     this.setState({
-      currentTime: e.target.currentTime,
-      duration: this.audioElement.current.duration,
-    });
+    currentTime: e.target.currentTime,
+    duration: (this as any).audioElement.current.duration,
+});
   };
 
   // Syncs the slider with the current playback position.
-  handleSliderChange = (e, value) => {
+  handleSliderChange = (e: any, value: any) => {
     // Convert the slider's new value property from a % to a time.
-    this.audioElement.current.currentTime = this.state.duration * value * 0.01;
+(this as any).audioElement.current.currentTime = this.state.duration * value * 0.01;
 
     this.setState({
-      currentTime: this.audioElement.current.currentTime,
-    });
+    currentTime: (this as any).audioElement.current.currentTime,
+});
   };
 
-  savePlaybackProgress = (e) => {
+  savePlaybackProgress = (e: any) => {
     this.context.saveProgress(this.state.currentTime);
   };
 }

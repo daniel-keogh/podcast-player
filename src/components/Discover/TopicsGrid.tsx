@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
@@ -18,9 +17,14 @@ import ComedyIcon from "@mui/icons-material/SentimentVerySatisfied";
 import GamingIcon from "@mui/icons-material/SportsEsportsOutlined";
 import SportsIcon from "@mui/icons-material/SportsSoccer";
 
+// @ts-expect-error TS(6142): Module './TopicCard' was resolved to '/mnt/s/Githu... Remove this comment to see the full error message
 import TopicCard from "./TopicCard";
 
-function TopicsGrid({ onTopicClicked = (e, topic) => {} }) {
+type Props = {
+    onTopicClicked: (...args: any[]) => any;
+};
+
+function TopicsGrid({ onTopicClicked = (e, topic) => { } }: Props) {
   const suggestions = [
     { title: "Books", icon: BooksIcon, color: "#00b0ff" },
     { title: "Business", icon: BusinessIcon, color: "#880e4f" },
@@ -37,22 +41,30 @@ function TopicsGrid({ onTopicClicked = (e, topic) => {} }) {
   ];
 
   return (
+    // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
     <React.Fragment>
+      {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
       <Typography variant="h5" component="h5">
         Topics
       </Typography>
 
+      {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
       <Box mt={4} mb={8}>
+        {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
         <Grid container justifyContent="center" spacing={2}>
           {suggestions.map((value) => {
             const TopicIcon = value.icon;
 
             return (
+              // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
               <Grid key={value.title} item xs={12} sm={6} md={4} lg={3}>
+                {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
                 <TopicCard
                   title={value.title}
+                  // @ts-expect-error TS(2322): Type '{ title: string; color: { title: string; ico... Remove this comment to see the full error message
                   color={value}
                   icon={
+                    // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
                     <TopicIcon
                       style={{
                         color: value.color,
@@ -69,9 +81,5 @@ function TopicsGrid({ onTopicClicked = (e, topic) => {} }) {
     </React.Fragment>
   );
 }
-
-TopicsGrid.propTypes = {
-  onTopicClicked: PropTypes.func.isRequired,
-};
 
 export default TopicsGrid;
