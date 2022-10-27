@@ -2,6 +2,13 @@ import { useState, useContext } from "react";
 
 import AuthContext from "../store/authContext";
 import authService from "../services/authService";
+import { AxiosError } from "axios";
+
+type Fields = {
+  email: string;
+  password: string;
+  confirmPassword: string;
+};
 
 function useAuth() {
   const [error, setError] = useState("");
@@ -10,7 +17,7 @@ function useAuth() {
 
   const resetError = () => setError("");
 
-  const _isValidForm = ({ email, password, confirmPassword }) => {
+  const _isValidForm = ({ email, password, confirmPassword }: Partial<Fields>) => {
     if (
       password === "" ||
       (confirmPassword !== undefined && confirmPassword === "") ||
@@ -25,7 +32,7 @@ function useAuth() {
     return true;
   };
 
-  const _authHandler = async (fields, callback) => {
+  const _authHandler = async (fields: Partial<Fields>, callback: Function) => {
     if (!_isValidForm(fields)) {
       return {
         success: false,
@@ -35,7 +42,9 @@ function useAuth() {
 
     try {
       return await callback();
-    } catch (err) {
+    } catch (e) {
+      const err = e as AxiosError<{ msg: string }>;
+
       if (err.response) {
         setError(err.response.data.msg + ".");
       } else {
@@ -49,7 +58,7 @@ function useAuth() {
     }
   };
 
-  const login = async ({ email, password }) => {
+  const login = async ({ email, password }: Pick<Fields, "email" | "password">) => {
     return _authHandler({ email, password }, async () => {
       const data = await authService.login({ email, password });
 
@@ -62,7 +71,7 @@ function useAuth() {
     });
   };
 
-  const register = async ({ email, password, confirmPassword }) => {
+  const register = async ({ email, password, confirmPassword }: Fields) => {
     return _authHandler({ email, password, confirmPassword }, async () => {
       const data = await authService.register({ email, password });
 
@@ -75,7 +84,7 @@ function useAuth() {
     });
   };
 
-  const updateEmail = async ({ email }) => {
+  const updateEmail = async ({ email }: { email: Fields["email"] }) => {
     return _authHandler({ email }, async () => {
       const data = await authService.updateEmail({
         email,
@@ -89,7 +98,11 @@ function useAuth() {
     });
   };
 
-  const updatePassword = async ({ oldPassword, password, confirmPassword }) => {
+  const updatePassword = async ({
+    oldPassword,
+    password,
+    confirmPassword,
+  }: Fields & { oldPassword: string }) => {
     return _authHandler({ password, confirmPassword }, async () => {
       const data = await authService.updatePassword({
         oldPassword,
@@ -103,7 +116,7 @@ function useAuth() {
     });
   };
 
-  const deleteAccount = async ({ email, password }) => {
+  const deleteAccount = async ({ email, password }: Pick<Fields, "email" | "password">) => {
     return _authHandler({ email, password }, async () => {
       const data = await authService.deleteAccount({
         email,

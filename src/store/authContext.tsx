@@ -1,7 +1,23 @@
 import React, { useState } from "react";
 import jwt from "jwt-decode";
 
-const AuthContext = React.createContext({
+type AuthContextValue = {
+  token: string;
+  userId: string;
+  isAuthorized: boolean;
+  login: (token: string) => void;
+  logout: () => void;
+};
+
+type Jwt = {
+  _id: string;
+};
+
+type Props = {
+  children: React.ReactNode;
+};
+
+const AuthContext = React.createContext<AuthContextValue>({
   token: "",
   userId: "",
   isAuthorized: false,
@@ -11,15 +27,15 @@ const AuthContext = React.createContext({
 
 export const TOKEN_KEY = "token";
 
-export function AuthContextProvider(props) {
+export function AuthContextProvider(props: Props) {
   const token = localStorage.getItem(TOKEN_KEY);
 
   const [auth, setAuth] = useState(() => {
     try {
-      const { _id: userId } = jwt(token);
+      const { _id: userId } = jwt<Jwt>(token!);
 
       const state = {
-        token,
+        token: token ?? "",
         userId,
         isAuthorized: true,
       };
@@ -37,8 +53,8 @@ export function AuthContextProvider(props) {
     }
   });
 
-  const login = (token) => {
-    const { _id: userId } = jwt(token);
+  const login = (token: string) => {
+    const { _id: userId } = jwt<Jwt>(token);
 
     setAuth({
       token,

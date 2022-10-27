@@ -7,7 +7,7 @@ const instance = axios.create({
   baseURL: process.env.NODE_ENV === "production" ? process.env.HOST_NAME : "http://localhost:4000",
 });
 
-let _token;
+let _token: string | null | undefined;
 
 const getToken = () => {
   if (!_token) {

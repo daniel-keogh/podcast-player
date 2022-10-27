@@ -1,6 +1,17 @@
-import { Component } from "react";
+import React, { Component } from "react";
 
-function withDialog(WrappedComponent) {
+type DialogState = {
+  dialog: {
+    open: boolean;
+    error: boolean;
+    errorMessage: string;
+  };
+  onDialogOpen: () => void;
+  onDialogClose: () => void;
+  onDialogError: (err: Error) => void;
+};
+
+function withDialog(WrappedComponent: React.ComponentType<DialogState>) {
   return class WithDialog extends Component {
     state = {
       dialog: {
@@ -10,7 +21,7 @@ function withDialog(WrappedComponent) {
       },
     };
 
-    handleDialogOpenChange = (open) => () => {
+    handleDialogOpenChange = (open: boolean) => () => {
       this.setState({
         dialog: {
           error: false,
@@ -20,7 +31,7 @@ function withDialog(WrappedComponent) {
       });
     };
 
-    handleDialogError = (err) => {
+    handleDialogError = (err: Error) => {
       this.setState({
         dialog: {
           open: true,

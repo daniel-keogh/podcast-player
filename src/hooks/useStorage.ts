@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 
-function useStorage(key, defaultValue, root = window.localStorage) {
+function useStorage(key: string, defaultValue: object, root = window.localStorage) {
   const [value, setValue] = useState(() => {
-    return JSON.parse(root.getItem(key)) || defaultValue;
+    return JSON.parse(root.getItem(key)!) || defaultValue;
   });
 
   useEffect(() => {

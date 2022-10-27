@@ -1,9 +1,9 @@
 import { useState } from "react";
 
-function useForm(initialValues) {
+function useForm<T>(initialValues: T) {
   const [values, setValues] = useState(initialValues);
 
-  const handleChange = (e) => {
+  const handleChange = <T extends { name: string; value: string }>(e: React.ChangeEvent<T>) => {
     e.persist();
 
     setValues((state) => ({

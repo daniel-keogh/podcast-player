@@ -1,6 +1,28 @@
 import React, { useState } from "react";
 
-const NowPlayingContext = React.createContext({
+type NowPlayingContextValue = {
+  src: string;
+  epTitle: string;
+  podTitle: string;
+  podId: string;
+  podArtwork: string;
+  progress: number;
+  autoplay: boolean;
+  playEpisode: (episode: NowPlaying) => void;
+  stop: () => void;
+  saveProgress: (progress: NowPlayingContextValue["progress"]) => void;
+};
+
+type NowPlaying = Pick<
+  NowPlayingContextValue,
+  "src" | "epTitle" | "podTitle" | "podId" | "podArtwork"
+>;
+
+type Props = {
+  children: React.ReactNode;
+};
+
+const NowPlayingContext = React.createContext<NowPlayingContextValue>({
   src: "",
   epTitle: "",
   podTitle: "",
@@ -15,8 +37,8 @@ const NowPlayingContext = React.createContext({
 
 const NOW_PLAYING_KEY = "now-playing";
 
-export function NowPlayingContextProvider(props) {
-  const local = JSON.parse(localStorage.getItem(NOW_PLAYING_KEY)) || {};
+export function NowPlayingContextProvider(props: Props) {
+  const local = JSON.parse(localStorage.getItem(NOW_PLAYING_KEY)!) || {};
 
   const { src, epTitle, podTitle, podId, podArtwork, progress } = local;
 
@@ -30,7 +52,7 @@ export function NowPlayingContextProvider(props) {
     autoplay: false,
   });
 
-  const playEpisode = ({ src, epTitle, podTitle, podId, podArtwork }) => {
+  const playEpisode = ({ src, epTitle, podTitle, podId, podArtwork }: NowPlaying) => {
     setNowPlaying({
       src,
       epTitle,
@@ -67,8 +89,8 @@ export function NowPlayingContextProvider(props) {
     localStorage.removeItem(NOW_PLAYING_KEY);
   };
 
-  const saveProgress = (progress) => {
-    const tmp = JSON.parse(localStorage.getItem(NOW_PLAYING_KEY));
+  const saveProgress = (progress: NowPlayingContextValue["progress"]) => {
+    const tmp: NowPlaying = JSON.parse(localStorage.getItem(NOW_PLAYING_KEY)!);
 
     localStorage.setItem(
       NOW_PLAYING_KEY,

@@ -1,12 +1,17 @@
 import { useState } from "react";
 
-function useDialog({ open = false, ...initialState }) {
+type DialogState = {
+  open: boolean;
+  [key: string]: any;
+};
+
+function useDialog({ open = false, ...initialState }: DialogState) {
   const [dialog, setDialog] = useState({
     open,
     ...initialState,
   });
 
-  const handleOpen = (state) => {
+  const handleOpen = (state: DialogState) => {
     setDialog({
       ...state,
       open: true,
@@ -14,7 +19,7 @@ function useDialog({ open = false, ...initialState }) {
   };
 
   const handleClose = () => {
-    setDialog((state) => ({
+    setDialog((state: DialogState) => ({
       ...state,
       open: false,
     }));

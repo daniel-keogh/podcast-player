@@ -2,19 +2,19 @@ import React, { Suspense, useContext } from "react";
 import { HashRouter, Route, Switch, Redirect } from "react-router-dom";
 
 import CssBaseline from "@mui/material/CssBaseline";
-import "./App.css";
+import "@/App.css";
 
-import AuthContext from "./store/authContext";
-import NavBar from "./components/NavBar/NavBar";
-import PlayerContainer from "./components/Player/PlayerContainer";
-import Routes from "./utils/routes";
+import AuthContext from "@/store/authContext";
+import NavBar from "@/components/NavBar/NavBar";
+import PlayerContainer from "@/components/Player/PlayerContainer";
+import Routes from "@/utils/routes";
 
-const Auth = React.lazy(() => import("./components/Auth/Auth"));
-const Discover = React.lazy(() => import("./components/Discover/Discover"));
-const Error = React.lazy(() => import("./components/Error/Error"));
-const Podcast = React.lazy(() => import("./components/Podcast/Podcast"));
-const Profile = React.lazy(() => import("./components/Profile/Profile"));
-const Subscriptions = React.lazy(() => import("./components/Subscriptions/Subscriptions"));
+const Auth = React.lazy(() => import("@/components/Auth/Auth"));
+const Discover = React.lazy(() => import("@/components/Discover/Discover"));
+const Error = React.lazy(() => import("@/components/Error/Error"));
+const Podcast = React.lazy(() => import("@/components/Podcast/Podcast"));
+const Profile = React.lazy(() => import("@/components/Profile/Profile"));
+const Subscriptions = React.lazy(() => import("@/components/Subscriptions/Subscriptions"));
 
 function App() {
   const auth = useContext(AuthContext);
@@ -47,7 +47,7 @@ function App() {
                 </Switch>
               </Suspense>
             ) : (
-              <Suspense fallback={<NavBar />}>
+              <Suspense fallback={<NavBar title="" />}>
                 <Switch>
                   <Route path={Routes.subscriptions}>
                     <Subscriptions />
