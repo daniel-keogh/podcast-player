@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
 import { useHistory } from "react-router-dom";
 
 import makeStyles from "@mui/styles/makeStyles";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
+import { Theme } from "@mui/material/styles";
+import type { UnionValues } from "@/types";
 
 export const EmptyStates = {
   BUGS: "Bugs",
@@ -14,9 +15,11 @@ export const EmptyStates = {
   LOADING: "Loading",
   LISTENING: "Listening",
   NOT_FOUND: "NotFound",
-};
+} as const;
 
-const useStyles = makeStyles((theme) => ({
+export type EmptyState = UnionValues<typeof EmptyStates>;
+
+const useStyles = makeStyles<Theme, Pick<EmptyStateProps, "fullPage">>((theme: Theme) => ({
   root: ({ fullPage }) => ({
     display: "flex",
     justifyContent: "center",
@@ -35,7 +38,25 @@ const useStyles = makeStyles((theme) => ({
   }),
 }));
 
-function EmptyState({ title, subtitle, cta, to, emptyState, onClick, fullPage = true }) {
+export type EmptyStateProps = {
+  title: string;
+  subtitle?: string;
+  cta?: string;
+  to?: string;
+  emptyState: EmptyState;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  fullPage?: boolean;
+};
+
+function EmptyState({
+  title,
+  subtitle,
+  cta,
+  to,
+  emptyState,
+  onClick,
+  fullPage = true,
+}: EmptyStateProps) {
   const classes = useStyles({ fullPage });
   const history = useHistory();
   const [svg, setSvg] = useState("");
@@ -44,11 +65,11 @@ function EmptyState({ title, subtitle, cta, to, emptyState, onClick, fullPage = 
     import(`../assets/emptyState/${emptyState}.svg`).then((d) => setSvg(d.default));
   }, [emptyState]);
 
-  const handleCtaClick = (e) => {
+  const handleCtaClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     if (onClick) {
       onClick(e);
     } else {
-      history.push(to);
+      history.push(to as string);
     }
   };
 
@@ -83,15 +104,5 @@ function EmptyState({ title, subtitle, cta, to, emptyState, onClick, fullPage = 
     </Container>
   );
 }
-
-EmptyState.propTypes = {
-  cta: PropTypes.string,
-  emptyState: PropTypes.oneOf(Object.values(EmptyStates)).isRequired,
-  fullPage: PropTypes.bool,
-  subtitle: PropTypes.string,
-  title: PropTypes.string.isRequired,
-  to: PropTypes.string,
-  onClick: PropTypes.func,
-};
 
 export default EmptyState;

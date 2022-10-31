@@ -4,13 +4,20 @@ import axios from "@/config/axios";
 
 import EmptyState, { EmptyStates } from "./EmptyState";
 
-class ErrorBoundary extends Component {
+export type ErrorBoundaryProps = {
+  children: React.ReactNode;
+};
+
+class ErrorBoundary extends Component<ErrorBoundaryProps> {
+  private requestInterceptor?: number;
+  private responseInterceptor?: number;
+
   state = {
     error: null,
     errorStatus: 0,
   };
 
-  componentDidCatch(error) {
+  componentDidCatch(error: any) {
     this.setState({ error });
   }
 
@@ -32,8 +39,8 @@ class ErrorBoundary extends Component {
   }
 
   componentWillUnmount() {
-    axios.interceptors.request.eject(this.requestInterceptor);
-    axios.interceptors.response.eject(this.responseInterceptor);
+    axios.interceptors.request.eject(this.requestInterceptor as number);
+    axios.interceptors.response.eject(this.responseInterceptor as number);
   }
 
   handleTryAgain() {
