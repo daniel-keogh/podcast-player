@@ -61,8 +61,8 @@
     "lint:format": "npm run lint:prettier:fix && npm run lint:stylelint:fix && npm run lint:eslint:fix",
     "lint:eslint": "eslint \"src/**/*.{js,jsx,ts,tsx,json}\"",
     "lint:eslint:fix": "npm run lint:eslint -- --fix",
-    "lint:prettier": "npx prettier --check .",
-    "lint:prettier:fix": "npx prettier --write .",
+    "lint:prettier": "prettier --check .",
+    "lint:prettier:fix": "prettier --write .",
     "lint:stylelint": "stylelint \"**/*.css\"",
     "lint:stylelint:fix": "npm run lint:stylelint -- --fix"
   },
