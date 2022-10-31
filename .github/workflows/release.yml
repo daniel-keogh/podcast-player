@@ -19,8 +19,8 @@ jobs:
           SENTRY_URL: https://sentry.io/
         with:
           environment: production
-          sourcemaps: './build'
-          version: 'podcast-player@0.1.0'
+          sourcemaps: "./build"
+          version: "podcast-player@0.1.0"
 
       - name: Trigger Deploy
         run: |
