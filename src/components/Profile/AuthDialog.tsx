@@ -1,5 +1,3 @@
-import React from "react";
-
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
@@ -9,27 +7,28 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
-// @ts-expect-error TS(2307): Cannot find module '@/components/Auth/PasswordInpu... Remove this comment to see the full error message
 import PasswordInput from "@/components/Auth/PasswordInput";
-// @ts-expect-error TS(2307): Cannot find module '@/hooks' or its corresponding ... Remove this comment to see the full error message
 import { useAuth, useForm } from "@/hooks";
+import type { UnionValues } from "@/types";
 
 export const dialogTypes = {
   CHANGE_EMAIL: "CHANGE_EMAIL",
   CHANGE_PASSWORD: "CHANGE_PASSWORD",
   CLOSE_ACCOUNT: "CLOSE_ACCOUNT",
+} as const;
+
+export type DialogType = UnionValues<typeof dialogTypes>;
+
+export type AuthDialogProps = {
+  type: DialogType;
+  title: string;
+  message: string;
+  open: boolean;
+  onSubmit: (data: unknown) => void;
+  onCancel: () => void;
 };
 
-type Props = {
-    type?: any; // TODO: PropTypes.oneOf([...Object.values(dialogTypes)])
-    title: string;
-    message: string;
-    open: boolean;
-    onSubmit: (...args: any[]) => any;
-    onCancel: (...args: any[]) => any;
-};
-
-function AuthDialog({ type, title, message, open, onSubmit, onCancel }: Props) {
+function AuthDialog({ type, title, message, open, onSubmit, onCancel }: AuthDialogProps) {
   const changeEmail = type === dialogTypes.CHANGE_EMAIL;
   const changePassword = type === dialogTypes.CHANGE_PASSWORD;
   const closeAccount = type === dialogTypes.CLOSE_ACCOUNT;
@@ -65,18 +64,12 @@ function AuthDialog({ type, title, message, open, onSubmit, onCancel }: Props) {
   };
 
   return (
-    // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
     <Dialog open={open} onClose={onCancel} fullWidth keepMounted>
-      {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
       <DialogTitle>{title}</DialogTitle>
-      {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
       <DialogContent>
-        {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
         <DialogContentText>{message}</DialogContentText>
-        {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
         <Box mt={2}>
           {changeEmail || closeAccount ? (
-            // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
             <TextField
               autoFocus
               fullWidth
@@ -93,7 +86,6 @@ function AuthDialog({ type, title, message, open, onSubmit, onCancel }: Props) {
             />
           ) : null}
           {changePassword ? (
-            // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
             <PasswordInput
               autoFocus
               id="oldPassword"
@@ -104,7 +96,6 @@ function AuthDialog({ type, title, message, open, onSubmit, onCancel }: Props) {
             />
           ) : null}
           {changePassword || closeAccount ? (
-            // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
             <PasswordInput
               id="password"
               label={`${changePassword ? "New " : ""}Password`}
@@ -115,7 +106,6 @@ function AuthDialog({ type, title, message, open, onSubmit, onCancel }: Props) {
             />
           ) : null}
           {changePassword ? (
-            // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
             <PasswordInput
               id="confirmPassword"
               label="Confirm Password"
@@ -127,13 +117,10 @@ function AuthDialog({ type, title, message, open, onSubmit, onCancel }: Props) {
           ) : null}
         </Box>
       </DialogContent>
-      {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
       <DialogActions>
-        {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
         <Button onClick={handleCancel} color="primary">
           Cancel
         </Button>
-        {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
         <Button onClick={handleSubmit} color="primary">
           Submit
         </Button>

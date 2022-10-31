@@ -1,9 +1,15 @@
 import { useState } from "react";
 
-function useForm<T>(initialValues: T) {
+type FormStateWithCallbacks<T> = [
+  T,
+  (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void,
+  () => void
+];
+
+function useForm<T>(initialValues: T): FormStateWithCallbacks<T> {
   const [values, setValues] = useState(initialValues);
 
-  const handleChange = <T extends { name: string; value: string }>(e: React.ChangeEvent<T>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     e.persist();
 
     setValues((state) => ({

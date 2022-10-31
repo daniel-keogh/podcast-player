@@ -6,8 +6,7 @@ import Card from "@mui/material/Card";
 import CardActionArea from "@mui/material/CardActionArea";
 import CardMedia from "@mui/material/CardMedia";
 
-// @ts-expect-error TS(2307): Cannot find module '@/store/nowPlayingContext' or ... Remove this comment to see the full error message
-import NowPlayingContext from "@/store/nowPlayingContext";
+import NowPlayingContext from "@/context/nowPlayingContext";
 
 const useStyles = makeStyles({
   card: {
@@ -26,9 +25,7 @@ function NowPlayingArtwork() {
   const { podId, podTitle, podArtwork } = useContext(NowPlayingContext);
 
   return podId && podTitle && podArtwork ? (
-    // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
     <Card className={classes.card} elevation={0}>
-      {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
       <CardActionArea
         component={Link}
         to={{
@@ -36,7 +33,6 @@ function NowPlayingArtwork() {
           state: { title: podTitle },
         }}
       >
-        {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
         <CardMedia className={classes.media} title={podTitle} image={podArtwork} />
       </CardActionArea>
     </Card>

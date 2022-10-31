@@ -1,10 +1,11 @@
 import React, { Suspense, useContext } from "react";
 import { HashRouter, Route, Switch, Redirect } from "react-router-dom";
+import { withProfiler } from "@sentry/react";
 
 import CssBaseline from "@mui/material/CssBaseline";
 import "@/App.css";
 
-import AuthContext from "@/store/authContext";
+import AuthContext from "@/context/authContext";
 import NavBar from "@/components/NavBar/NavBar";
 import PlayerContainer from "@/components/Player/PlayerContainer";
 import Routes from "@/utils/routes";
@@ -47,7 +48,7 @@ function App() {
                 </Switch>
               </Suspense>
             ) : (
-              <Suspense fallback={<NavBar title="" />}>
+              <Suspense fallback={<NavBar />}>
                 <Switch>
                   <Route path={Routes.subscriptions}>
                     <Subscriptions />
@@ -79,4 +80,4 @@ function App() {
   );
 }
 
-export default App;
+export default withProfiler(App);

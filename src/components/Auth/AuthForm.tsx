@@ -1,4 +1,3 @@
-import React from "react";
 import { Link as RouterLink } from "react-router-dom";
 
 import makeStyles from "@mui/styles/makeStyles";
@@ -12,29 +11,27 @@ import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import GitHubIcon from "@mui/icons-material/GitHub";
+import { Theme } from "@mui/material/styles";
 
-// @ts-expect-error TS(2307): Cannot find module '@/components/Auth/PasswordInpu... Remove this comment to see the full error message
 import PasswordInput from "@/components/Auth/PasswordInput";
-// @ts-expect-error TS(2307): Cannot find module '@/hooks' or its corresponding ... Remove this comment to see the full error message
 import { useAuth, useForm } from "@/hooks";
-// @ts-expect-error TS(2307): Cannot find module '@/utils/routes' or its corresp... Remove this comment to see the full error message
 import Routes from "@/utils/routes";
 
-const useStyles = makeStyles((theme) => ({
-    avatar: {
-        margin: (theme as any).spacing(2),
-    },
-    submit: {
-        margin: (theme as any).spacing(3, 0, 2),
-    },
+const useStyles = makeStyles((theme: Theme) => ({
+  avatar: {
+    margin: theme.spacing(2),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  },
 }));
 
-type Props = {
-    isLogin?: boolean;
-    onAuthorized: (...args: any[]) => any;
+export type AuthFormProps = {
+  isLogin?: boolean;
+  onAuthorized: () => void;
 };
 
-function AuthForm({ isLogin = false, onAuthorized }: Props) {
+function AuthForm({ isLogin = false, onAuthorized }: AuthFormProps) {
   const classes = useStyles();
 
   const { error, login, register } = useAuth();
@@ -45,7 +42,7 @@ function AuthForm({ isLogin = false, onAuthorized }: Props) {
     confirmPassword: "",
   });
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const { success } = isLogin ? await login(form) : await register(form);
@@ -59,40 +56,63 @@ function AuthForm({ isLogin = false, onAuthorized }: Props) {
     ? { text: "Don't have an account? Register...", to: Routes.register }
     : { text: "Already have an account? Login...", to: Routes.login };
 
-  // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
-  return (<Container component="main" maxWidth="xs">
-      {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
+  return (
+    <Container component="main" maxWidth="xs">
       <Box display="flex" flexDirection="column" alignItems="center" mt={12} mb={4}>
-        {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
-        <Avatar className={classes.avatar} src="/logo512.png" alt="Podcast Player"/>
-        {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
+        <Avatar className={classes.avatar} src="/logo512.png" alt="Podcast Player" />
         <Typography component="h1" variant="h5">
           {isLogin ? "Welcome Back." : "Create Your Account."}
         </Typography>
 
-        {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
         <Box mt={4}>
-          {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
-          <form className={(classes as any).form} onSubmit={handleSubmit}>
-            {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
-            <TextField autoFocus fullWidth variant="outlined" margin="normal" id="email" name="email" type="email" label="Email Address" onChange={handleFormChanged} value={form.email} error={error.length > 0}/>
+          <form onSubmit={handleSubmit}>
+            <TextField
+              autoFocus
+              fullWidth
+              variant="outlined"
+              margin="normal"
+              id="email"
+              name="email"
+              type="email"
+              label="Email Address"
+              onChange={handleFormChanged}
+              value={form.email}
+              error={error.length > 0}
+            />
 
-            {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
-            <PasswordInput id="password" label="Password" value={form.password} onChange={handleFormChanged} error={error.length > 0} helperText={isLogin ? error : ""}/>
+            <PasswordInput
+              id="password"
+              label="Password"
+              value={form.password}
+              onChange={handleFormChanged}
+              error={error.length > 0}
+              helperText={isLogin ? error : ""}
+            />
 
-            {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
-            {!isLogin ? (<PasswordInput id="confirmPassword" label="Confirm Password" value={form.confirmPassword} onChange={handleFormChanged} error={error.length > 0} helperText={error}/>) : null}
+            {!isLogin ? (
+              <PasswordInput
+                id="confirmPassword"
+                label="Confirm Password"
+                value={form.confirmPassword}
+                onChange={handleFormChanged}
+                error={error.length > 0}
+                helperText={error}
+              />
+            ) : null}
 
-            {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
-            <Button fullWidth disableElevation type="submit" variant="contained" color="primary" className={classes.submit}>
+            <Button
+              fullWidth
+              disableElevation
+              type="submit"
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+            >
               {isLogin ? "Login" : "Register"}
             </Button>
 
-            {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
             <Grid container justifyContent="flex-end">
-              {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
               <Grid item>
-                {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
                 <Link component={RouterLink} to={link.to} variant="body2" underline="hover">
                   {link.text}
                 </Link>
@@ -102,15 +122,17 @@ function AuthForm({ isLogin = false, onAuthorized }: Props) {
         </Box>
       </Box>
 
-      {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
       <Box display="flex" justifyContent="center">
-        {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
-        <IconButton href="https://github.com/daniel-keogh/podcast-player" target="_blank" size="large">
-          {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
+        <IconButton
+          href="https://github.com/daniel-keogh/podcast-player"
+          target="_blank"
+          size="large"
+        >
           <GitHubIcon />
         </IconButton>
       </Box>
-    </Container>);
+    </Container>
+  );
 }
 
 export default AuthForm;

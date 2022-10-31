@@ -1,3 +1,5 @@
+import type { UnionValues } from "@/types";
+
 const Routes = {
   auth: "/auth",
   login: "/auth/login",
@@ -9,6 +11,6 @@ const Routes = {
   rateLimit: "/rate_limit",
 } as const;
 
-export type Route = typeof Routes[keyof typeof Routes];
+export type Route = UnionValues<typeof Routes>;
 
 export default Routes;

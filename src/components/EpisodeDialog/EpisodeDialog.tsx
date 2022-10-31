@@ -1,31 +1,33 @@
-import React, { useEffect, useState } from "react";
-// @ts-expect-error TS(7016): Could not find a declaration file for module 'sani... Remove this comment to see the full error message
+import { useEffect, useState } from "react";
 import sanitize from "sanitize-html";
 
 import withStyles from "@mui/styles/withStyles";
 import Dialog from "@mui/material/Dialog";
 import MuiDialogContent from "@mui/material/DialogContent";
-import Skeleton from "@mui/material/Skeleton";
 import Typography from "@mui/material/Typography";
+import { Theme } from "@mui/material/styles";
 
-// @ts-expect-error TS(2307): Cannot find module '@/services/subscriptionsServic... Remove this comment to see the full error message
 import subscriptionsService from "@/services/subscriptionsService";
-// @ts-expect-error TS(6142): Module './EpisodeDialogTitle' was resolved to '/mn... Remove this comment to see the full error message
 import EpisodeDialogTitle from "./EpisodeDialogTitle";
+import SkeletonText from "./SkeletonText";
 
-const EpisodeDialogContent = withStyles((theme) => ({
+const EpisodeDialogContent = withStyles((theme: Theme) => ({
   root: {
     padding: theme.spacing(2),
     height: "450px",
   },
 }))(MuiDialogContent);
 
-function SkeletonText({ numLines = 12, linesPerGroup = 4 }) {
-  return Array.from(Array(numLines).keys()).map((i) =>
-    // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
-    i % (linesPerGroup + 1) === 0 ? <br key={i} /> : <Skeleton variant="text" key={i} />
-  );
-}
+export type EpisodeDialogProps = {
+  open: boolean;
+  id: string;
+  episodeTitle: string;
+  episodeGuid: string;
+  podcastTitle: string;
+  artwork: string;
+  onClose: () => void;
+  onPlay: () => void;
+};
 
 function EpisodeDialog({
   open,
@@ -35,8 +37,8 @@ function EpisodeDialog({
   podcastTitle,
   artwork,
   onPlay,
-  onClose
-}: any) {
+  onClose,
+}: EpisodeDialogProps) {
   const [episodeInfo, setEpisodeInfo] = useState({
     description: "",
     date: "",
@@ -46,7 +48,7 @@ function EpisodeDialog({
     if (open) {
       subscriptionsService
         .getEpisodeByGuid(id, episodeGuid)
-        .then((data: any) => {
+        .then((data) => {
           let description = sanitize(data.episode.description);
 
           if (description === "undefined") {
@@ -63,25 +65,23 @@ function EpisodeDialog({
   }, [open, id, episodeGuid]);
 
   return (
-    // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
     <Dialog onClose={onClose} open={open} fullWidth>
-      {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
       <EpisodeDialogTitle
         id={id}
         podcastTitle={podcastTitle}
         episodeTitle={episodeTitle}
         artwork={artwork}
         date={episodeInfo.date}
-        onPlay={() => onPlay() & onClose()}
+        onPlay={() => {
+          onPlay();
+          onClose();
+        }}
         onClose={onClose}
       />
-      {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
       <EpisodeDialogContent dividers>
         {!episodeInfo.description ? (
-          // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
           <SkeletonText />
         ) : (
-          // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
           <Typography
             gutterBottom
             dangerouslySetInnerHTML={{

@@ -1,9 +1,11 @@
 import { useState } from "react";
 
-function useToggle(defaultValue = false) {
+export type ToggleStateWithCallbacks = [boolean, (value?: unknown) => void];
+
+function useToggle(defaultValue = false): ToggleStateWithCallbacks {
   const [value, setValue] = useState(defaultValue);
 
-  const toggleValue = (value?: boolean) => {
+  const toggleValue = (value?: unknown) => {
     setValue((state) => {
       return typeof value === "boolean" ? value : !state;
     });

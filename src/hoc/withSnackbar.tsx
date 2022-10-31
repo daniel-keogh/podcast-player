@@ -3,13 +3,15 @@ import React, { Component } from "react";
 import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
 
-type SnackbarState = {
-  onSnackbarOpen: (message: string, error?: boolean) => void;
+export type WithSnackbarProps = {
+  onSnackbarOpen: (message: string | Error, error?: boolean) => void;
   onSnackbarClose: () => void;
 };
 
-function withSnackbar(WrappedComponent: React.ComponentType<SnackbarState>) {
-  return class WithSnackbar extends Component {
+function withSnackbar<T extends WithSnackbarProps = WithSnackbarProps>(
+  WrappedComponent: React.ComponentType<any>
+): React.ComponentType<any> {
+  return class WithSnackbar extends Component<Omit<T, keyof WithSnackbarProps>> {
     state = {
       snackbar: {
         open: false,
@@ -17,7 +19,7 @@ function withSnackbar(WrappedComponent: React.ComponentType<SnackbarState>) {
       },
     };
 
-    handleSnackbarOpen = (message: string, error = true) => {
+    handleSnackbarOpen = (message: string | Error, error = true) => {
       this.setState({
         snackbar: {
           open: true,

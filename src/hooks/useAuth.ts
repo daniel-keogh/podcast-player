@@ -1,6 +1,6 @@
 import { useState, useContext } from "react";
 
-import AuthContext from "../store/authContext";
+import AuthContext from "../context/authContext";
 import authService from "../services/authService";
 import { AxiosError } from "axios";
 

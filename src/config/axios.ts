@@ -1,6 +1,6 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
-import { TOKEN_KEY } from "@/store/authContext";
+import { TOKEN_KEY } from "@/context/authContext";
 import Routes from "@/utils/routes";
 
 const instance = axios.create({
@@ -53,5 +53,9 @@ instance.interceptors.response.use(
     return Promise.reject(err);
   }
 );
+
+export const isAxiosError = <T = any>(payload: any): payload is AxiosError<T> => {
+  return axios.isAxiosError(payload);
+};
 
 export default instance;

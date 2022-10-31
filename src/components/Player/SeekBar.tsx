@@ -1,12 +1,11 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 
 import makeStyles from "@mui/styles/makeStyles";
 import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
-import Typography from "@mui/material/Typography";
 
-// @ts-expect-error TS(2307): Cannot find module '@/store/nowPlayingContext' or ... Remove this comment to see the full error message
-import NowPlayingContext from "@/store/nowPlayingContext";
+import NowPlayingContext from "@/context/nowPlayingContext";
+import EpisodeInfo from "./EpisodeInfo";
 
 const useStyles = makeStyles({
   progressSlider: {
@@ -16,32 +15,19 @@ const useStyles = makeStyles({
   },
 });
 
-type Props = {
-    currentTime: number;
-    duration: number;
-    onSliderChange: (...args: any[]) => any;
+export type SeekBarProps = {
+  currentTime: number;
+  duration: number;
+  onSliderChange: (event: Event, value: number | number[]) => void;
 };
 
-function SeekBar({ currentTime, duration, onSliderChange }: Props) {
+function SeekBar({ currentTime, duration, onSliderChange }: SeekBarProps) {
   const classes = useStyles();
   const { epTitle, podTitle } = useContext(NowPlayingContext);
 
   return (
-    // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
     <Box flexGrow={1} paddingX={5} paddingTop={2} paddingBottom={3}>
-      {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
-      <Box marginBottom={1}>
-        {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
-        <Typography component="h6" variant="h6" noWrap>
-          {epTitle}
-        </Typography>
-        {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
-        <Typography color="textSecondary" variant="subtitle2" noWrap>
-          {podTitle}
-        </Typography>
-      </Box>
-
-      {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
+      <EpisodeInfo episodeTitle={epTitle} podcastTitle={podTitle} />
       <Slider
         className={classes.progressSlider}
         defaultValue={0}
@@ -66,14 +52,11 @@ function SeekBar({ currentTime, duration, onSliderChange }: Props) {
 /* Converts from seconds to HH:MM:SS. Necessary since the HTML <audio> element times (currentTime & duration) are in seconds.
  * Based on this S.O. answer: https://stackoverflow.com/a/37096512
  */
-function formatSeconds(secs: any) {
+function formatSeconds(secs: number) {
   if (Number.isNaN(secs)) return "00:00";
 
-  // @ts-expect-error TS(2550): Property 'padStart' does not exist on type 'string... Remove this comment to see the full error message
   const h = String(Math.floor(secs / 3600)).padStart(2, "0");
-  // @ts-expect-error TS(2550): Property 'padStart' does not exist on type 'string... Remove this comment to see the full error message
   const m = String(Math.floor((secs % 3600) / 60)).padStart(2, "0");
-  // @ts-expect-error TS(2550): Property 'padStart' does not exist on type 'string... Remove this comment to see the full error message
   const s = String(Math.floor((secs % 3600) % 60)).padStart(2, "0");
 
   if (h === "00") {

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-type DialogState = {
+export type WithDialogProps = {
   dialog: {
     open: boolean;
     error: boolean;
@@ -11,8 +11,10 @@ type DialogState = {
   onDialogError: (err: Error) => void;
 };
 
-function withDialog(WrappedComponent: React.ComponentType<DialogState>) {
-  return class WithDialog extends Component {
+function withDialog<T extends WithDialogProps = WithDialogProps>(
+  WrappedComponent: React.ComponentType<any>
+): React.ComponentType<any> {
+  return class WithDialog extends Component<Omit<T, keyof WithDialogProps>> {
     state = {
       dialog: {
         open: false,

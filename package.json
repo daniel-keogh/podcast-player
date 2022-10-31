@@ -10,6 +10,8 @@
     "@mui/lab": "^5.0.0-alpha.75",
     "@mui/material": "^5.5.3",
     "@mui/styles": "^5.5.3",
+    "@sentry/react": "^7.17.2",
+    "@sentry/tracing": "^7.17.2",
     "@testing-library/jest-dom": "^5.16.3",
     "@testing-library/react": "^12.1.4",
     "@testing-library/user-event": "^13.5.0",
@@ -30,10 +32,21 @@
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
+    "@testing-library/cypress": "^8.0.3",
     "@types/react-router-dom": "^5.3.3",
+    "@types/sanitize-html": "^2.6.2",
+    "@typescript-eslint/eslint-plugin": "^5.41.0",
+    "@typescript-eslint/parser": "^5.41.0",
     "concurrently": "^7.0.0",
+    "cypress": "^10.11.0",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.31.10",
     "prettier": "^2.6.1",
-    "ts-migrate": "^0.1.34"
+    "stylelint": "^14.14.0",
+    "stylelint-config-prettier": "^9.0.3",
+    "stylelint-config-standard": "^29.0.0"
   },
   "scripts": {
     "start": "craco start",
@@ -43,14 +56,15 @@
     "server": "npm run start:dev --prefix backend",
     "dev": "concurrently \"npm run server\" \"npm start\"",
     "postinstall": "cd backend && npm install",
-    "lint": "npx prettier --check .",
-    "lint:format": "npx prettier --write ."
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+    "e2e": "cypress open",
+    "lint": "npm run lint:prettier && npm run lint:stylelint && npm run lint:eslint",
+    "lint:format": "npm run lint:prettier:fix && npm run lint:stylelint:fix && npm run lint:eslint:fix",
+    "lint:eslint": "eslint \"src/**/*.{js,jsx,ts,tsx,json}\"",
+    "lint:eslint:fix": "npm run lint:eslint -- --fix",
+    "lint:prettier": "npx prettier --check .",
+    "lint:prettier:fix": "npx prettier --write .",
+    "lint:stylelint": "stylelint \"**/*.css\"",
+    "lint:stylelint:fix": "npm run lint:stylelint -- --fix"
   },
   "browserslist": {
     "production": [

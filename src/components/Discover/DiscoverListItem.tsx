@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import { AxiosError } from "axios";
 
 import Avatar from "@mui/material/Avatar";
 import IconButton from "@mui/material/IconButton";
@@ -10,20 +11,14 @@ import Tooltip from "@mui/material/Tooltip";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import CheckCircleOutline from "@mui/icons-material/CheckCircleOutline";
 
-// @ts-expect-error TS(2307): Cannot find module '@/services/discoverService' or... Remove this comment to see the full error message
 import discoverService from "@/services/discoverService";
-// @ts-expect-error TS(2307): Cannot find module '@/services/subscriptionsServic... Remove this comment to see the full error message
 import subscriptionsService from "@/services/subscriptionsService";
+import type { SearchResult } from "@/types/api/discover";
+import type { ApiError } from "@/types/api/errors";
 
-type Props = {
-    feedUrl?: string;
-    title: string;
-    author: string;
-    artwork: string;
-    subscriptionId?: string;
-};
+export type DiscoverListItemProps = SearchResult & {};
 
-function DiscoverListItem({ feedUrl, title, author, artwork, ...props }: Props) {
+function DiscoverListItem({ feedUrl, title, author, artwork, ...props }: DiscoverListItemProps) {
   const [isSubscribed, setIsSubscribed] = useState(!!props.subscriptionId);
   const [subscriptionId, setSubscriptionId] = useState(props.subscriptionId);
 
@@ -31,23 +26,23 @@ function DiscoverListItem({ feedUrl, title, author, artwork, ...props }: Props) 
     if (!isSubscribed) {
       discoverService
         .subscribe(feedUrl)
-        .then((res: any) => {
+        .then((res) => {
           setSubscriptionId(res.data.result._id);
           setIsSubscribed(true);
         })
-        .catch((err: any) => {
+        .catch((err: AxiosError<ApiError>) => {
           if (err.response?.status === 409) {
             setIsSubscribed(true); // Already subscribed
           }
         });
     } else {
       subscriptionsService
-        .removeSubscription(subscriptionId)
+        .removeSubscription(subscriptionId!)
         .then(() => {
           setSubscriptionId("");
           setIsSubscribed(false);
         })
-        .catch((err: any) => {
+        .catch((err: AxiosError<ApiError>) => {
           if (err.response?.status === 422) {
             setSubscriptionId("");
             setIsSubscribed(false); // Not subscribed
@@ -57,26 +52,17 @@ function DiscoverListItem({ feedUrl, title, author, artwork, ...props }: Props) 
   };
 
   return (
-    // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
     <ListItem divider>
-      {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
       <ListItemAvatar>
-        {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
         <Avatar src={artwork} />
       </ListItemAvatar>
-      {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
       <ListItemText primary={title} secondary={author} />
-      {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
       <ListItemSecondaryAction>
-        {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
         <Tooltip title={isSubscribed ? "Unsubscribe" : "Subscribe"}>
-          {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
           <IconButton edge="end" color="secondary" onClick={handleSubscribe} size="large">
             {isSubscribed ? (
-              // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
               <CheckCircleOutline color="success" />
             ) : (
-              // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
               <AddCircleOutlineIcon color="primary" />
             )}
           </IconButton>

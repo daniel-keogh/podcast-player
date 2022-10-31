@@ -1,28 +1,27 @@
 import React, { Component } from "react";
 
-// @ts-expect-error TS(2307): Cannot find module '@/components/Player/PlayerCont... Remove this comment to see the full error message
 import PlayerControls from "@/components/Player/PlayerControls";
-// @ts-expect-error TS(2307): Cannot find module '@/store/nowPlayingContext' or ... Remove this comment to see the full error message
-import NowPlayingContext from "@/store/nowPlayingContext";
+import NowPlayingContext from "@/context/nowPlayingContext";
 
 const SKIP_TIME = 30;
 
-type State = any;
+export type PlayerProps = {};
 
-class Player extends Component<{}, State> {
+class Player extends Component<PlayerProps> {
   static contextType = NowPlayingContext;
 
-  constructor(props: {}) {
+  private audioElement: React.RefObject<HTMLAudioElement>;
+
+  state = {
+    currentTime: 0,
+    duration: 0,
+  };
+
+  constructor(props: PlayerProps) {
     super(props);
 
-    this.state = {
-      currentTime: 0,
-      duration: 0,
-    };
-
     // Will allow the component to access properties of the HTML <audio> element.
-// @ts-expect-error TS(7009): 'new' expression, whose target lacks a construct s... Remove this comment to see the full error message
-(this as any).audioElement = new React.createRef();
+    this.audioElement = React.createRef();
   }
 
   componentDidMount() {
@@ -34,73 +33,98 @@ class Player extends Component<{}, State> {
   }
 
   componentDidUpdate() {
-    if ((this as any).audioElement.current && !(this as any).audioElement.current.paused && !this.context.src) {
-      (this as any).audioElement.current.pause();
+    if (this.audioElement.current && !this.audioElement.current.paused && !this.context.src) {
+      this.audioElement.current.pause();
     }
   }
 
   render() {
-    // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
-    return (<React.Fragment>
-        {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
-        <PlayerControls currentTime={this.state.currentTime} duration={this.state.duration} isPaused={(this as any).audioElement.current ? (this as any).audioElement.current.paused : true} onReplay={this.handleReplay} onForward={this.handleForward} onPlayPauseClicked={this.handlePlayPauseClicked} onSliderChange={this.handleSliderChange}/>
-        {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
-        <audio preload="metadata" autoPlay={this.context.autoplay} src={this.context.src || null} onLoadedMetadata={this.handleMetadataLoaded} onTimeUpdate={this.handleTimeUpdate} ref={(this as any).audioElement}></audio>
-      </React.Fragment>);
+    return (
+      <React.Fragment>
+        <PlayerControls
+          currentTime={this.state.currentTime}
+          duration={this.state.duration}
+          isPaused={this.audioElement.current ? this.audioElement.current.paused : true}
+          onReplay={this.handleReplay}
+          onForward={this.handleForward}
+          onPlayPauseClicked={this.handlePlayPauseClicked}
+          onSliderChange={this.handleSliderChange}
+        />
+        <audio
+          preload="metadata"
+          autoPlay={this.context.autoplay}
+          src={this.context.src || null}
+          onLoadedMetadata={this.handleMetadataLoaded}
+          onTimeUpdate={this.handleTimeUpdate}
+          ref={this.audioElement}
+        ></audio>
+      </React.Fragment>
+    );
   }
 
   handlePlayPauseClicked = () => {
-    if ((this as any).audioElement.current.paused) {
-      (this as any).audioElement.current.play().catch(console.error);
+    if (!this.audioElement.current) return;
+
+    if (this.audioElement.current.paused) {
+      this.audioElement.current.play().catch(console.error);
     } else {
       if (!Number.isNaN(this.state.duration)) {
-        (this as any).audioElement.current.pause();
+        this.audioElement.current.pause();
       }
     }
   };
 
   handleReplay = () => {
+    if (!this.audioElement.current) return;
+
     // If near the start of the file, set the current time to zero
     // (prevents currentTime being set to a negative number).
     if (this.state.currentTime - SKIP_TIME <= 0) {
-      (this as any).audioElement.current.currentTime = 0;
+      this.audioElement.current.currentTime = 0;
     } else {
-      (this as any).audioElement.current.currentTime -= SKIP_TIME;
+      this.audioElement.current.currentTime -= SKIP_TIME;
     }
   };
 
   handleForward = () => {
+    if (!this.audioElement.current) return;
+
     // If near the end of the file, set the current time to the total duration
     // (prevents currentTime being set to a number greater than the duration).
     if (this.state.currentTime + SKIP_TIME >= this.state.duration) {
-      (this as any).audioElement.current.currentTime = this.state.duration;
+      this.audioElement.current.currentTime = this.state.duration;
     } else {
-      (this as any).audioElement.current.currentTime += SKIP_TIME;
+      this.audioElement.current.currentTime += SKIP_TIME;
     }
   };
 
-  handleMetadataLoaded = (e: any) => {
-    (this as any).audioElement.current.currentTime = this.context.progress;
+  handleMetadataLoaded = () => {
+    if (!this.audioElement.current) return;
+    this.audioElement.current.currentTime = this.context.progress;
   };
 
-  handleTimeUpdate = (e: any) => {
+  handleTimeUpdate = (e: React.SyntheticEvent<HTMLAudioElement>) => {
+    if (!this.audioElement.current) return;
+
     this.setState({
-    currentTime: e.target.currentTime,
-    duration: (this as any).audioElement.current.duration,
-});
+      currentTime: (e.target as HTMLAudioElement).currentTime,
+      duration: this.audioElement.current.duration,
+    });
   };
 
   // Syncs the slider with the current playback position.
-  handleSliderChange = (e: any, value: any) => {
+  handleSliderChange = (_: Event, value: number | number[]) => {
+    if (!this.audioElement.current || Array.isArray(value)) return;
+
     // Convert the slider's new value property from a % to a time.
-(this as any).audioElement.current.currentTime = this.state.duration * value * 0.01;
+    this.audioElement.current.currentTime = this.state.duration * value * 0.01;
 
     this.setState({
-    currentTime: (this as any).audioElement.current.currentTime,
-});
+      currentTime: this.audioElement.current.currentTime,
+    });
   };
 
-  savePlaybackProgress = (e: any) => {
+  savePlaybackProgress = () => {
     this.context.saveProgress(this.state.currentTime);
   };
 }

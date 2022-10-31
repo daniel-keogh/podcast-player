@@ -1,25 +1,32 @@
 import { useState } from "react";
 
-type DialogState = {
+type DialogState<T> = {
   open: boolean;
-  [key: string]: any;
-};
+} & T;
 
-function useDialog({ open = false, ...initialState }: DialogState) {
+type DialogStateWithCallbacks<T> = [
+  DialogState<T>,
+  (state: Partial<DialogState<T>>) => void,
+  () => void
+];
+
+function useDialog<T = {}>(dialogState: Partial<DialogState<T>>): DialogStateWithCallbacks<T> {
+  const { open = false, ...initialState } = dialogState;
+
   const [dialog, setDialog] = useState({
     open,
     ...initialState,
-  });
+  } as DialogState<T>);
 
-  const handleOpen = (state: DialogState) => {
+  const handleOpen = (state: Partial<DialogState<T>>) => {
     setDialog({
       ...state,
       open: true,
-    });
+    } as DialogState<T>);
   };
 
   const handleClose = () => {
-    setDialog((state: DialogState) => ({
+    setDialog((state) => ({
       ...state,
       open: false,
     }));

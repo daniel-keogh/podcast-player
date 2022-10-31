@@ -1,39 +1,44 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
+import { RouteComponentProps, withRouter } from "react-router-dom";
 
 import Container from "@mui/material/Container";
-// @ts-expect-error TS(2307): Cannot find module '@/components/NavBar/NavBar' or... Remove this comment to see the full error message
 import NavBar from "@/components/NavBar/NavBar";
-// @ts-expect-error TS(6142): Module './PaginatedList' was resolved to '/mnt/s/G... Remove this comment to see the full error message
 import PaginatedList from "./PaginatedList";
-// @ts-expect-error TS(6142): Module './EpisodeListItem' was resolved to '/mnt/s... Remove this comment to see the full error message
 import EpisodeListItem from "./EpisodeListItem";
-// @ts-expect-error TS(6142): Module './PodcastInfo' was resolved to '/mnt/s/Git... Remove this comment to see the full error message
 import PodcastInfo from "./PodcastInfo";
 
-// @ts-expect-error TS(2307): Cannot find module '@/hoc/withSnackbar' or its cor... Remove this comment to see the full error message
-import withSnackbar from "@/hoc/withSnackbar";
-// @ts-expect-error TS(2307): Cannot find module '@/services/subscriptionsServic... Remove this comment to see the full error message
+import withSnackbar, { WithSnackbarProps } from "@/hoc/withSnackbar";
 import subscriptionsService from "@/services/subscriptionsService";
-// @ts-expect-error TS(2307): Cannot find module '@/utils' or its corresponding ... Remove this comment to see the full error message
 import { isEmpty } from "@/utils";
-// @ts-expect-error TS(2307): Cannot find module '@/utils/routes' or its corresp... Remove this comment to see the full error message
 import Routes from "@/utils/routes";
+import type { Podcast as _Podcast } from "@/types/api/podcast";
 
 const STARTING_ITEMS_PER_PAGE = 50;
 const ITEMS_PER_PAGE = 100;
 
-type State = any;
+export interface PodcastProps extends WithSnackbarProps, RouteComponentProps {
+  match: RouteComponentProps["match"] & {
+    params: {
+      id: string;
+    };
+  };
+}
 
-class Podcast extends Component<{}, State> {
+type PodcastState = {
+  podcast: _Podcast;
+  numEpisodes: number;
+  isLoading: boolean;
+};
+
+class Podcast extends Component<PodcastProps, PodcastState> {
   state = {
-    podcast: {},
+    podcast: {} as _Podcast,
     numEpisodes: STARTING_ITEMS_PER_PAGE,
     isLoading: true,
   };
 
   componentDidMount() {
-    const params = new URLSearchParams((this.props as any).history.location.search);
+    const params = new URLSearchParams(this.props.history.location.search);
     let limit = Number(params.get("limit"));
 
     if (!limit || limit <= 0) {
@@ -41,32 +46,30 @@ class Podcast extends Component<{}, State> {
     }
 
     subscriptionsService
-    .getSubscriptionById((this.props as any).match.params.id, limit)
-    .then((podcast: any) => {
-    this.setState({
-        podcast,
-        numEpisodes: limit,
-    });
-})
-    .catch((this.props as any).onSnackbarOpen)
-    .finally(() => {
-    this.setState({
-        isLoading: false,
-    });
-});
+      .getSubscriptionById(this.props.match.params.id, limit)
+      .then((podcast) => {
+        this.setState({
+          podcast,
+          numEpisodes: limit,
+        });
+      })
+      .catch(this.props.onSnackbarOpen)
+      .finally(() => {
+        this.setState({
+          isLoading: false,
+        });
+      });
   }
 
-  componentDidUpdate(prevProps: {}) {
-    const params = new URLSearchParams((this.props as any).location.search);
-    // @ts-expect-error TS(2531): Object is possibly 'null'.
-    const limit = +params.get("limit");
+  componentDidUpdate(prevProps: PodcastProps) {
+    const params = new URLSearchParams(this.props.location.search);
+    const limit = params.get("limit");
 
-    const prevParams = new URLSearchParams((prevProps as any).location.search);
-    // @ts-expect-error TS(2531): Object is possibly 'null'.
-    const prevLimit = +prevParams.get("limit");
+    const prevParams = new URLSearchParams(prevProps.location.search);
+    const prevLimit = prevParams.get("limit");
 
     if (limit && limit !== prevLimit) {
-      this.setState({ numEpisodes: limit }, () => this.fetchMore(limit));
+      this.setState({ numEpisodes: +limit }, () => this.fetchMore(+limit));
     }
   }
 
@@ -74,83 +77,89 @@ class Podcast extends Component<{}, State> {
     const { podcast, isLoading, numEpisodes } = this.state;
 
     // If the title was passed as a prop use that, otherwise wait until `componentDidMount()` updates the state.
-const navTitle = (this.props as any).location.state?.title || (podcast as any).title;
+    const navTitle = (this.props.location.state as any)?.title || podcast.title;
 
-    // @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message
-    return (<React.Fragment>
-        {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
-        <NavBar title={navTitle} isLoading={isLoading}/>
+    return (
+      <React.Fragment>
+        <NavBar title={navTitle} isLoading={isLoading} />
 
-        {/* Only display the PodcastInfo if `
-    podcast` is not an empty object. */}
-        {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
-        {!isEmpty(podcast) ? (<Container maxWidth="lg">
-            {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
-            <PodcastInfo {...podcast} onSubscribe={this.handleSubscribe}/>
-            {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
+        {/* Only display the PodcastInfo if `podcast` is not an empty object. */}
+        {!isEmpty(podcast) ? (
+          <Container maxWidth="lg">
+            <PodcastInfo {...podcast} onSubscribe={this.handleSubscribe} />
             <PaginatedList numItems={numEpisodes} onShowMore={this.handleShowMoreClicked}>
-              {/* @ts-expect-error TS(17004): Cannot use JSX unless the '--jsx' flag is provided... Remove this comment to see the full error message */}
-              {(podcast as any).episodes?.map((episode: any, i: any) => (<EpisodeListItem key={i} episode={episode} id={(podcast as any)._id} podcastTitle={(podcast as any).title} artwork={(podcast as any).artwork}/>))}
+              {podcast.episodes?.map((episode, i) => (
+                <EpisodeListItem
+                  key={i}
+                  episode={episode}
+                  id={podcast._id}
+                  podcastTitle={podcast.title}
+                  artwork={podcast.artwork}
+                />
+              ))}
             </PaginatedList>
-          </Container>) : null}
-      </React.Fragment>);
+          </Container>
+        ) : null}
+      </React.Fragment>
+    );
   }
 
-  fetchMore = async (limit: any) => {
+  fetchMore = async (limit: number) => {
     try {
-      const { episodes } = await subscriptionsService.getSubscriptionById((this.props as any).match.params.id, limit);
+      const { episodes } = await subscriptionsService.getSubscriptionById(
+        this.props.match.params.id,
+        limit
+      );
 
-      this.setState((state: any) => ({
+      this.setState((state) => ({
         podcast: {
           ...state.podcast,
           episodes,
         },
-
-        numEpisodes: limit
+        numEpisodes: limit,
       }));
     } catch (err) {
-      (this.props as any).onSnackbarOpen(err);
+      this.props.onSnackbarOpen(err as Error);
     } finally {
       if (window.location.hash !== `#${Routes.rateLimit}`) {
-        (this.props as any).history.replace(`${Routes.podcast}/${(this.state.podcast as any)._id}?limit=${limit}`);
+        this.props.history.replace(`${Routes.podcast}/${this.state.podcast._id}?limit=${limit}`);
       }
     }
   };
 
   // Display another 100 episodes whenever the "Show More" button is clicked
   handleShowMoreClicked = () => {
-    const params = new URLSearchParams((this.props as any).history.location.search);
-    // @ts-expect-error TS(2531): Object is possibly 'null'.
-    const limit = (+params.get("limit") || this.state.numEpisodes) + ITEMS_PER_PAGE;
+    const params = new URLSearchParams(this.props.history.location.search);
+    const limit = (+(params.get("limit") as string) || this.state.numEpisodes) + ITEMS_PER_PAGE;
     this.fetchMore(limit);
   };
 
   handleSubscribe = async () => {
     try {
-      if ((this.state.podcast as any).isSubscribed) {
-        await subscriptionsService.removeSubscription((this.state.podcast as any)._id);
+      if (this.state.podcast.isSubscribed) {
+        await subscriptionsService.removeSubscription(this.state.podcast._id);
 
-        this.setState((state: any) => ({
+        this.setState((state) => ({
           podcast: {
             ...state.podcast,
             isSubscribed: false,
             subscriberCount: state.podcast.subscriberCount - 1,
-          }
+          },
         }));
       } else {
         // Re-subscribe
-const result = await subscriptionsService.addSubscription((this.state.podcast as any).feedUrl);
+        const result = await subscriptionsService.addSubscription(this.state.podcast.feedUrl);
 
-        this.setState((state: any) => ({
+        this.setState((state) => ({
           podcast: {
             ...state.podcast,
             ...result,
             isSubscribed: true,
-          }
+          },
         }));
       }
     } catch (err) {
-      (this.props as any).onSnackbarOpen(err);
+      this.props.onSnackbarOpen(err as Error);
     }
   };
 }
