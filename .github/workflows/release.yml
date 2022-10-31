@@ -1,0 +1,27 @@
+name: Create Release
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Create Sentry release
+        uses: getsentry/action-release@v1.2.0
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+          SENTRY_URL: https://sentry.io/
+        with:
+          environment: production
+          sourcemaps: "./build"
+          version: "podcast-player@0.1.0"
+
+      - name: Trigger Deploy
+        run: |
+          curl ${{ secrets.DEPLOY_HOOK }}

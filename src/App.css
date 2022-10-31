@@ -9,7 +9,6 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  position: relative;
 }
 
 .main .body {
@@ -23,3 +22,4 @@
   z-index: 100;
   position: relative;
 }
+
