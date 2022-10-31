@@ -22,6 +22,8 @@ cypress/screenshots
 .env.test.local
 .env.production.local
 
+.sentryclirc
+
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
