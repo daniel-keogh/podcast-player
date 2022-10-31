@@ -47,6 +47,7 @@ jobs:
           SENTRY_URL: https://sentry.io/
         with:
           environment: production
+          ignore_empty: true
           ignore_missing: true
           sourcemaps: "./build"
           version: "podcast-player@0.1.0"
